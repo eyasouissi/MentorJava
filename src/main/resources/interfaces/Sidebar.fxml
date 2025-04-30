@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Admin.SidebarController"
+      styleClass="sidebar"
+      stylesheets="@/css/SidebarBack.css">
+
+    <!-- Logo/Titre -->
+    <Label text="MENTOR" styleClass="sidebar-title"/>
+
+    <!-- Menu de navigation -->
+    <VBox styleClass="sidebar-menu" spacing="5">
+        <!-- Courses Dropdown -->
+        <VBox styleClass="dropdown-container">
+            <Button styleClass="dropdown-btn" onAction="#toggleCoursesDropdown">
+                <graphic>
+                    <FontIcon iconLiteral="fas-book" styleClass="sidebar-icon"/>
+                </graphic>
+                <text>Cours</text>
+                <padding>
+                    <Insets left="15" right="15"/>
+                </padding>
+            </Button>
+            <VBox fx:id="coursesDropdown" styleClass="dropdown-content" managed="false">
+                <Button text="1. Courses" styleClass="dropdown-item" onAction="#navigateToCourses"/>
+                <Button text="2. Category" styleClass="dropdown-item" onAction="#navigateToCategory"/>
+            </VBox>
+        </VBox>
+
+        <!-- Forum Dropdown -->
+        <VBox styleClass="dropdown-container">
+            <Button styleClass="dropdown-btn" onAction="#toggleForumDropdown">
+                <graphic>
+                    <FontIcon iconLiteral="fas-comments" styleClass="sidebar-icon"/>
+                </graphic>
+                <text>Forum</text>
+                <padding>
+                    <Insets left="15" right="15"/>
+                </padding>
+            </Button>
+            <VBox fx:id="forumDropdown" styleClass="dropdown-content" managed="false">
+                <Button text="1. Forum" styleClass="dropdown-item" onAction="#navigateToForum"/>
+            </VBox>
+        </VBox>
+
+        <!-- Groupes Dropdown -->
+        <VBox styleClass="dropdown-container">
+            <Button styleClass="dropdown-btn" onAction="#toggleGroupesDropdown">
+                <graphic>
+                    <FontIcon iconLiteral="fas-users" styleClass="sidebar-icon"/>
+                </graphic>
+                <text>Groupes</text>
+                <padding>
+                    <Insets left="15" right="15"/>
+                </padding>
+            </Button>
+            <VBox fx:id="groupesDropdown" styleClass="dropdown-content" managed="false">
+                <Button text="1. Groupes" styleClass="dropdown-item" onAction="#navigateToGroupes"/>
+                <Button text="2. Projects" styleClass="dropdown-item" onAction="#navigateToProjects"/>
+            </VBox>
+        </VBox>
+
+        <!-- Events Dropdown -->
+        <VBox styleClass="dropdown-container">
+            <Button styleClass="dropdown-btn" onAction="#toggleEventsDropdown">
+                <graphic>
+                    <FontIcon iconLiteral="fas-calendar-alt" styleClass="sidebar-icon"/>
+                </graphic>
+                <text>Events</text>
+                <padding>
+                    <Insets left="15" right="15"/>
+                </padding>
+            </Button>
+            <VBox fx:id="eventsDropdown" styleClass="dropdown-content" managed="false">
+                <Button text="1. Events" styleClass="dropdown-item" onAction="#navigateToEvents"/>
+                <Button text="2. Announcements" styleClass="dropdown-item" onAction="#navigateToAnnouncements"/>
+            </VBox>
+        </VBox>
+
+        <!-- Pricing Dropdown -->
+        <VBox styleClass="dropdown-container">
+            <Button styleClass="dropdown-btn" onAction="#togglePricingDropdown">
+                <graphic>
+                    <FontIcon iconLiteral="fas-tag" styleClass="sidebar-icon"/>
+                </graphic>
+                <text>Pricing</text>
+                <padding>
+                    <Insets left="15" right="15"/>
+                </padding>
+            </Button>
+            <VBox fx:id="pricingDropdown" styleClass="dropdown-content" managed="false">
+                <Button text="1. Pricing" styleClass="dropdown-item" onAction="#navigateToPricing"/>
+                <Button text="2. Subscription" styleClass="dropdown-item" onAction="#navigateToSubscription"/>
+            </VBox>
+        </VBox>
+    </VBox>
+
+    <!-- Espace vide -->
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <!-- Déconnexion -->
+    <Button text="Déconnexion" styleClass="sidebar-button logout-btn" onAction="#logout">
+        <graphic>
+            <FontIcon iconLiteral="fas-sign-out-alt" styleClass="sidebar-icon"/>
+        </graphic>
+    </Button>
+</VBox>

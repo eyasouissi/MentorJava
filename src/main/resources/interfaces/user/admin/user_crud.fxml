@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.user.admin.UserCrud"
+      spacing="15"
+      style="-fx-padding: 20; -fx-background-color: #fdfdfd;
+             -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0.1, 0, 4);">
+
+    <Text text="User Management"
+          style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-fill: #71337f;" />
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Button fx:id="addButton" text="Add User" onAction="#handleAddUser"
+                style="-fx-background-color: #EEA0FF; -fx-text-fill: white;
+                       -fx-pref-width: 120; -fx-pref-height: 36; -fx-font-weight: bold;
+                       -fx-background-radius: 20px; -fx-cursor: hand;" />
+
+        <Button fx:id="refreshButton" text="Refresh" onAction="#handleRefresh"
+                style="-fx-background-color: #47AEFF; -fx-text-fill: white;
+                       -fx-pref-width: 120; -fx-pref-height: 36; -fx-font-weight: bold;
+                       -fx-background-radius: 20px; -fx-cursor: hand;" />
+
+        <Button fx:id="profileButton" text="Profile" onAction="#handleProfile"
+                style="-fx-background-color: #6a3093; -fx-text-fill: white;
+                       -fx-pref-width: 120; -fx-pref-height: 36; -fx-font-weight: bold;
+                       -fx-background-radius: 20px; -fx-cursor: hand;" />
+    </HBox>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <TextField fx:id="searchField" promptText="Search by name..."
+                   style="-fx-pref-width: 300; -fx-pref-height: 36;"/>
+
+        <Button fx:id="sortButton" text="Sort by Role" onAction="#handleSortByRole"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white;
+                   -fx-pref-width: 120; -fx-pref-height: 36; -fx-font-weight: bold;
+                   -fx-background-radius: 20px; -fx-cursor: hand;"/>
+    </HBox>
+
+    <TableView fx:id="usersTable" style="-fx-padding: 10; -fx-border-color: #eee; -fx-border-radius: 10; -fx-background-radius: 10;">
+        <columns>
+            <TableColumn fx:id="emailColumn" text="Email" prefWidth="250"/>
+            <TableColumn fx:id="nameColumn" text="Name" prefWidth="200"/>
+            <TableColumn fx:id="rolesColumn" text="Roles" prefWidth="150"/>
+            <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <Pagination fx:id="pagination" style="-fx-padding: 10;"/>
+</VBox>

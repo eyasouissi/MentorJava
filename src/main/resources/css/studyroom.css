@@ -1,0 +1,152 @@
+.create-room-button {
+    -fx-background-color: linear-gradient(to bottom right, #8c84a1, #8E2DE2);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-pref-width: 200px;
+    -fx-pref-height: 200px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 4);
+}
+
+.create-room-button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #8c84a1, #BA9CF4FF);
+}
+
+.plus-icon {
+    -fx-font-size: 48px;
+    -fx-text-fill: white;
+}
+
+.create-room-text {
+    -fx-font-size: 16px;
+    -fx-text-fill: white;
+}
+
+/* Room Cards */
+.room-card {
+    -fx-background-radius: 25;  /* More pronounced bubbly edges */
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 5);
+    -fx-pref-width: 300;  /* Make the card a bit bigger */
+    -fx-pref-height: 180;  /* Increase height to match */
+    -fx-overflow: hidden;
+    -fx-cursor: hand;
+    -fx-transition: transform 0.3s ease, -fx-effect 0.3s ease; /* Smooth transition for hover */
+}
+
+.room-card:hover {
+    -fx-scale-x: 1.05;  /* Slightly scale up the card on hover */
+    -fx-scale-y: 1.05;  /* Slightly scale up the card on hover */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 15, 0, 0, 5); /* Enhanced shadow on hover */
+}
+
+.room-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.room-type-indicator {
+    -fx-font-size: 14px;
+    -fx-padding: 5 10;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
+    -fx-background-radius: 20;
+    -fx-text-fill: white;
+}
+
+.join-button {
+    -fx-background-color: #0984E3;
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 8 20;
+}
+
+.delete-button:hover {
+    -fx-opacity: 0.8;
+}
+
+.delete-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.delete-icon {
+    -fx-fit-width: 20;
+    -fx-fit-height: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+
+/* Ensure root HBox fills the window */
+.h-box {
+    -fx-pref-width: 100%;
+    -fx-pref-height: 100%;
+}
+
+/* Adjust image size in the card */
+.room-card > .background {
+    -fx-background-size: cover;
+    -fx-background-position: center;
+}
+
+/* ScrollPane styling */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* TilePane styling */
+.tile-pane {
+    -fx-padding: 20 40 40 40;
+}
+.delete-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.delete-button:hover {
+    -fx-opacity: 0.8;
+}
+
+.delete-icon {
+    -fx-fit-width: 20;
+    -fx-fit-height: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 2, 0, 0, 1);
+}
+
+.header-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-padding: 20 0 0 20; /* Top, Right, Bottom, Left */
+}
+
+.nav-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-cursor: hand;
+    -fx-border-width: 0 0 2px 0;
+    -fx-border-color: transparent;
+}
+
+.nav-button:hover {
+    -fx-border-color: white;
+}
+.root-pane {
+    -fx-background-color: linear-gradient(
+            to bottom right,
+            #ffffff 0%,    /* Top-left corner: white */
+            #8c84a1 30%,   /* Soft purple appears */
+            #6f6280 50%,   /* Darker center */
+            #8c84a1 70%,   /* Lightens again */
+            #ffffff 100%   /* Bottom-right corner: white */
+    );
+
+
+}
+

@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<HBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.PostController"
+      stylesheets="@/css/sidebar.css, @/css/post-styles.css"
+      spacing="24"
+      prefHeight="600"
+      prefWidth="1000">
+
+    <!-- LEFT SIDEBAR -->
+    <VBox fx:id="sidebar" spacing="20" styleClass="sidebar" prefWidth="280">
+        <!-- Header -->
+        <Label text="MENTOR" styleClass="sidebar-title"/>
+        <Label text="Discover" styleClass="sidebar-section"/>
+        <Button fx:id="returnButton" onAction="#handleReturnToForum" styleClass="return-btn">
+            <graphic>
+                <ImageView fitWidth="24" fitHeight="24">
+                    <Image url="@/images/arrow-left.png"/>
+                </ImageView>
+            </graphic>
+        </Button>
+
+        <!-- Full Navigation Menu -->
+        <VBox spacing="10">
+            <!-- Home -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/home.png"/>
+                </ImageView>
+                <Label text="Home" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Browse -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/search.png"/>
+                </ImageView>
+                <Label text="Browse" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Courses -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/bookmark.png"/>
+                </ImageView>
+                <Label text="Courses" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Forum -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/message.png"/>
+                </ImageView>
+                <Label text="Forum" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Groups -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/group.png"/>
+                </ImageView>
+                <Label text="Groups" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Events -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/calendar.png"/>
+                </ImageView>
+                <Label text="Events" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Notifications -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/notification.png"/>
+                </ImageView>
+                <Label text="Notifications" styleClass="sidebar-section"/>
+            </HBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <!-- Logout -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/images/logout.png"/>
+            </ImageView>
+            <Label text="Logout" styleClass="sidebar-section"/>
+        </HBox>
+    </VBox>
+
+    <!-- MAIN CONTENT AREA -->
+    <VBox spacing="20" HBox.hgrow="ALWAYS" styleClass="post-container">
+        <!-- Header Section -->
+        <HBox styleClass="header-container">
+            <ImageView fitWidth="200" fitHeight="150" preserveRatio="true">
+                <Image url="@/images/post.gif"/>
+            </ImageView>
+            <VBox>
+
+                <Text styleClass="header-title" text="What's on your mind? 💡"/>
+                <Text styleClass="header-subtitle"
+                      text="Post about your latest study session, share an interesting fact, or ask a question."/>
+            </VBox>
+        </HBox>
+        <!-- Replace TextField with Label -->
+        <Label fx:id="forumTitle" styleClass="forum-title" text="Forum Title" />
+
+        <!-- Create Post Section -->
+        <VBox fx:id="postInputContainer" spacing="10" alignment="TOP_CENTER" styleClass="create-post-container">
+            <TextArea fx:id="postContent" promptText="What's on your mind?"
+                      styleClass="post-input"/>
+
+            <FlowPane fx:id="photosFlowPane" hgap="5" vgap="5"/>
+
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <Label fx:id="charCountLabel" />
+            </HBox>
+
+            <!-- Error Labels -->
+            <Label fx:id="contentErrorLabel" styleClass="error-label" visible="false" />
+            <Label fx:id="moderationErrorLabel" styleClass="error-label" visible="false" />
+            <Label fx:id="sentimentErrorLabel" styleClass="error-label" visible="false" />
+
+            <HBox spacing="10">
+                <Button text="Add Photos" styleClass="media-btn" onAction="#handleAddPhotos"/>
+                <Button fx:id="submitPostBtn" text="Post" styleClass="submit-post-btn" onAction="#handleCreatePost"/>
+            </HBox>
+        </VBox>
+        <!-- Add after sentimentErrorLabel -->
+        <VBox fx:id="writingFeedbackContainer" visible="false" spacing="5" styleClass="feedback-container">
+            <Label text="Writing Suggestions:" styleClass="feedback-title"/>
+            <ListView fx:id="writingIssuesList" styleClass="feedback-list"/>
+        </VBox>
+
+
+        <!-- Posts List -->
+        <ListView fx:id="postsListView" styleClass="posts-list" VBox.vgrow="ALWAYS"/>
+    </VBox>
+</HBox>

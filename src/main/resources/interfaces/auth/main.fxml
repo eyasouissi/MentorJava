@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.auth.MainController"
+            style="-fx-background-color: #f5f5f5;">
+
+    <!-- Top Bar with Profile Button -->
+    <HBox alignment="TOP_RIGHT" spacing="10"
+          AnchorPane.topAnchor="10" AnchorPane.rightAnchor="20">
+        <Button text="Profile"
+                onAction="#goToProfile"
+                style="-fx-background-color: #EEA0FF; -fx-text-fill: white;
+               -fx-background-radius: 20px; -fx-font-size: 14px;
+               -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 5 15;" />
+        <Button fx:id="logoutButton" text="Logout" onAction="#handleLogout"
+                style="-fx-background-color: #ff4757; -fx-text-fill: white;
+               -fx-background-radius: 20px; -fx-font-size: 14px;
+               -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 5 15;" />
+    </HBox>
+
+    <!-- Main Content -->
+    <VBox alignment="CENTER" spacing="20"
+          AnchorPane.topAnchor="60" AnchorPane.bottomAnchor="0"
+          AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <Text text="Welcome to Main Page!"
+              style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #333;" />
+        <Label fx:id="welcomeLabel"
+               style="-fx-font-size: 18px; -fx-text-fill: #666;" />
+    </VBox>
+
+</AnchorPane>

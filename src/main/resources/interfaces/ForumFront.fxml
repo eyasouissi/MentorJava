@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.web.HTMLEditor?>
+
+<HBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ForumFrontController"
+      stylesheets="@/css/sidebar.css,@/css/forumFront.css "
+      spacing="24"
+      prefHeight="600"
+      prefWidth="1000">
+
+    <!-- LEFT SIDEBAR -->
+    <VBox fx:id="sidebar" spacing="20" styleClass="sidebar" prefWidth="280">
+        <!-- Header -->
+        <Label text="MENTOR" styleClass="sidebar-title"/>
+        <Label text="Discover" styleClass="sidebar-section"/>
+
+        <!-- Full Navigation Menu -->
+        <VBox spacing="10">
+            <!-- Home -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/home.png"/>
+                </ImageView>
+                <Label text="Home" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Browse -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/search.png"/>
+                </ImageView>
+                <Label text="Browse" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Courses -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/bookmark.png"/>
+                </ImageView>
+                <Label text="Courses" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Forum -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/message.png"/>
+                </ImageView>
+                <Label text="Forum" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Groups -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/group.png"/>
+                </ImageView>
+                <Label text="Groups" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Events -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/calendar.png"/>
+                </ImageView>
+                <Label text="Events" styleClass="sidebar-section"/>
+            </HBox>
+
+            <!-- Notifications -->
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <Image url="@/images/notification.png"/>
+                </ImageView>
+                <Label text="Notifications" styleClass="sidebar-section"/>
+            </HBox>
+        </VBox>
+
+        <Region VBox.vgrow="ALWAYS"/>
+
+        <!-- Logout -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/images/logout.png"/>
+            </ImageView>
+            <Label text="Logout" styleClass="sidebar-section"/>
+        </HBox>
+    </VBox>
+
+    <!-- MAIN CONTENT AREA -->
+    <VBox spacing="20" HBox.hgrow="ALWAYS">
+        <!-- Header Section -->
+        <HBox styleClass="image-container" spacing="8">
+            <!-- Align the texts and image to the left -->
+            <VBox alignment="CENTER_LEFT" spacing="8">
+                <Text text="Welcome to our forum" styleClass="title"/>
+                <Text text="Feel free to choose the topic you're interested in." styleClass="subtitle"/>
+
+            </VBox>
+            <!-- Forum image aligned to the left -->
+            <ImageView fitWidth="400" preserveRatio="true">
+                <Image url="@/images/forum.png"/>
+            </ImageView>
+        </HBox>
+
+        <!-- Content Section -->
+        <VBox spacing="20" style="-fx-padding: 0 24;">
+            <HBox spacing="30" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
+                <!-- Forum List on the left -->
+                <VBox alignment="TOP_LEFT" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                    <Label text="Forums" styleClass="card-title"/>
+                    <ListView fx:id="forumListView" styleClass="card" prefWidth="500" prefHeight="600" VBox.vgrow="ALWAYS"/>
+
+                </VBox>
+
+                <!-- Popular Topics and Stats on the far right -->
+                <VBox spacing="15" alignment="TOP_CENTER">
+                    <!-- Popular Topics -->
+                    <VBox styleClass="stats-box" prefWidth="250" prefHeight="200">
+                        <Label text="Popular Topics" styleClass="card-title"/>
+                        <FlowPane fx:id="topicsFlowPane" hgap="5" vgap="5"/>
+                    </VBox>
+
+                    <!-- Statistics -->
+                    <VBox styleClass="stats-box" prefWidth="250" prefHeight="200">
+                        <Label text="Forum Stats" styleClass="card-title"/>
+                        <HBox spacing="20" alignment="CENTER">
+                            <!-- Total Posts -->
+                            <VBox alignment="CENTER">
+                                <Text fx:id="totalPostsText" styleClass="stat-number"/>
+                                <Text text="Total Posts" styleClass="stat-label"/>
+                            </VBox>
+                            <!-- Total Views -->
+                            <VBox alignment="CENTER">
+                                <Text fx:id="totalViewsText" styleClass="stat-number"/>
+                                <Text text="Total Views" styleClass="stat-label"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                </VBox>
+            </HBox>
+        </VBox>
+
+    </VBox>
+</HBox>

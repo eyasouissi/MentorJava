@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.ChatController" spacing="10" stylesheets="@/css/chat.css">
+
+    <TextArea fx:id="chatArea" editable="false" wrapText="true" prefHeight="400" prefWidth="300"/>
+    <TextField fx:id="inputField" promptText="Type your message here" prefWidth="300"/>
+    <Button text="Send" onAction="#sendMessage" prefWidth="100"/>
+</VBox>

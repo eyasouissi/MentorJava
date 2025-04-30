@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import java.lang.String?>
+<BorderPane xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.RoomPageController"
+            stylesheets="@/css/YourRoom.css" prefWidth="1200" prefHeight="800">
+
+    <!-- Background Image -->
+    <ImageView fx:id="backgroundImage" preserveRatio="false" mouseTransparent="true"
+               BorderPane.alignment="CENTER"/>
+
+    <!-- Top Section -->
+    <top>
+        <AnchorPane prefHeight="50">
+            <Label fx:id="roomNameLabel" text="Room Name" styleClass="room-name-label"
+                   AnchorPane.topAnchor="10.0" AnchorPane.leftAnchor="20.0"/>
+
+            <Button text="Leave Room" onAction="#handleLeaveRoom" styleClass="leave-room-button"
+                    AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="100.0"/>
+
+            <Button styleClass="settings-button" onAction="#handleSettingsButton"
+                    AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="20.0">
+                <graphic>
+                    <ImageView fitWidth="20" fitHeight="20">
+                        <Image url="@/icons/settings.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+
+            <Button fx:id="whiteboardButton" text="Whiteboard" styleClass="whiteboard-button"
+                    AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="180.0" onAction="#handleWhiteboardButton"/>
+
+            <Button fx:id="youtubeButton" text="YouTube" styleClass="play-button"
+                    AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="260.0" onAction="#handleYoutubeButton"/>
+
+            <Button fx:id="aiButton" text="AI Buddy" styleClass="ai-button"
+                    AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="340.0" onAction="#handleAIChatButton"/>
+
+            <Button fx:id="timerButton" text="Timer" styleClass="timer-button"
+                    AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="420.0" onAction="#handleTimerButton"/>
+
+            <Button fx:id="todoButton" text="Todo List" styleClass="todo-button"
+                    AnchorPane.topAnchor="10.0" AnchorPane.rightAnchor="500.0" onAction="#handleTodoButton"/>
+
+        </AnchorPane>
+    </top>
+
+    <!-- Left Section - AI Widget -->
+    <left>
+        <StackPane fx:id="aiChatContainer" visible="false" styleClass="ai-chat-container">
+            <VBox styleClass="ai-chat-widget">
+                <HBox styleClass="ai-chat-header" onMousePressed="#handleAIChatDragStart" onMouseDragged="#handleAIChatDrag" >
+                    <Label text="Study Buddy AI" styleClass="ai-chat-title"/>
+                    <Button styleClass="close-button" onAction="#handleCloseAIChat">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/close.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <ScrollPane styleClass="ai-chat-messages">
+                    <VBox fx:id="aiChatArea" styleClass="ai-messages-container"/>
+                </ScrollPane>
+                <HBox styleClass="ai-input-container">
+                    <TextField fx:id="aiInput" styleClass="ai-input-field" promptText="Ask me anything..."/>
+                    <Button text="Send" styleClass="ai-send-button" onAction="#handleAISendMessage"/>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </left>
+
+    <!-- Center Section - Whiteboard -->
+    <center>
+        <StackPane fx:id="whiteboardContainer" visible="false" styleClass="whiteboard-container">
+            <VBox styleClass="whiteboard-box">
+                <HBox styleClass="whiteboard-controls">
+                    <ColorPicker fx:id="colorPicker" styleClass="color-picker"/>
+                    <Button text="Erase" onAction="#handleErase" styleClass="erase-button"/>
+                    <Button styleClass="close-button" onAction="#handleCloseWhiteboard">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/close.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <!-- Whiteboard Canvas Section -->
+                <Canvas fx:id="whiteboardCanvas"
+                        onMousePressed="#handleMousePressed"
+                        onMouseDragged="#handleMouseDragged"
+                        onMouseReleased="#handleMouseReleased"
+                        width="500" height="300">
+                    <styleClass>
+                        <String fx:value="whiteboard-canvas"/>
+                    </styleClass>
+                </Canvas>
+            </VBox>
+        </StackPane>
+
+        <!-- Timer Widget -->
+        <StackPane fx:id="timerContainer" visible="false" styleClass="timer-container">
+            <VBox styleClass="timer-widget">
+                <HBox styleClass="timer-header" onMousePressed="#handleTimerDragStart" onMouseDragged="#handleTimerDrag">
+                    <Label text="Study Timer" styleClass="timer-title"/>
+                    <Button styleClass="close-button" onAction="#handleCloseTimer">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/close.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <VBox styleClass="timer-controls">
+                    <HBox spacing="10" alignment="CENTER">
+                        <TextField fx:id="hoursInput" promptText="H" styleClass="timer-input"/>
+                        <Label text=":" styleClass="time-separator"/>
+                        <TextField fx:id="minutesInput" promptText="M" styleClass="timer-input"/>
+                        <Label text=":" styleClass="time-separator"/>
+                        <TextField fx:id="secondsInput" promptText="S" styleClass="timer-input"/>
+                        <Label fx:id="encouragementLabel" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+
+                    </HBox>
+                    <HBox spacing="10" alignment="CENTER">
+                        <Button text="Start" onAction="#handleStartTimer" styleClass="timer-action-button"/>
+                        <Button fx:id="stopButton" text="Pause" styleClass="timer-action-button" onAction="#handleStopTimer"/>
+                        <Button text="Reset" onAction="#handleResetTimer" styleClass="timer-action-button"/>
+                    </HBox>
+                    <Label fx:id="timerDisplay" text="00:00:00" styleClass="timer-display"/>
+                </VBox>
+            </VBox>
+        </StackPane>
+
+        <!-- Todo List Widget -->
+        <StackPane fx:id="todoContainer" visible="false" styleClass="todo-container">
+            <VBox styleClass="todo-widget">
+                <HBox styleClass="todo-header" onMousePressed="#handleTodoDragStart" onMouseDragged="#handleTodoDrag">
+                    <Label text="Study Tasks" styleClass="todo-title"/>
+                    <Button styleClass="close-button" onAction="#handleCloseTodo">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/close.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+                </HBox>
+                <HBox styleClass="todo-input-container">
+                    <TextField fx:id="todoInput" styleClass="todo-input" promptText="Add new task..."/>
+                    <Button text="Add" styleClass="todo-add-button" onAction="#handleAddTodo"/>
+                </HBox>
+                <ScrollPane styleClass="todo-scroll">
+                    <VBox fx:id="todoList" styleClass="todo-list"/>
+                </ScrollPane>
+            </VBox>
+        </StackPane>
+    </center>
+
+    <!-- Bottom Section - YouTube and Chat -->
+    <bottom>
+        <HBox spacing="20" alignment="BOTTOM_LEFT">
+            <!-- YouTube Player -->
+            <StackPane fx:id="youtubeContainer" visible="false" styleClass="youtube-container">
+                <VBox styleClass="youtube-box" alignment="TOP_RIGHT">
+                    <HBox styleClass="youtube-controls">
+                        <TextField fx:id="youtubeUrlField" promptText="Enter YouTube URL"
+                                   styleClass="youtube-url-field" HBox.hgrow="ALWAYS"/>
+                        <Button text="Play" onAction="#handlePlayVideo" styleClass="play-button"/>
+                        <Button styleClass="close-button" onAction="#handleCloseYoutube">
+                            <graphic>
+                                <ImageView>
+                                    <Image url="@/icons/close.png"/>
+                                </ImageView>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                    <WebView fx:id="youtubeWebView" />
+                </VBox>
+            </StackPane>
+
+            <!-- Main Chat -->
+            <VBox alignment="BOTTOM_RIGHT" spacing="10" styleClass="chat-root" HBox.hgrow="ALWAYS">
+                <ScrollPane fx:id="chatScrollPane" styleClass="chat-container"
+                            fitToWidth="true" vbarPolicy="AS_NEEDED" prefHeight="300">
+                    <VBox fx:id="chatMessages" styleClass="chat-messages"/>
+                </ScrollPane>
+                <HBox fx:id="messageContainer" styleClass="message-container" spacing="10">
+                    <TextField fx:id="messageInput" styleClass="message-input"
+                               promptText="Type a message..." HBox.hgrow="ALWAYS"
+                               onMouseClicked="#showChatContainer"/>
+                </HBox>
+            </VBox>
+        </HBox>
+    </bottom>
+</BorderPane>

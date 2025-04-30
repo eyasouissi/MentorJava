@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane prefHeight="600" prefWidth="800" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.user.admin.EditAdminProfileController">
+    <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                style="-fx-background: #fafafa;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+        <VBox spacing="20" style="-fx-padding: 20; -fx-background-color: #fafafa;" minWidth="800">
+            <!-- Header -->
+            <Label text="Edit Admin Profile" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #6a3093;" />
+
+            <!-- Inherit all the profile editing controls from the base FXML -->
+            <fx:include source="../../user/editprofile.fxml" />
+
+            <!-- Admin-specific Role Management Section -->
+            <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">
+                <Label text="Roles" style="-fx-font-weight: bold; -fx-text-fill: #555;"/>
+                <VBox spacing="5">
+                    <CheckBox fx:id="adminCheckbox" text="Administrator" style="-fx-text-fill: #555;"/>
+                    <CheckBox fx:id="tutorCheckbox" text="Tutor" style="-fx-text-fill: #555;"/>
+                    <CheckBox fx:id="studentCheckbox" text="Student" style="-fx-text-fill: #555;"/>
+                </VBox>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <HBox spacing="20" alignment="CENTER" style="-fx-padding: 10 0 20 0;">
+                <Button text="Save" onAction="#handleSave"
+                        style="-fx-background-color: #b399d4; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-pref-width: 120; -fx-pref-height: 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
+                <Button text="Cancel" onAction="#handleCancel"
+                        style="-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-pref-width: 120; -fx-pref-height: 40; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 2);"/>
+            </HBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

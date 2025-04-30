@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.auth.RoleChoiceController">
+
+    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <VBox alignment="CENTER" prefWidth="400" spacing="15"
+              style="-fx-padding: 30; -fx-background-color: white; -fx-background-radius: 15;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.2, 0, 4);">
+
+            <!-- Title -->
+            <Text text="Select Your Role"
+                  style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #5d236a;" />
+
+            <!-- Role Selection -->
+            <VBox spacing="20" style="-fx-pref-width: 300px;">
+                <Button text="Sign Up as Student" onAction="#handleStudentChoice"
+                        style="-fx-pref-width: 300px; -fx-pref-height: 50px;
+                               -fx-background-color: #EEA0FF; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-font-size: 16px;
+                               -fx-background-radius: 20px; -fx-cursor: hand;" />
+
+                <Button text="Sign Up as Tutor" onAction="#handleTutorChoice"
+                        style="-fx-pref-width: 300px; -fx-pref-height: 50px;
+                               -fx-background-color: #47AEFF; -fx-text-fill: white;
+                               -fx-font-weight: bold; -fx-font-size: 16px;
+                               -fx-background-radius: 20px; -fx-cursor: hand;" />
+            </VBox>
+
+            <!-- Login Link -->
+            <HBox alignment="CENTER" spacing="5" style="-fx-padding: 10px 0;">
+                <Label text="Already have an account?" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                <Hyperlink text="Login" onAction="#handleLoginRedirect"
+                           style="-fx-text-fill: #47AEFF; -fx-font-size: 14px;" />
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

@@ -1,0 +1,893 @@
+/* --- Top Navbar Styles --- */
+/* --- Top Navbar Styles --- */
+.top-nav-bar {
+    -fx-background-color: rgba(211, 211, 211, 0.6); /* Light transparent gray */
+    -fx-background-radius: 30px; /* Bubbly edges */
+    -fx-padding: 10px 40px; /* Adjusted padding for better spacing */
+    -fx-spacing: 25px; /* Increased spacing between items */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.5, 0, 0); /* Soft shadow */
+    -fx-max-width: 800px; /* Horizontally longer navbar */
+    -fx-pref-height: 70px; /* Slightly larger navbar */
+    -fx-hgap: 25px; /* Horizontal gap */
+    -fx-alignment: center; /* Center content */
+    -fx-layout-align: top-center; /* Center the navbar horizontally at the top */
+    -fx-border-radius: 30px; /* Border radius to match background */
+    -fx-border-width: 1px; /* Subtle border */
+    -fx-border-color: rgba(0, 0, 0, 0.1); /* Light border color */
+    -fx-background-insets: 0, 1; /* Subtle layering effect */
+    -fx-transition: all 0.3s ease; /* Smooth transition for all changes */
+}
+
+/* --- Navigation Buttons Styles --- */
+.top-nav-bar .nav-button {
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-background-radius: 25px; /* Rounded edges */
+    -fx-text-fill: #333; /* Dark text */
+    -fx-font-size: 16px; /* Font size */
+    -fx-font-weight: bold; /* Bold text */
+    -fx-padding: 10px 20px; /* Padding for button */
+    -fx-border-radius: 25px; /* Rounded border */
+    -fx-border-color: #ccc; /* Light gray border */
+    -fx-border-width: 1px; /* Border width */
+    -fx-cursor: hand; /* Pointer cursor */
+    -fx-transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions for background and transform */
+}
+
+.top-nav-bar .nav-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.1); /* Light gray background on hover */
+    -fx-text-fill: #000; /* Dark text on hover for contrast */
+    -fx-scale-x: 1.1; /* Slight scale up effect */
+    -fx-scale-y: 1.1; /* Slight scale up effect */
+}
+
+.top-nav-bar .nav-button:pressed {
+    -fx-background-color: rgba(0, 0, 0, 0.2); /* Darker background on click */
+    -fx-text-fill: #000; /* Ensure text remains dark */
+}
+
+/* --- Hover State for Navigation Buttons --- */
+.top-nav-bar .nav-button:hover {
+    -fx-background-color: rgba(255, 105, 180, 0.3); /* Soft pink with transparency */
+    -fx-text-fill: white; /* White text on hover */
+    -fx-transform: scale(1.05); /* Slight scale effect */
+}
+
+/* --- Responsive Layout --- */
+@media screen and (max-width: 600px) {
+    .top-nav-bar {
+        -fx-padding: 10px 20px; /* Adjust padding on smaller screens */
+        -fx-spacing: 15px; /* Less spacing on smaller screens */
+        -fx-max-width: 100%; /* Full width for mobile view */
+    }
+
+    .top-nav-bar .nav-button {
+        -fx-font-size: 14px; /* Smaller font size for mobile */
+        -fx-padding: 8px 15px; /* Reduced padding */
+    }
+}
+
+/* --- Bottom Navbar Styles (if used later) --- */
+.bottom-nav-bar {
+    -fx-background-color: rgba(211, 211, 211, 0.6);
+    -fx-background-radius: 30px;
+    -fx-padding: 10px 20px;
+    -fx-spacing: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 8, 0.5, 0, 0);
+    -fx-max-width: 500px;
+    -fx-pref-height: 50px;
+    -fx-hgap: 20px;
+    -fx-alignment: center;
+}
+
+/* --- Chat ScrollPane Container --- */
+.chat-container {
+    -fx-background-color: linear-gradient(to bottom, rgba(211, 211, 211, 0.8), rgba(169, 169, 169, 0.5));
+    -fx-background-radius: 20px;
+    -fx-padding: 10px;
+    -fx-max-width: 350px;
+    -fx-max-height: 500px;
+    -fx-border-radius: 20px;
+    -fx-border-color: rgba(0, 0, 0, 0.1);
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 5, 0, 0, 2);
+    -fx-opacity: 0; /* Initially invisible */
+    -fx-transition: opacity 0.3s ease; /* Smooth transition for appearance */
+
+}
+
+/* --- Scrollbar Customization --- */
+.chat-container .scroll-bar {
+    -fx-background-color: transparent; /* Transparent background for the scrollbar */
+}
+
+.chat-container .scroll-bar .thumb {
+    -fx-background-color: #FFB6C1;  /* Light pink thumb */
+    -fx-background-radius: 10px; /* Rounded corners */
+    -fx-min-height: 50px; /* Height of the thumb */
+    -fx-max-height: 50px;
+}
+
+.chat-container .scroll-bar .track {
+    -fx-background-color: #F2F2F2; /* Soft light gray track */
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+}
+
+.chat-container .scroll-bar:hover .thumb {
+    -fx-background-color: #FF69B4; /* Darker pink on hover */
+}
+
+.chat-container .scroll-bar:vertical {
+    -fx-pref-width: 10px; /* Make the vertical scrollbar narrower */
+}
+
+.chat-container .scroll-bar:horizontal {
+    -fx-pref-height: 10px; /* Make the horizontal scrollbar narrower */
+}
+
+/* --- Chat Messages VBox --- */
+.chat-messages {
+    -fx-spacing: 12px;
+    -fx-padding: 10px;
+    -fx-min-width: 300px; /* Make sure the VBox has a minimum width */
+    -fx-min-height: 250px; /* Ensure there's enough height to show content */
+}
+
+/* --- Message Bubble --- */
+.message-bubble {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #a89fb9, #e6e1f0); /* Starts with white and transitions to #a89fb9 and #e6e1f0 */
+    -fx-background-radius: 20px;
+    -fx-padding: 10px 15px;
+    -fx-max-width: 250px;
+    -fx-wrap-text: true;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 2);
+    -fx-text-fill: #3a3a3a; /* Darker text for readability */
+}
+
+/* --- Message Sender Name --- */
+.message-sender {
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+    -fx-text-fill: #2980b9;
+}
+
+/* --- Actual Message Text --- */
+.message-text {
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+/* --- Message Input Container (HBox) --- */
+.message-container {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-background-radius: 30px;
+    -fx-padding: 10px 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 8, 0, 0, 3);
+    -fx-max-width: 350px;
+    -fx-spacing: 10px;
+}
+
+/* --- TextField (Message Input) --- */
+.message-input {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-prompt-text-fill: #999;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+    -fx-pref-width: 220px;
+}
+
+/* When TextField Focused */
+.message-input:focused {
+    -fx-prompt-text-fill: transparent;
+}
+
+/* --- Send Button --- */
+.send-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 15px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 2);
+}
+
+/* Send Button Hover Effect */
+.send-button:hover {
+    -fx-background-color: #45a049;
+}
+
+/* --- Styling inside Top Navbar --- */
+.room-name-label {
+    -fx-text-fill: black;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+/* --- Leave Room Button --- */
+.leave-room-button {
+    -fx-background-color: #ff4757;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-background-radius: 20px;
+    -fx-padding: 5px 15px;
+}
+
+/* Hover for Leave Room Button */
+.leave-room-button:hover {
+    -fx-background-color: #e84118;
+}
+.message-input:focused {
+    -fx-effect: dropshadow(gaussian, #8c84a1, 5, 0.5, 0, 0);
+}
+/* Settings Button */
+.settings-button {
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+    -fx-cursor: hand;
+}
+
+.settings-button:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Context Menu */
+.context-menu {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-padding: 5px 0;
+}
+
+.menu-item {
+    -fx-padding: 8px 20px;
+    -fx-font-size: 14px;
+}
+
+.menu-item:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+
+/* Typing indicator */
+.typing-indicator {
+    -fx-background-color: #e3f2fd;
+    -fx-padding: 5px;
+    -fx-background-radius: 5px;
+}
+/* Style for the emoji picker container */
+.emoji-picker {
+    -fx-background-color: rgba(211, 211, 211, 0.8);  /* Light gray transparent background */
+    -fx-background-radius: 15px; /* Rounded corners */
+    -fx-padding: 10px;
+    -fx-max-height: 200px; /* Set the max height for the picker */
+    -fx-min-height: 100px;
+    -fx-max-width: 300px;
+    -fx-overflow: hidden; /* Ensure content doesn't spill out */
+    -fx-border-radius: 15px;
+    -fx-border-color: rgba(0, 0, 0, 0.2); /* Slight border */
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.5, 0, 0); /* Shadow effect */
+    -fx-opacity: 0; /* Start with hidden (invisible) */
+}
+
+/* Emoji buttons styling */
+.emoji-picker button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: black;
+    -fx-font-size: 32px;
+    -fx-font-family: "Segoe UI Emoji", "Apple Color Emoji", "Android Emoji";
+    -fx-padding: 5px;
+    -fx-margin: 5px;
+    -fx-cursor: hand;
+}
+
+/* Hover effect on emoji buttons */
+.emoji-picker button:hover {
+    -fx-text-fill: #4CAF50; /* Change color on hover */
+}
+/* Whiteboard Styles */
+.whiteboard-container {
+    -fx-background-color: rgba(0, 0, 0, 0.3);
+    -fx-padding: 20;
+}
+
+.whiteboard-box {
+    -fx-background-color: white;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 10, 0, 0, 0);
+    -fx-padding: 10px;
+}
+
+.whiteboard-controls {
+    -fx-spacing: 10px;
+    -fx-padding: 5px;
+    -fx-alignment: center-right;
+}
+
+.whiteboard-canvas {
+    -fx-background-color: white;
+    -fx-border-color: #cccccc;
+    -fx-border-width: 1px;
+}
+
+.color-picker {
+    -fx-pref-width: 100px;
+}
+
+.erase-button {
+    -fx-background-color: #ff4444;
+    -fx-text-fill: white;
+}
+
+.close-button {
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+}
+
+.close-button:hover {
+    -fx-background-color: #eeeeee;
+}
+/* YouTube Container */
+.youtube-webview {
+    /* Your CSS rules */
+    -fx-border-color: #ccc;
+    -fx-border-width: 1px;
+}
+/* YouTube Container */
+.youtube-container {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-alignment: bottom-right;
+}
+
+.youtube-box {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0, 0);
+    -fx-padding: 10px;
+    -fx-pref-width: 600px;
+    -fx-min-width: 600px;
+    -fx-max-width: 600px;
+    -fx-pref-height: 400px;
+    -fx-min-height: 400px;
+    -fx-max-height: 400px;
+    -fx-background-insets: 0;
+    -fx-effect-dropshadow-spread: 0;
+}
+
+
+.youtube-controls {
+    -fx-spacing: 10px;
+    -fx-padding: 5px;
+    -fx-alignment: center-left;
+}
+
+.youtube-webview {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+
+    -fx-min-width: 560px;
+    -fx-min-height: 315px;
+    -fx-pref-width: 560px;
+    -fx-pref-height: 315px;
+}
+
+.youtube-url-field {
+    -fx-pref-width: 400px;
+}
+
+.play-button {
+    -fx-background-color: #ff0000;
+    -fx-text-fill: white;
+}
+
+/* Background Gradient Overlay */
+#gradientOverlay {
+    -fx-fill: linear-gradient(to bottom right,
+    rgba(0,0,0,0.8) 0%,
+    rgba(40,40,40,0.9) 30%,
+    rgba(80,80,80,0.9) 100%
+    );
+}
+/* StackPane constraints */
+.stack-pane {
+    -fx-max-width: infinity;
+    -fx-max-height: infinity;
+}
+
+/* AI */
+/* AI Chat Widget */
+.ai-chat-widget {
+    -fx-background-color: rgba(0, 0, 0, 0.2);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 4);
+    -fx-pref-width: 320;
+    -fx-pref-height: 450;
+}
+
+.ai-chat-header {
+    -fx-background-color: linear-gradient(to right, #8c84a1, #ffffff);
+    -fx-background-radius: 20 20 0 0;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-alignment: center-left;
+}
+
+.ai-chat-title {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+}
+
+.ai-chat-messages {
+    -fx-background-color: transparent;
+    -fx-pref-height: 300;
+    -fx-hbar-policy: never;
+}
+
+.ai-messages-container {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+.ai-input-container {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-background-color: rgba(255, 255, 255, 0.1);
+    -fx-background-radius: 0 0 20 20;
+}
+
+.ai-input-field {
+    -fx-background-color: linear-gradient(to right, #f0f0f0, #ffffff);
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-pref-height: 40;
+    -fx-prompt-text-fill: #bbb;
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
+.ai-send-button {
+    -fx-background-color: linear-gradient(to right, #8c84a1, #ffffff);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-pref-width: 70;
+    -fx-pref-height: 40;
+}
+
+.ai-send-button:hover {
+    -fx-background-color: linear-gradient(to right, #7a7292, #f5f5f5);
+    -fx-text-fill: #ffffff;
+}
+
+/* Message bubbles */
+.ai-message {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
+    -fx-background-radius: 20;
+    -fx-padding: 10 14;
+    -fx-max-width: 260;
+    -fx-text-fill: #333;
+    -fx-font-size: 14px;
+}
+
+.user-message {
+    -fx-background-color: linear-gradient(to right, #8c84a1, #ffffff);
+    -fx-text-fill: white;
+    -fx-background-radius: 20;
+    -fx-padding: 10 14;
+    -fx-max-width: 260;
+    -fx-font-size: 14px;
+}
+
+.message-text {
+    -fx-wrap-text: true;
+    -fx-font-size: 14px;
+}
+/* Timer Widget Styles */
+.timer-container {
+    -fx-background-color: rgba(255, 255, 255, 0.2); /* lighter transparency */
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0.2, 0, 8);
+    -fx-border-color: rgba(255, 255, 255, 0.5);
+    -fx-border-width: 1;
+    -fx-pref-width: 280px;
+}
+
+.timer-widget {
+    -fx-spacing: 20;
+    -fx-alignment: center;
+}
+
+.timer-header {
+    -fx-alignment: center;
+    -fx-spacing: 8;
+}
+
+.timer-title {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+.timer-input {
+    -fx-pref-width: 70px;
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: transparent;
+    -fx-padding: 8;
+    -fx-font-size: 14px;
+    -fx-text-fill: #2c3e50;
+}
+
+.timer-input:focused {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-border-color: #3498db;
+}
+
+.timer-display {
+    -fx-font-size: 36px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8c84a1;
+    -fx-alignment: center;
+}
+
+.timer-action-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 6 12; /* smaller padding */
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-transition: all 0.3s ease;
+}
+
+.timer-action-button:hover {
+    -fx-background-color: #8c84a1;
+}
+
+
+.time-separator {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Todo List Styles */
+.todo-container {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 12;
+    -fx-border-radius: 12;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 12, 0.3, 0, 6);
+    -fx-pref-width: 320px;
+}
+
+.todo-widget {
+    -fx-spacing: 15;
+}
+
+.todo-input-container {
+    -fx-spacing: 10;
+}
+
+.todo-input {
+    -fx-pref-width: 220px;
+    -fx-background-color: #f2f2f2;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-padding: 8 12;
+    -fx-font-size: 14px;
+    -fx-border-color: transparent;
+}
+
+.todo-input:focused {
+    -fx-border-color: #8c84a1;
+    -fx-border-width: 2px;
+    -fx-background-color: #ffffff;
+}
+
+.todo-add-button {
+    -fx-background-color: #8c84a1;
+    -fx-text-fill: white;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-transition: all 0.3s ease;
+}
+
+.todo-add-button:hover {
+    -fx-background-color: #8c84a1;
+}
+
+.todo-list {
+    -fx-spacing: 10;
+}
+
+.todo-item {
+    -fx-spacing: 12;
+    -fx-alignment: center-left;
+    -fx-padding: 10 0;
+    -fx-background-color: #f9f9f9;
+    -fx-background-radius: 8;
+}
+
+.todo-checkbox {
+    -fx-cursor: hand;
+}
+
+.todo-text {
+    -fx-font-size: 15px;
+    -fx-text-fill: #2c3e50;
+}
+
+.todo-text-checked {
+    -fx-strikethrough: true;
+    -fx-text-fill: #bdc3c7;
+}
+
+.todo-text-unchecked {
+    -fx-strikethrough: false;
+    -fx-text-fill: #2c3e50;
+}
+
+/* Notes Container */
+.notes-container {
+    -fx-background-color: #ffffff; /* White background for the notes container */
+    -fx-background-radius: 10px; /* Rounded corners for the container */
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 12, 0, 0, 4); /* Subtle shadow effect */
+    -fx-padding: 15px; /* Inner padding for spacing */
+    -fx-max-width: 400px; /* Limit max width */
+    -fx-max-height: 500px; /* Limit max height */
+}
+
+/* Notes Header */
+.notes-header {
+    -fx-background-color: #fafafa; /* Light grey background for the header */
+    -fx-padding: 12px 15px; /* Padding around the header */
+    -fx-border-color: #e0e0e0; /* Light border color */
+    -fx-border-width: 0 0 2px 0; /* Thin bottom border */
+    -fx-border-radius: 8px 8px 0 0; /* Rounded top corners */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 2); /* Light shadow effect */
+}
+
+/* Notes Title */
+.notes-title {
+    -fx-font-weight: bold;
+    -fx-font-size: 16px;
+    -fx-text-fill: #333333; /* Dark gray text color */
+    -fx-alignment: center-left; /* Align text to the left */
+}
+
+/* Close Button */
+.close-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #888; /* Light gray color for the icon */
+    -fx-font-size: 18px;
+    -fx-cursor: hand; /* Change cursor to hand on hover */
+}
+
+.close-button:hover {
+    -fx-text-fill: #ff4d4d; /* Red color on hover */
+}
+
+/* Notes Content Area (Scrollable) */
+.notes-content-scrollpane {
+    -fx-background-color: transparent; /* No background for scrollpane */
+    -fx-padding: 10px 5px; /* Padding inside scroll pane */
+    -fx-border-radius: 8px; /* Rounded corners */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 3); /* Light shadow effect */
+}
+
+.notes-content {
+    -fx-spacing: 10px; /* Spacing between notes */
+}
+
+/* Note Components (Individual Notes) */
+.note-component {
+    -fx-background-color: #f9f9f9; /* Light grey background for individual notes */
+    -fx-background-radius: 8px; /* Rounded corners */
+    -fx-border-color: #e0e0e0; /* Light border color */
+    -fx-border-width: 1px; /* Border around notes */
+    -fx-padding: 10px; /* Padding inside note component */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 8, 0, 0, 3); /* Light shadow effect */
+}
+
+/* Text Area inside Notes */
+.note-component .text-area {
+    -fx-font-family: "Segoe UI";
+    -fx-font-size: 14px;
+    -fx-text-fill: #333; /* Dark text color */
+    -fx-background-color: #f5f5f5; /* Very light grey background for the text area */
+    -fx-background-insets: 0; /* Remove insets from background */
+    -fx-border-radius: 6px; /* Rounded corners for the text area */
+    -fx-border-color: #ddd; /* Light border color */
+    -fx-border-width: 1px; /* Border around the text area */
+    -fx-padding: 10px; /* Padding inside text area */
+}
+
+/* Hover Effect for Notes */
+.note-component:hover {
+    -fx-background-color: #e7e7e7; /* Slightly darker background on hover */
+    -fx-border-color: #ccc; /* Darker border color on hover */
+}
+
+/* Focused Text Area Styling */
+.note-component .text-area:focused {
+    -fx-border-color: #4CAF50; /* Green border when focused */
+    -fx-background-color: #f3f9f3; /* Slightly lighter background when focused */
+}
+/* Add Note Button (Circular + Button) */
+.add-note-button {
+    -fx-background-color: #4CAF50; /* Green background */
+    -fx-background-radius: 50%; /* Circular shape */
+    -fx-min-width: 60px; /* Minimum size */
+    -fx-min-height: 60px;
+    -fx-max-width: 60px; /* Maximum size */
+    -fx-max-height: 60px;
+    -fx-border-color: #388E3C; /* Darker green border */
+    -fx-border-radius: 50%; /* Circular border */
+    -fx-border-width: 2px; /* Border thickness */
+    -fx-alignment: center; /* Center the content inside */
+    -fx-cursor: hand; /* Change cursor to hand */
+    -fx-font-size: 24px; /* Font size for the + */
+    -fx-text-fill: white; /* White text color */
+}
+
+.plus-sign {
+    -fx-font-weight: bold;
+    -fx-font-size: 30px; /* Adjust the size of the + sign */
+    -fx-text-fill: white; /* White color for the plus sign */
+}
+
+/* Summarize Button (SVG Icon) */
+.summarize-button {
+    -fx-background-color: transparent; /* No background */
+    -fx-border-color: #4CAF50; /* Green border */
+    -fx-border-width: 2px; /* Border thickness */
+    -fx-border-radius: 5px; /* Slightly rounded corners */
+    -fx-padding: 10px; /* Padding around the icon */
+    -fx-cursor: hand; /* Change cursor to hand */
+}
+
+.summarize-button:hover {
+    -fx-background-color: #f0f0f0; /* Light grey background on hover */
+}
+
+.summarize-button .graphic {
+    -fx-scale-x: 1.5; /* Scale the icon */
+    -fx-scale-y: 1.5;
+}
+
+.summarize-button .image-view {
+    -fx-preserve-ratio: true; /* Preserve the aspect ratio of the SVG */
+    -fx-fit-width: 40px; /* Adjust width of the icon */
+    -fx-fit-height: 40px; /* Adjust height of the icon */
+}
+
+
+.todo-remove-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e74c3c;
+    -fx-padding: 0 5px;
+    -fx-cursor: hand;
+}
+.draggable-widget {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-radius: 5px;
+    -fx-background-radius: 5px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 1);
+    -fx-padding: 15px;
+}
+
+.draggable-widget:hover {
+    -fx-cursor: move;
+}
+/* Make the ScrollPane transparent */
+.scroll-pane {
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-background-insets: 0; /* Remove any insets or padding */
+    -fx-border-width: 0; /* Remove border */
+    -fx-padding: 0; /* Remove any padding */
+}
+
+/* Style for the content pane inside the ScrollPane */
+.workspace-pane {
+    -fx-background-color: transparent; /* Make the pane inside the scrollpane transparent */
+}
+
+/* Customize the Scrollbar (optional) */
+.scroll-pane .viewport {
+    -fx-background-color: transparent; /* Transparent background for viewport */
+}
+
+/* Optional: Style for the Scrollbars */
+.scroll-pane .scroll-bar {
+    -fx-background-color: transparent; /* Transparent background for scrollbars */
+    -fx-background-insets: 0;
+}
+
+/* Optional: Style for the thumb of the scrollbar */
+.scroll-pane .scroll-bar .thumb {
+    -fx-background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent dark thumb */
+    -fx-background-insets: 0;
+}
+.image-container {
+    -fx-background-color: transparent;
+    -fx-border-color: #666;
+    -fx-border-width: 2px;
+    -fx-border-radius: 4px;
+}
+
+.image-container:hover {
+    -fx-border-color: #0096c9;
+    -fx-cursor: move;
+}
+.delete-btn {
+    -fx-background-color: #ff4444aa;  /* Semi-transparent red */
+    -fx-text-fill: white;
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 20px;
+    -fx-padding: 5 15 5 15;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);
+}
+
+.delete-btn:hover {
+    -fx-background-color: #ff0000cc;
+}
+
+.delete-active {
+    -fx-background-color: #00ff00aa !important;  /* Green when active */
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+/* Style for the navbar button */
+.btns {
+    -fx-background-color: transparent; /* Transparent background */
+    -fx-padding: 10px; /* Padding around the icon */
+    -fx-border: none; /* Remove borders */
+    -fx-cursor: pointer; /* Pointer cursor on hover */
+    -fx-shape: "M0,0H122.88V122.14H0V0z"; /* Optional, keeps button shape */
+    -fx-opacity: 0.9; /* Slightly reduced opacity */
+    -fx-transition: opacity 0.3s ease, transform 0.3s ease; /* Smooth opacity and transform transitions */
+}
+
+/* Style for the button when hovered */
+.btns:hover {
+    -fx-opacity: 1; /* Full opacity on hover */
+    -fx-scale-x: 1.1; /* Slightly enlarge the button */
+    -fx-scale-y: 1.1; /* Slightly enlarge the button */
+}
+
+/* Style for the image inside the button */
+.btns > .graphic > svg {
+    -fx-fill: #333; /* Default icon color */
+    -fx-opacity: 1; /* Ensure icon is fully visible */
+    -fx-scale-x: 1; /* No scaling */
+    -fx-scale-y: 1; /* No scaling */
+    -fx-transition: transform 0.3s ease, fill 0.3s ease; /* Smooth transitions for scaling and color */
+}
+
+/* Hover effect for the image inside the button */
+.btns:hover > .graphic > svg {
+    -fx-fill: #0078d4; /* Change color of icon on hover */
+    -fx-scale-x: 1.2; /* Slightly enlarge the icon on hover */
+    -fx-scale-y: 1.2; /* Slightly enlarge the icon on hover */
+}

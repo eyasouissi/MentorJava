@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.auth.VerificationController"
+      alignment="CENTER" spacing="20" style="-fx-padding: 30;">
+    <Label fx:id="verificationStatusLabel" style="-fx-font-size: 16px; -fx-font-weight: bold;"
+           wrapText="true" textAlignment="CENTER" maxWidth="350"/>
+    <Button text="Close" onAction="#handleClose" style="-fx-pref-width: 100;"/>
+</VBox>

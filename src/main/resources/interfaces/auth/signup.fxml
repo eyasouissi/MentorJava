@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.auth.SignUp">
+
+    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <VBox alignment="CENTER" prefWidth="400" spacing="15"
+              style="-fx-padding: 30; -fx-background-color: white; -fx-background-radius: 15;
+                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.2, 0, 4);">
+
+            <!-- Title -->
+            <Text text="Create Account"
+                  style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #5d236a;" />
+
+            <!-- Form Fields -->
+            <TextField fx:id="nameField" promptText="Full Name"
+                       style="-fx-pref-width: 300px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                              -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #EEA0FF;"/>
+
+            <TextField fx:id="emailField" promptText="Email"
+                       style="-fx-pref-width: 300px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                              -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #EEA0FF;"/>
+
+            <PasswordField fx:id="passwordField" promptText="Password"
+                           style="-fx-pref-width: 300px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                                  -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #EEA0FF;"/>
+
+            <PasswordField fx:id="confirmPasswordField" promptText="Confirm Password"
+                           style="-fx-pref-width: 300px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                                  -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #EEA0FF;"/>
+
+            <!-- Gender Selection -->
+            <VBox spacing="5" style="-fx-pref-width: 300px;">
+                <Label text="Gender:" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                <HBox alignment="CENTER_LEFT" spacing="20">
+                    <HBox spacing="5">
+                        <RadioButton fx:id="maleRadio" toggleGroup="$genderGroup"/>
+                        <Label text="Male" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                    </HBox>
+                    <HBox spacing="5">
+                        <RadioButton fx:id="femaleRadio" toggleGroup="$genderGroup"/>
+                        <Label text="Female" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!-- Age Input -->
+            <TextField fx:id="ageField" promptText="Age"
+                       style="-fx-pref-width: 300px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                              -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #EEA0FF;"/>
+
+            <!-- Country Selection -->
+            <VBox spacing="5" style="-fx-pref-width: 300px;">
+                <Label text="Country:" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                <ComboBox fx:id="countryComboBox" promptText="Select your country"
+                          style="-fx-pref-width: 300px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                                 -fx-background-radius: 10px; -fx-border-radius: 10px; -fx-border-color: #EEA0FF;" />
+            </VBox>
+
+            <!-- Role Selection -->
+            <VBox spacing="5" style="-fx-pref-width: 300px;">
+                <Label text="Register as:" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                <HBox alignment="CENTER_LEFT" spacing="20">
+                    <HBox spacing="5">
+                        <RadioButton fx:id="studentRadio" selected="true" toggleGroup="$roleGroup"/>
+                        <Label text="Student" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                    </HBox>
+                    <HBox spacing="5">
+                        <RadioButton fx:id="tutorRadio" toggleGroup="$roleGroup"/>
+                        <Label text="Tutor" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                    </HBox>
+                </HBox>
+            </VBox>
+
+            <!-- Error Message -->
+            <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-size: 14px; -fx-padding: 5px 0;" />
+
+            <!-- Sign Up Button -->
+            <Button text="Sign Up" defaultButton="true" onAction="#handleSignUp"
+                    style="-fx-pref-width: 300px; -fx-pref-height: 40px;
+                           -fx-background-color: #EEA0FF; -fx-text-fill: white;
+                           -fx-font-weight: bold; -fx-font-size: 15px;
+                           -fx-background-radius: 20px; -fx-cursor: hand;" />
+
+            <!-- Login Link -->
+            <HBox alignment="CENTER" spacing="5" style="-fx-padding: 10px 0;">
+                <Label text="Already have an account?" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                <Hyperlink text="Login" onAction="#handleLoginRedirect"
+                           style="-fx-text-fill: #47AEFF; -fx-font-size: 14px;" />
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

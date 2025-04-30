@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.StudyRoomController"
+            stylesheets="@/css/sidebar.css, @/css/studyroom.css"
+            styleClass="root-pane">
+
+    <!-- Sidebar on the left -->
+    <left>
+        <VBox fx:id="sidebar" spacing="20" styleClass="sidebar" prefWidth="280">
+            <Label text="MENTOR" styleClass="sidebar-title"/>
+            <Label text="Discover" styleClass="sidebar-section"/>
+
+            <VBox spacing="10">
+                <!-- Sidebar Items -->
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <image>
+                            <Image url="@/images/home.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Home" styleClass="sidebar-section"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <image>
+                            <Image url="@/images/search.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Browse" styleClass="sidebar-section"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <image>
+                            <Image url="@/images/bookmark.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Courses" styleClass="sidebar-section"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <image>
+                            <Image url="@/images/message.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Forum" styleClass="sidebar-section"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <image>
+                            <Image url="@/images/group.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Groups" styleClass="sidebar-section"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <image>
+                            <Image url="@/images/calendar.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Events" styleClass="sidebar-section"/>
+                </HBox>
+                <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                    <ImageView fitWidth="18" fitHeight="18">
+                        <image>
+                            <Image url="@/images/notification.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="Notifications" styleClass="sidebar-section"/>
+                </HBox>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
+                <ImageView fitWidth="18" fitHeight="18">
+                    <image>
+                        <Image url="@/images/logout.png"/>
+                    </image>
+                </ImageView>
+                <Label text="Logout" styleClass="sidebar-section"/>
+            </HBox>
+        </VBox>
+    </left>
+
+    <!-- Main content in center -->
+
+    <center>
+        <VBox spacing="10">
+            <Label fx:id="statusLabel" styleClass="status-label"/>
+            <!-- Header -->
+            <VBox spacing="10" styleClass="header" prefHeight="100" alignment="CENTER_LEFT">
+                <Label text="Study Rooms" styleClass="header-title"/>
+                <HBox spacing="20" alignment="CENTER_LEFT">
+                    <Button text="Your Rooms" styleClass="nav-button" fx:id="yourRoomsButton"/>
+                    <Button text="Public Rooms" styleClass="nav-button" fx:id="publicRoomsButton"/>
+                </HBox>
+            </VBox>
+
+
+            <TilePane fx:id="tilePane" hgap="20" vgap="20" alignment="TOP_LEFT" prefColumns="3">
+                <padding>
+                    <Insets top="40" right="40" bottom="40" left="40"/>
+                </padding>
+
+                <!-- Create Room Card -->
+                <Button fx:id="createRoomButton" onAction="#handleCreateRoom" styleClass="create-room-button">
+                    <graphic>
+                        <VBox alignment="CENTER" spacing="5">
+                            <Label text="+" styleClass="plus-icon"/>
+                            <Label text="Create Room" styleClass="create-room-text"/>
+                        </VBox>
+                    </graphic>
+                </Button>
+
+
+
+            </TilePane>
+            <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10;">
+                <Button fx:id="leftButton">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@/images/arrow-left.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="rightButton">
+                    <graphic>
+                        <ImageView fitHeight="20" fitWidth="20" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@/images/arrow-right.png"/>
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+
+        </VBox>
+
+    </center>
+
+</BorderPane>

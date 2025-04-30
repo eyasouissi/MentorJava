@@ -1,0 +1,267 @@
+/* Root container */
+.root {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 24px;
+    -fx-spacing: 20px;
+    -fx-font-family: "Poppins";
+}
+
+/* Title styles */
+.title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #8c84a1; /* light black */
+    -fx-font-family: "Poppins", sans-serif;
+}
+
+.title:hover {
+    -fx-text-fill: #5a5a72;
+}
+
+/* Subtitle styles */
+.subtitle {
+    -fx-font-size: 14px;
+    -fx-text-fill: #333333; /* light black */
+    -fx-font-family: "Poppins", sans-serif;
+}
+
+.subtitle:hover {
+    -fx-text-fill: #5a5a72;
+}
+
+/* Card styles */
+.card {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8px;
+    -fx-border-color: #EDEDF1;
+    -fx-border-radius: 8px;
+    -fx-padding: 16px;
+    -fx-spacing: 10px;
+}
+
+.card-title {
+    -fx-font-size: 18px;
+    -fx-text-fill: #2D2B4E;
+    -fx-font-weight: bold;
+}
+
+.card-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #6E6C7E;
+    -fx-font-style: italic;
+}
+
+/* Topic Box */
+.topic-box {
+    -fx-spacing: 8px;
+    -fx-padding: 8px;
+    -fx-background-color: #F4F4F4;
+    -fx-border-color: #EDEDF1;
+    -fx-border-radius: 8px;
+    -fx-min-width: 250px;
+    -fx-min-height: 200px;
+    -fx-max-width: 250px;
+    -fx-max-height: 200px;
+}
+
+/* Stats Box */
+.stats-box {
+    -fx-background-color: #F4F4F4;
+    -fx-border-color: #EDEDF1;
+    -fx-border-radius: 8px;
+    -fx-padding: 12px;
+    -fx-spacing: 8px;
+    -fx-min-width: 250px;
+    -fx-min-height: 200px;
+    -fx-max-width: 250px;
+    -fx-max-height: 200px;
+}
+
+/* Topic Bubbles */
+.topic-bubble {
+    -fx-background-color: #d6d6e0;
+    -fx-padding: 5 12 5 12;
+    -fx-background-radius: 15;
+    -fx-border-radius: 15;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+    -fx-font-family: "Open Sans";
+    -fx-text-fill: #333;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.05), 1, 0.1, 0, 1);
+    -fx-wrap-text: true;
+    -fx-transition: all 0.3s ease-in-out;
+}
+
+.topic-bubble:hover {
+    -fx-background-color: #8E8EA9;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0.2, 0, 2);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* Style for selected topic bubble */
+.selected {
+    -fx-background-color: #8E8EA9;
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 4, 0.2, 0, 2);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* List View Styling */
+.list-view {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Forum Items in List */
+.list-cell {
+    -fx-padding: 12px 16px;
+    -fx-background-color: transparent;
+    -fx-border-color: #EDEDF1;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-style: solid;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.list-cell:hover {
+    -fx-background-color: #F0F0F5;
+    -fx-cursor: hand;
+}
+
+/* Image Container */
+.image-container {
+    -fx-alignment: center;
+    -fx-spacing: 10px;
+    -fx-padding: 20px;
+}
+
+/* Badge Styles */
+.badge {
+    -fx-background-color: #E4E3F0;
+    -fx-text-fill: #6E6C7E;
+    -fx-padding: 4px 8px;
+    -fx-background-radius: 16px;
+    -fx-font-size: 12px;
+    -fx-font-family: "Open Sans";
+}
+
+/* SVG Icon Color (use this class in code or FXML to tint) */
+.svg-icon {
+    -fx-fill: #8E8EA9;
+}
+
+#topBar {
+    -fx-background-color: #8c84a1;
+}
+
+.window-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 4 10;
+    -fx-cursor: hand;
+}
+
+.window-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.2);
+}
+.list-view .list-cell {
+    -fx-padding: 5px;
+    -fx-background-color: transparent;
+}
+
+.list-view .list-cell:filled {
+    -fx-padding: 5px;
+    -fx-background-color: transparent;
+}
+
+.loading-label {
+    font-size: 16px;
+    font-family: 'Segoe UI', sans-serif;
+    color: #3498db;
+    font-weight: bold;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+
+/* Style for the VBox container */
+.card {
+    -fx-background-color: transparent; /* Make sure the background is transparent */
+    -fx-padding: 10px;
+}
+
+/* Style for the scrollbar in the ListView */
+.card .scroll-bar {
+    -fx-background-color: transparent; /* Transparent background for the scrollbar */
+}
+
+/* Scrollbar thumb (the draggable part) */
+.card .scroll-bar .thumb {
+    -fx-background-color: #8c84a1;  /* Light pink thumb */
+    -fx-background-radius: 10px; /* Rounded corners */
+    -fx-min-height: 50px; /* Height of the thumb */
+    -fx-max-height: 50px;
+}
+
+/* Track (the part the thumb moves within) */
+.card .scroll-bar .track {
+    -fx-background-color: #F2F2F2; /* Soft light gray track */
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+}
+
+/* Thumb hover effect */
+.card .scroll-bar:hover .thumb {
+    -fx-background-color: #857e98; /* Darker pink on hover */
+}
+
+/* Make the vertical scrollbar narrower */
+.card .scroll-bar:vertical {
+    -fx-pref-width: 10px;
+}
+
+/* Make the horizontal scrollbar narrower */
+.card .scroll-bar:horizontal {
+    -fx-pref-height: 10px;
+}
+/* Stats styling */
+.stats-box {
+    -fx-background-color: #ffffff;
+    -fx-background-radius: 8;
+    -fx-padding: 16;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);
+}
+
+.stat-number {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-fill: #2c3e50;
+}
+
+.stat-label {
+    -fx-font-size: 14px;
+    -fx-fill: #7f8c8d;
+}
+/* Recommendation Section */
+.recommendation-box {
+    -fx-padding: 20 0 0 0;
+}
+
+.recommendation-bubble {
+    -fx-background-color: #e3f2fd;
+    -fx-background-radius: 15;
+    -fx-padding: 8 12;
+    -fx-font-size: 14px;
+    -fx-text-fill: #1976d2;
+    -fx-cursor: hand;
+}
+
+.recommendation-bubble:hover {
+    -fx-background-color: #bbdefb;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}

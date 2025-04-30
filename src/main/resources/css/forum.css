@@ -1,0 +1,267 @@
+/* ===================== */
+/*      Base Styling     */
+/* ===================== */
+
+.root {
+    -fx-font-family: "Poppins", "Segoe UI", sans-serif;
+    -fx-background-color: #f9f9fb;
+    -fx-text-fill: #333333;
+}
+
+/* ===================== */
+/*        Labels         */
+/* ===================== */
+
+.label {
+    -fx-font-family: "Poppins", sans-serif;
+    -fx-font-size: 14px;
+    -fx-text-fill: #333;
+}
+
+/* ===================== */
+/*     Form Elements     */
+/* ===================== */
+
+.text-field,
+.text-area,
+.check-box {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #d0d0d0;
+    -fx-border-radius: 6px;
+    -fx-padding: 10px;
+    -fx-font-size: 14px;
+    -fx-font-family: "Poppins", sans-serif;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.03), 3, 0, 0, 1);
+}
+
+/* ===================== */
+/*        Buttons        */
+/* ===================== */
+
+.button {
+    -fx-background-color: linear-gradient(to right, #8c84a1, #7a728f);
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Poppins", sans-serif;
+    -fx-font-weight: 600;
+    -fx-padding: 10px 25px;
+    -fx-border-radius: 30px;
+    -fx-background-radius: 30px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 4, 0, 0, 2);
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to right, #7a728f, #6a627f);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 6, 0, 0, 3);
+}
+
+.button:pressed {
+    -fx-scale-x: 0.97;
+    -fx-scale-y: 0.97;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 2, 0, 0, 1);
+}
+
+/* ===================== */
+/*         Table         */
+/* ===================== */
+
+.table-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+    -fx-padding: 10px;
+    -fx-border-radius: 10px;
+    -fx-font-family: "Poppins", sans-serif;
+    -fx-font-size: 13px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 8, 0, 0, 1);
+    -fx-table-cell-border-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 10px;
+}
+
+.table-column {
+    -fx-text-fill: #444;
+    -fx-font-weight: bold;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #8c84a1;
+    -fx-background-radius: 10px 10px 0 0;
+}
+
+.table-view .column-header {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 12px;
+}
+
+.table-row-cell {
+    -fx-background-color: #ffffff;
+    -fx-border-color: transparent;
+    -fx-padding: 8px;
+    -fx-cell-size: 40px;
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #8c84a1;
+    -fx-text-fill: #ffffff;
+}
+
+.table-cell,
+.table-view .table-cell {
+    -fx-padding: 10px 20px;
+    -fx-border-color: transparent;
+}
+
+/* ===================== */
+/*       Containers      */
+/* ===================== */
+
+.card {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);
+    -fx-padding: 20px;
+}
+
+/* ===================== */
+/*      Navigation Bar   */
+/* ===================== */
+
+.menu-bar {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-font-family: "Poppins", sans-serif;
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1px 0;
+}
+
+.menu-item:hover {
+    -fx-background-color: #8c84a1;
+    -fx-text-fill: #ffffff;
+}
+
+/* ===================== */
+/*      Sidebar Menu     */
+/* ===================== */
+
+.sidebar {
+    -fx-background-color: #2f2d3a;
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-alignment: top-left;
+    -fx-pref-height: 100%;
+}
+
+.sidebar-title {
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 20px 0;
+}
+
+.sidebar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c2c2c2;
+    -fx-font-size: 14px;
+    -fx-font-family: "Poppins", sans-serif;
+    -fx-alignment: center-left;
+    -fx-padding: 10px 15px;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.sidebar-button:hover {
+    -fx-background-color: #44425a;
+    -fx-text-fill: #ffffff;
+}
+
+.sidebar-button.logout {
+    -fx-text-fill: #f44336;
+}
+
+.sidebar-button.logout:hover {
+    -fx-background-color: #5a2d2d;
+    -fx-text-fill: #ffffff;
+}
+
+.main-content {
+    -fx-padding: 20px;
+    -fx-spacing: 20px;
+}
+
+/* ===================== */
+/*  Alerts & Validation  */
+/* ===================== */
+
+.error-field {
+    -fx-border-color: #dc3545 !important;
+    -fx-border-width: 2px !important;
+}
+
+.success-alert {
+    -fx-background-color: #dff0d8;
+    -fx-border-color: #d6e9c6;
+}
+
+.success-alert .header-panel {
+    -fx-background-color: #dff0d8;
+}
+
+.success-alert .content.label {
+    -fx-text-fill: #3c763d;
+}
+
+.alert.error.dialog-pane {
+    -fx-background-color: #f2dede;
+    -fx-border-color: #ebccd1;
+}
+
+.alert.error.dialog-pane .header-panel {
+    -fx-background-color: #f2dede;
+}
+
+.alert.error.dialog-pane .content.label {
+    -fx-text-fill: #a94442;
+}
+
+/* ===================== */
+/*     Utility Classes   */
+/* ===================== */
+
+.padding-small { -fx-padding: 10px; }
+.padding-medium { -fx-padding: 20px; }
+.padding-large { -fx-padding: 30px; }
+
+.text-center { -fx-alignment: center; }
+.text-primary { -fx-text-fill: #8c84a1; }
+
+/* ===================== */
+/*      Web View / CKEditor      */
+/* ===================== */
+
+.web-view,
+.web-view-cell {
+    -fx-border-color: #e0e0e0;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-radius: 4px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 1);
+}
+
+.html-editor {
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+}
+
+.html-editor .tool-bar {
+    -fx-background-color: #f0f0f0;
+}
+
+.html-editor .button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}

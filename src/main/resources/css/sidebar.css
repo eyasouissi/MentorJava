@@ -1,0 +1,50 @@
+.sidebar {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 24 16;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.3, 0, 2);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-transition: all 0.3s ease;
+}
+
+.sidebar-title {
+    -fx-text-fill: #8A84A0;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+}
+
+.sidebar-section {
+    -fx-text-fill: #8A84A0;
+    -fx-font-size: 13px;
+}
+
+.nav-item {
+    -fx-padding: 10 12;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-spacing: 8;
+    -fx-font-size: 13px;
+    -fx-text-fill: #8A84A0;
+    -fx-background-color: transparent;
+    -fx-effect: dropshadow(gaussian, transparent, 0, 0, 0, 0);
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+}
+
+.nav-item:hover {
+    -fx-background-color: #f2f2f2;
+    -fx-effect: dropshadow(gaussian, #d1d1d1, 10, 0.3, 0, 2);
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.nav-item.selected {
+    -fx-background-color: #f6f6f8;
+    -fx-effect: dropshadow(gaussian, #ccc, 8, 0.2, 0, 1);
+}
+
+.logout {
+    -fx-text-fill: #8A84A0;
+    -fx-cursor: hand;
+}

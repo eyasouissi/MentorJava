@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.web.HTMLEditor?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.ForumController"
+      spacing="20" stylesheets="@/css/forum.css">
+
+    <padding>
+        <Insets top="20" right="20" bottom="20" left="20"/>
+    </padding>
+
+    <!-- Form Container -->
+    <VBox spacing="10" styleClass="form-container">
+        <GridPane hgap="10" vgap="10">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="25"/>
+                <ColumnConstraints percentWidth="75"/>
+            </columnConstraints>
+
+            <!-- Title -->
+            <Label text="Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <TextField fx:id="titleField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+            <Label fx:id="titleError" style="-fx-text-fill: red;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+            <Label fx:id="titleWordCount" style="-fx-font-size: 10px;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <!-- Description -->
+            <Label text="Description:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <HTMLEditor fx:id="htmlEditor" prefHeight="150"
+                        GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+            <Label fx:id="descriptionError" style="-fx-text-fill: red;" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+            <Label fx:id="descriptionCharCount" style="-fx-font-size: 10px;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+            <!-- Topics -->
+            <Label text="Topics:" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+            <TextField fx:id="topicsField" GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+            <Label fx:id="topicsError" style="-fx-text-fill: red;" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+
+            <!-- Public -->
+            <Label text="Public:" GridPane.rowIndex="8" GridPane.columnIndex="0"/>
+            <CheckBox fx:id="isPublicCheckbox" GridPane.rowIndex="8" GridPane.columnIndex="1"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Buttons -->
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Add" onAction="#handleAdd" styleClass="button primary"/>
+        <Button text="Update" onAction="#handleUpdate" styleClass="button secondary"/>
+        <Button text="Delete" onAction="#handleDelete" styleClass="button danger"/>
+    </HBox>
+
+    <!-- Table -->
+    <TableView fx:id="forumTable" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="titleColumn" text="Title" prefWidth="150"/>
+            <TableColumn fx:id="descriptionColumn" text="Description" prefWidth="250"/>
+            <TableColumn fx:id="isPublicColumn" text="Public" prefWidth="80"/>
+            <TableColumn fx:id="topicsColumn" text="Topics" prefWidth="150"/>
+            <TableColumn fx:id="viewsColumn" text="Views" prefWidth="80"/>
+            <TableColumn fx:id="totalPostsColumn" text="Posts" prefWidth="80"/>
+            <TableColumn fx:id="createdAtColumn" text="Created At" prefWidth="150"/>
+            <TableColumn fx:id="updatedAtColumn" text="Updated At" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+</VBox>
