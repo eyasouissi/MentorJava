@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails du Cours | Mentor</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            margin: 0;
+            padding: 20px;
+        }
+        .university-header {
+            background-color: #2C3E50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .course-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+    </style>
+
+    <div class="university-header">
+        <h1>ONLINE COURSE DEVELOPMENT RESOURCE SITE</h1>
+        <p>Your University Name Here</p>
+    </div>
+
+    <div class="course-card">
+        <h2>{{TITLE}}</h2>
+        <p><strong>Instructor:</strong> {{TUTOR}}</p>
+        <div class="description">
+            {{DESCRIPTION}}
+        </div>
+    </div>
+</head>
+</html>

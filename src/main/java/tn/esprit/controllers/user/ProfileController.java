@@ -9,6 +9,7 @@ import javafx.scene.image.*;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import tn.esprit.controllers.auth.MainController;
 import tn.esprit.entities.User;
 import tn.esprit.services.UserService;
 import tn.esprit.tools.FileUploadUtil;
@@ -19,6 +20,7 @@ import javafx.scene.Node;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 public class ProfileController {
     @FXML private ImageView profileImageView;
@@ -33,12 +35,15 @@ public class ProfileController {
     @FXML private Button editButton;
 
     private User currentUser;
+    private MainController mainController;
 
     public void setUserData(User user) {
         this.currentUser = user;
         updateUI();
     }
-
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
     @FXML
     private void handleLogout(ActionEvent event) {
         try {
@@ -80,14 +85,22 @@ public class ProfileController {
 
             // Handle diploma display
             if (currentUser.getDiplome() != null && !currentUser.getDiplome().isEmpty()) {
-                File diplomaFile = FileUploadUtil.getUploadedFile(currentUser.getDiplome());
-                if (diplomaFile != null && diplomaFile.exists()) {
+                File diplomaFile = new File(currentUser.getDiplome());
+                if (diplomaFile.exists()) {
                     diplomaLabel.setText(diplomaFile.getName());
                     diplomaLink.setVisible(true);
                     diplomaLink.setOnAction(event -> openDiplomaPDF());
                 } else {
-                    diplomaLabel.setText("File not found");
-                    diplomaLink.setVisible(false);
+                    // Try with relative path if absolute path doesn't work
+                    diplomaFile = new File("uploads/" + currentUser.getDiplome());
+                    if (diplomaFile.exists()) {
+                        diplomaLabel.setText(diplomaFile.getName());
+                        diplomaLink.setVisible(true);
+                        diplomaLink.setOnAction(event -> openDiplomaPDF());
+                    } else {
+                        diplomaLabel.setText("File not found");
+                        diplomaLink.setVisible(false);
+                    }
                 }
             } else {
                 diplomaLabel.setText("No diploma uploaded");
@@ -107,8 +120,13 @@ public class ProfileController {
                 return;
             }
 
-            File diplomaFile = FileUploadUtil.getUploadedFile(currentUser.getDiplome());
-            if (diplomaFile == null || !diplomaFile.exists()) {
+            File diplomaFile = new File(currentUser.getDiplome());
+            if (!diplomaFile.exists()) {
+                // Try with relative path if absolute path doesn't work
+                diplomaFile = new File("uploads/" + currentUser.getDiplome());
+            }
+
+            if (!diplomaFile.exists()) {
                 showAlert("Error", "Diploma file not found");
                 return;
             }
@@ -128,7 +146,6 @@ public class ProfileController {
             e.printStackTrace();
         }
     }
-
     private void loadImage(ImageView imageView, String path, String defaultPath) {
         try {
             if (path != null && !path.isEmpty()) {
@@ -161,7 +178,14 @@ public class ProfileController {
 
     private void handleEditProfile() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/user/EditProfile.fxml"));
+            URL location = getClass().getResource("/interfaces/user/EditProfile.fxml");
+            System.out.println("FXML location = " + location);  // DEBUG LINE
+
+            if (location == null) {
+                throw new IllegalStateException("FXML file not found at /interfaces/user/EditProfile.fxml");
+            }
+
+            FXMLLoader loader = new FXMLLoader(location);
             Parent root = loader.load();
 
             EditProfileController controller = loader.getController();
@@ -174,17 +198,25 @@ public class ProfileController {
             stage.showAndWait();
 
             refreshUserData();
-        } catch (IOException e) {
+        } catch (IOException | IllegalStateException e) {
+            e.printStackTrace();
             showAlert("Error", "Could not load edit profile: " + e.getMessage());
         }
     }
 
+
+    // In ProfileController.java
     public void refreshUserData() {
         UserService userService = new UserService();
         User updatedUser = userService.getById(currentUser.getId());
         if (updatedUser != null) {
             currentUser = updatedUser;
             updateUI();
+            if (mainController != null) {
+                mainController.updateUserInfo(updatedUser);
+                // Notify the sidebar to update its image
+                mainController.notifyProfilePictureUpdated(updatedUser.getPfp());
+            }
         }
     }
 

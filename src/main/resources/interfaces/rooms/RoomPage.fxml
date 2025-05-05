@@ -23,8 +23,8 @@
     <!-- Top Section -->
     <top>
         <AnchorPane prefHeight="70">
-            <Label fx:id="roomNameLabel" styleClass="room-name-label" text="Room Name" />
-            <HBox alignment="TOP_CENTER" spacing="15" styleClass="top-nav-bar" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="10.0">
+            <Label fx:id="roomNameLabel" layoutX="41.0" layoutY="14.0" prefHeight="29.0" prefWidth="112.0" styleClass="room-name-label" text="Room Name" />
+            <HBox alignment="TOP_CENTER" layoutX="496.0" layoutY="13.0" prefHeight="37.0" prefWidth="497.0" spacing="15" styleClass="top-nav-bar" AnchorPane.leftAnchor="496.0" AnchorPane.topAnchor="13.0">
                 <Button fx:id="whiteboardButton" onAction="#handleWhiteboardButton" styleClass="btns">
                     <graphic>
                         <ImageView>
@@ -83,8 +83,8 @@
 
 
                 <HBox alignment="CENTER_RIGHT" spacing="10">
-                    <Button onAction="#handleLeaveRoom" styleClass="leave-room-button" text="Leave Room" />
-                    <Button onAction="#handleSettingsButton" styleClass="settings-button" />
+                    <Button onAction="#handleLeaveRoom" prefHeight="25.0" prefWidth="131.0" styleClass="leave-room-button" text="Leave Room" />
+                    <Button onAction="#handleSettingsButton" prefHeight="25.0" prefWidth="35.0" styleClass="settings-button" />
                 </HBox>
             </HBox>
         </AnchorPane>

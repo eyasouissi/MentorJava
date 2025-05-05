@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Courses.AddCourseController"
+      stylesheets="@/styles/courses-styles.css"
+      spacing="20"
+      alignment="TOP_CENTER"
+      prefWidth="550">
+
+    <!-- Header -->
+    <Label text="New Course" styleClass="form-title"/>
+
+    <Separator styleClass="form-separator"/>
+
+    <!-- Form Container -->
+    <GridPane styleClass="form-container">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="300"/>
+        </columnConstraints>
+
+        <!-- Title Field -->
+        <Label text="Title*:" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="titleField" promptText="Course title" styleClass="form-field"
+                   GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <Label fx:id="titleError" styleClass="error-label"
+               GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+
+        <!-- Description Field -->
+        <Label text="Description*:" styleClass="form-label" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextArea fx:id="descriptionField" promptText="Complete description" wrapText="true"
+                  styleClass="form-field" prefRowCount="3"
+                  GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.valignment="TOP"/>
+        <Label fx:id="descriptionError" styleClass="error-label"
+               GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+
+        <!-- Category Field -->
+        <Label text="Category*:" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="categoryComboBox" styleClass="form-field"
+                  GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label fx:id="categoryError" styleClass="error-label"
+               GridPane.rowIndex="2" GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+
+        <!-- Points Field -->
+        <Label text="Required Points*:" styleClass="form-label" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <TextField fx:id="pointsField" promptText="0-1000" styleClass="form-field"
+                   GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <Label fx:id="pointsError" styleClass="error-label"
+               GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+
+        <!-- Premium Checkbox -->
+        <Label text="Premium:" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="premiumCheckBox" styleClass="form-checkbox"
+                  GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <!-- Published Checkbox -->
+        <Label text="Published:" styleClass="form-label" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="publishedCheckBox" styleClass="form-checkbox"
+                  GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <!-- Tutor Field -->
+        <Label text="Tutor*:" styleClass="form-label" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <TextField fx:id="tutorField" promptText="Tutor name" styleClass="form-field"
+                   GridPane.rowIndex="6" GridPane.columnIndex="1"/>
+        <Label fx:id="tutorError" styleClass="error-label"
+               GridPane.rowIndex="6" GridPane.columnIndex="1" GridPane.valignment="BOTTOM"/>
+    </GridPane>
+
+    <!-- Action Buttons -->
+    <HBox styleClass="form-buttons-container">
+        <Button text="Cancel" onAction="#handleCancel" styleClass="cancel-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-times"/>
+            </graphic>
+        </Button>
+        <Button text="Save" onAction="#handleSave" styleClass="save-button">
+            <graphic>
+                <FontIcon iconLiteral="fas-save"/>
+            </graphic>
+        </Button>
+    </HBox>
+
+    <!-- Required fields note -->
+    <Label text="* Required fields" styleClass="required-note"/>
+</VBox>

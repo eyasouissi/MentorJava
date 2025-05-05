@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Category.AddCategoryController"
+      spacing="15" style="-fx-padding: 20;">
+
+    <Label text="Nouvelle Catégorie" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+
+    <GridPane hgap="15" vgap="10" style="-fx-padding: 10;">
+        <!-- Nom -->
+        <Label text="Nom*:" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
+            <TextField fx:id="nameField" promptText="Nom de la catégorie"/>
+            <Label fx:id="nameErrorLabel" textFill="red" style="-fx-font-size: 11px;"/>
+        </VBox>
+
+        <!-- Description -->
+        <Label text="Description*:" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <TextArea fx:id="descriptionField" promptText="Description détaillée" wrapText="true"/>
+            <Label fx:id="descErrorLabel" textFill="red" style="-fx-font-size: 11px;"/>
+        </VBox>
+
+        <!-- Icône -->
+        <Label text="Icône:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <HBox spacing="10">
+                <TextField fx:id="iconField" promptText="URL ou chemin de l'icône" HBox.hgrow="ALWAYS"/>
+                <Button text="Parcourir..." onAction="#handleBrowse"/>
+            </HBox>
+            <Label fx:id="iconErrorLabel" textFill="red" style="-fx-font-size: 11px;"/>
+        </VBox>
+
+        <!-- Aperçu de l'icône -->
+        <Label text="Aperçu:" style="-fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <StackPane GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <ImageView fx:id="iconPreview" fitWidth="50" fitHeight="50"/>
+            <Label text="Aucune icône" visible="false" fx:id="noIconLabel"/>
+        </StackPane>
+
+        <!-- Statut -->
+        <Label text="Statut:" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="isActiveCheckBox" text="Catégorie active" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <!-- Boutons -->
+    <HBox spacing="15" style="-fx-padding: 10 0 0 0;" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-min-width: 100;"/>
+        <Button text="Ajouter" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-min-width: 100;"/>
+    </HBox>
+</VBox>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Courses.EditCourseController"
+      spacing="20"
+      alignment="TOP_CENTER"
+      style="-fx-background-color: #f5f7fa; -fx-padding: 25;"
+      prefWidth="500">
+
+    <!-- En-tête avec icône -->
+    <HBox alignment="CENTER_LEFT" spacing="10">
+        <Label text="Modifier le cours"
+               style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+    </HBox>
+
+    <Separator style="-fx-padding: 0 0 10 0;"/>
+
+    <!-- Formulaire dans un panneau avec ombre -->
+    <GridPane hgap="15" vgap="15" style="-fx-background-color: white; -fx-background-radius: 5; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 1);">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" hgrow="NEVER" minWidth="100"/>
+            <ColumnConstraints hgrow="ALWAYS" minWidth="200"/>
+        </columnConstraints>
+
+        <!-- Ligne ID (non modifiable) -->
+        <Label text="ID:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="idLabel" style="-fx-text-fill: #34495e;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <!-- Champ Titre -->
+        <Label text="Titre*:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <VBox GridPane.rowIndex="1" GridPane.columnIndex="1" spacing="5">
+            <TextField fx:id="titleField" promptText="Entrez le titre"/>
+            <Label fx:id="titleError" style="-fx-text-fill: #e74c3c;" visible="false"/>
+        </VBox>
+
+        <!-- Champ Description -->
+        <Label text="Description*:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <VBox GridPane.rowIndex="2" GridPane.columnIndex="1" spacing="5">
+            <TextArea fx:id="descriptionField" promptText="Description du cours" wrapText="true" prefHeight="100"/>
+            <Label fx:id="descriptionError" style="-fx-text-fill: #e74c3c;" visible="false"/>
+        </VBox>
+
+        <!-- Champ Catégorie -->
+        <Label text="Catégorie*:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <VBox GridPane.rowIndex="3" GridPane.columnIndex="1" spacing="5">
+            <ComboBox fx:id="categoryComboBox"/>
+            <Label fx:id="categoryError" style="-fx-text-fill: #e74c3c;" visible="false"/>
+        </VBox>
+
+        <!-- Champ Points requis -->
+        <Label text="Points requis*:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <VBox GridPane.rowIndex="4" GridPane.columnIndex="1" spacing="5">
+            <TextField fx:id="pointsField" promptText="0"/>
+            <Label fx:id="pointsError" style="-fx-text-fill: #e74c3c;" visible="false"/>
+        </VBox>
+
+        <!-- Checkbox Premium -->
+        <Label text="Premium:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="premiumCheckBox" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+
+        <!-- Champ Tuteur -->
+        <Label text="Nom du tuteur*:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
+        <VBox GridPane.rowIndex="6" GridPane.columnIndex="1" spacing="5">
+            <TextField fx:id="tutorField" promptText="Nom du formateur"/>
+            <Label fx:id="tutorError" style="-fx-text-fill: #e74c3c;" visible="false"/>
+        </VBox>
+
+        <!-- Checkbox Publié -->
+        <Label text="Publié:" style="-fx-text-fill: #7f8c8d;" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+        <CheckBox fx:id="publishedCheckBox" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <!-- Boutons en bas -->
+    <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
+        <Button text="Annuler" onAction="#handleCancel"
+                style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-min-width: 100;"/>
+        <Button text="Mettre à jour" onAction="#handleUpdate"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-min-width: 120; -fx-font-weight: bold;"/>
+    </HBox>
+</VBox>

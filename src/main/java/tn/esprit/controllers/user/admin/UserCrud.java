@@ -18,17 +18,16 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
-import tn.esprit.controllers.auth.RoleChoiceController;
+import tn.esprit.controllers.auth.SignUp;
 import tn.esprit.entities.User;
 import tn.esprit.services.UserService;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class UserCrud {
-    private static final int ROWS_PER_PAGE = 4; // Changed to 4 users per page
+    private static final int ROWS_PER_PAGE = 4;
 
     @FXML private TableView<User> usersTable;
     @FXML private TableColumn<User, String> emailColumn;
@@ -57,7 +56,6 @@ public class UserCrud {
 
     @FXML
     public void initialize() {
-        // Initialize table columns
         emailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         nameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
         rolesColumn.setCellValueFactory(cellData -> {
@@ -66,27 +64,20 @@ public class UserCrud {
         });
 
         setupActionsColumn();
-
-        // Initialize pagination
         pagination.setPageFactory(this::createPage);
 
-        // Set up search functionality
         searchField.textProperty().addListener((observable, oldValue, newValue) -> {
             filteredData.setPredicate(user -> {
                 if (newValue == null || newValue.isEmpty()) {
                     return true;
                 }
-
                 String lowerCaseFilter = newValue.toLowerCase();
                 return user.getName().toLowerCase().contains(lowerCaseFilter);
             });
             updatePagination();
         });
 
-        // Initialize sorting
-        updateSorting();
-
-        // Load initial data
+        // Remove the updateSorting() call from here
         refreshTable();
     }
 
@@ -100,36 +91,55 @@ public class UserCrud {
         int fromIndex = pageIndex * ROWS_PER_PAGE;
         int toIndex = Math.min(fromIndex + ROWS_PER_PAGE, sortedData.size());
 
+        ObservableList<User> pageItems;
         if (sortedData.isEmpty() || fromIndex > sortedData.size()) {
-            usersTable.setItems(FXCollections.observableArrayList());
+            pageItems = FXCollections.observableArrayList();
         } else {
-            usersTable.setItems(FXCollections.observableArrayList(sortedData.subList(fromIndex, toIndex)));
+            pageItems = FXCollections.observableArrayList(sortedData.subList(fromIndex, toIndex));
         }
 
+        usersTable.setItems(pageItems);
+        usersTable.setFixedCellSize(30);
+        double headerHeight = 30;
+        double rowHeight = usersTable.getFixedCellSize();
+        double tableHeight = headerHeight + (Math.min(pageItems.size(), ROWS_PER_PAGE) * rowHeight) + 2;
+
+        usersTable.setPrefHeight(tableHeight);
+        usersTable.setMinHeight(tableHeight);
+        usersTable.setMaxHeight(tableHeight);
+
         VBox box = new VBox(usersTable);
-        box.setPrefHeight(400);
+        box.setPrefHeight(tableHeight);
         return box;
     }
+
     @FXML
     private void handleSortByRole() {
-        // Sort the ENTIRE master data (teachers first)
-        masterData.sort((u1, u2) -> {
-            boolean u1IsTeacher = u1.getRoles().contains("ROLE_TEACHER");
-            boolean u2IsTeacher = u2.getRoles().contains("ROLE_TEACHER");
-            return Boolean.compare(u2IsTeacher, u1IsTeacher); // Teachers come first
-        });
+        sortByRole = !sortByRole; // Toggle sorting state
 
-        // Refresh the filtered/sorted lists
-        filteredData = new FilteredList<>(masterData);
-        sortedData = new SortedList<>(filteredData);
+        if (sortByRole) {
+            sortedData.setComparator((u1, u2) -> {
+                boolean u1IsTutor = u1.getRoles().contains("ROLE_TUTOR");
+                boolean u2IsTutor = u2.getRoles().contains("ROLE_TUTOR");
 
-        // Update the pagination to reflect changes
-        updatePagination();
+                if (u1IsTutor && !u2IsTutor) {
+                    return -1;
+                } else if (!u1IsTutor && u2IsTutor) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            });
+            sortButton.setText("Clear Sorting");
+        } else {
+            sortedData.setComparator(null); // Clear sorting
+            sortButton.setText("Sort by Role");
+        }
 
-        // Force refresh the current page
+        // Force refresh of the current page
         int currentPage = pagination.getCurrentPageIndex();
         pagination.setPageFactory(pageIndex -> createPage(pageIndex));
-        pagination.setCurrentPageIndex(currentPage); // Stay on the same page
+        pagination.setCurrentPageIndex(currentPage);
     }
 
     private void updateSorting() {
@@ -138,11 +148,11 @@ public class UserCrud {
             boolean u2IsTeacher = u2.getRoles().contains("ROLE_TEACHER");
 
             if (u1IsTeacher && !u2IsTeacher) {
-                return -1; // u1 (teacher) comes before u2
+                return -1;
             } else if (!u1IsTeacher && u2IsTeacher) {
-                return 1;  // u2 (teacher) comes before u1
+                return 1;
             } else {
-                return 0; // if same role, keep same order (no name sorting)
+                return 0;
             }
         });
     }
@@ -185,15 +195,20 @@ public class UserCrud {
     @FXML
     private void handleAddUser() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/auth/RoleChoice.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/auth/SignUp.fxml"));
             Parent root = loader.load();
+
+            SignUp controller = loader.getController();
+            controller.setRedirectTarget("/interfaces/user/admin/dashboard.fxml");
+            controller.setFormTitle("Add New User");
+            controller.setAdminMode(true);
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.setTitle("Select Role");
+            stage.setTitle("Add New User");
             stage.show();
         } catch (IOException e) {
-            showAlert("Error", "Could not open role selection page: " + e.getMessage());
+            showAlert("Error", "Could not open user creation form: " + e.getMessage());
         }
     }
 
@@ -248,10 +263,14 @@ public class UserCrud {
                 return searchText == null || searchText.isEmpty()
                         || user.getName().toLowerCase().contains(searchText.toLowerCase());
             });
-            sortedData = new SortedList<>(filteredData);
-            updateSorting(); // important, or else comparator will be lost
-            updatePagination();
 
+            sortedData = new SortedList<>(filteredData);
+            // Apply sorting if it was previously set
+            if (sortByRole) {
+                handleSortByRole();
+            }
+
+            updatePagination();
 
             Platform.runLater(() -> {
                 emailColumn.setPrefWidth(emailColumn.getWidth());
@@ -262,7 +281,6 @@ public class UserCrud {
             showAlert("Error", "Failed to refresh data: " + e.getMessage());
         }
     }
-
     private void showEditDialog(User user) {
         try {
             Dialog<User> dialog = new Dialog<>();
@@ -282,7 +300,7 @@ public class UserCrud {
             passwordField.setPromptText("Leave blank to keep current");
 
             ComboBox<String> rolesComboBox = new ComboBox<>();
-            rolesComboBox.getItems().addAll("ROLE_STUDENT", "ROLE_TEACHER");
+            rolesComboBox.getItems().addAll("ROLE_STUDENT", "ROLE_TUTOR");
             String userRole = user.getRoles().stream()
                     .filter(role -> !role.equals("ROLE_ADMIN"))
                     .findFirst()

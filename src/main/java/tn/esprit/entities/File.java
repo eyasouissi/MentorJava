@@ -1,45 +1,36 @@
 package tn.esprit.entities;
 
-import jakarta.persistence.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "file")
 public class File {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(name = "file_name", length = 255, nullable = false)
+    private int id;
     private String fileName;
-
-    @Column(name = "is_viewed", nullable = false)
-    private Boolean isViewed = false;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "level_id")
+    private String file_Path; // Chemin complet du fichier
+    private boolean isViewed = false;
     private Level level;
 
-    // Constructors
-    public File() {
-    }
+    public File() {}
 
     public File(String fileName) {
         this.fileName = fileName;
     }
 
-    public File(String fileName, Level level) {
-        this(fileName);
+    public File(String fileName, String filePath) {
+        this.fileName = fileName;
+        this.file_Path = filePath;
+    }
+
+    public File(String fileName, String filePath, Level level) {
+        this(fileName, filePath);
         this.level = level;
     }
 
     // Getters and Setters
-    public Long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -51,12 +42,20 @@ public class File {
         this.fileName = fileName;
     }
 
-    public Boolean isViewed() {
+    public String getFilePath() {
+        return file_Path;
+    }
+
+    public void setFilePath(String filePath) {
+        this.file_Path = filePath;
+    }
+
+    public boolean isViewed() {
         return isViewed;
     }
 
-    public void setViewed(Boolean viewed) {
-        isViewed = viewed;
+    public void setViewed(boolean viewed) {
+        this.isViewed = viewed;
     }
 
     public Level getLevel() {
@@ -67,50 +66,61 @@ public class File {
         this.level = level;
     }
 
-    // Business method
-    public String getFilePath() {
-        return "/uploads/images/" + this.fileName;
-    }
-
-    // toString() method
     @Override
     public String toString() {
         return "File{" +
                 "id=" + id +
                 ", fileName='" + fileName + '\'' +
+                ", filePath='" + file_Path + '\'' +
                 ", isViewed=" + isViewed +
-                ", levelId=" + (level != null ? level.getId() : null) +
                 '}';
     }
 
-    // equals() method
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         File file = (File) o;
-        return Objects.equals(id, file.id) &&
-                Objects.equals(fileName, file.fileName);
+        return id == file.id &&
+                isViewed == file.isViewed &&
+                Objects.equals(fileName, file.fileName) &&
+                Objects.equals(file_Path, file.file_Path) &&
+                Objects.equals(level, file.level);
     }
 
-    // hashCode() method
     @Override
     public int hashCode() {
-        return Objects.hash(id, fileName);
+        return Objects.hash(id, fileName, file_Path, isViewed, level);
     }
 
-    // Builder pattern
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
+        private int id;
         private String fileName;
+        private String filePath;
+        private boolean isViewed = false;
         private Level level;
-        private Boolean isViewed = false;
+
+        public Builder id(int id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder fileName(String fileName) {
             this.fileName = fileName;
+            return this;
+        }
+
+        public Builder filePath(String filePath) {
+            this.filePath = filePath;
+            return this;
+        }
+
+        public Builder isViewed(boolean isViewed) {
+            this.isViewed = isViewed;
             return this;
         }
 
@@ -119,14 +129,13 @@ public class File {
             return this;
         }
 
-        public Builder isViewed(Boolean isViewed) {
-            this.isViewed = isViewed;
-            return this;
-        }
-
         public File build() {
-            File file = new File(fileName, level);
+            File file = new File();
+            file.setId(id);
+            file.setFileName(fileName);
+            file.setFilePath(filePath);
             file.setViewed(isViewed);
+            file.setLevel(level);
             return file;
         }
     }

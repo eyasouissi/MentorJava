@@ -13,13 +13,19 @@ import org.json.JSONException;
 public class UserService implements IServices<User> {
     private Connection cnx;
     private static UserService instance;
-    private final EmailService emailService;
+    private EmailService emailService;
+    private boolean emailServiceAvailable = true;
 
     public UserService() {
         this.cnx = MyDataBase.getInstance().getCnx();
-        this.emailService = new EmailService();
+        initializeEmailService();
     }
 
+    private void initializeEmailService() {
+        this.emailService = new EmailService();
+        this.emailServiceAvailable = true;
+        System.out.println("🔥 Email verification FORCE-ENABLED");
+    }
     public static UserService getInstance() {
         if (instance == null) {
             instance = new UserService();
@@ -27,21 +33,16 @@ public class UserService implements IServices<User> {
         return instance;
     }
 
-    public Connection getCnx() {
-        return this.cnx;
+    public boolean isEmailServiceAvailable() {
+        return emailServiceAvailable;
     }
 
-    private void sendVerificationEmail(User user) {
-        try {
-            String verificationLink = "http://localhost:8085/verify?token=" + user.getVerificationToken();
-            String subject = "Account Verification - WorkAway";
+    public EmailService getEmailService() {
+        return emailService;
+    }
 
-            emailService.sendEmail(user.getEmail(), subject, verificationLink);
-            System.out.println("Verification email sent to: " + user.getEmail());
-        } catch (MessagingException e) {
-            System.err.println("Failed to send verification email: " + e.getMessage());
-            throw new RuntimeException("Failed to send verification email", e);
-        }
+    public Connection getCnx() {
+        return this.cnx;
     }
 
     @Override
@@ -53,10 +54,7 @@ public class UserService implements IServices<User> {
                 throw new IllegalArgumentException("Email, password and name are required");
             }
 
-
-            System.out.println("Password received by UserService: " + user.getPassword());
             String hashedPassword = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
-            System.out.println("Hashed password stored in DB: " + hashedPassword);
             user.setPassword(hashedPassword);
 
             user.setVerified(false);
@@ -114,6 +112,34 @@ public class UserService implements IServices<User> {
         }
     }
 
+    private void sendVerificationEmail(User user) {
+        try {
+            String verificationLink = VerificationServer.getVerificationUrl(user.getVerificationToken());
+            String subject = "Account Verification - WorkAway";
+
+            String htmlBody = String.format("""
+            <html>
+                <body style="font-family: Arial, sans-serif; padding: 20px;">
+                    <h2>WorkAway Account Verification</h2>
+                    <p>Hello %s,</p>
+                    <p>Please click below to verify:</p>
+                    <a href="%s" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+                        Verify Account
+                    </a>
+                    <p>Or copy to browser: %s</p>
+                    <p>Link expires in 24 hours.</p>
+                </body>
+            </html>
+            """, user.getName(), verificationLink, verificationLink);
+
+            emailService.sendEmail(user.getEmail(), subject, htmlBody);
+            System.out.println("🔥 Verification email sent to: " + user.getEmail());
+        } catch (Exception e) {
+            System.err.println("❌ Email failed, using manual verification");
+            System.out.println("Manual link: " +
+                    VerificationServer.getVerificationUrl(user.getVerificationToken()));
+        }
+    }
     @Override
     public void modifier(User user) {
         try {
@@ -304,7 +330,6 @@ public class UserService implements IServices<User> {
                         return false; // Token expired
                     }
 
-                    // Mark as verified
                     String update = "UPDATE user SET is_verified=true, verification_token=NULL, " +
                             "verification_token_expiry=NULL WHERE id=?";
                     try (PreparedStatement updateStmt = cnx.prepareStatement(update)) {
@@ -318,31 +343,29 @@ public class UserService implements IServices<User> {
             throw new RuntimeException("Verification failed", e);
         }
     }
+
     public boolean verifyPassword(String email, String plainPassword) {
-        if (plainPassword == null || plainPassword.isEmpty()) {
-            System.err.println("Empty password provided");
-            return false;
-        }
-
-        User user = getByEmail(email);
-        if (user == null) {
-            System.err.println("User not found for email: " + email);
-            return false;
-        }
-
-        String hashedPassword = user.getPassword();
-        if (hashedPassword == null || hashedPassword.isEmpty()) {
-            System.err.println("No password stored for user: " + email);
-            return false;
-        }
-
         try {
-            boolean matches = BCrypt.checkpw(plainPassword, hashedPassword);
-            System.out.println("Password match result for " + email + ": " + matches);
+            if (plainPassword == null || plainPassword.isEmpty()) {
+                System.err.println("Empty password provided");
+                return false;
+            }
+
+            User user = getByEmail(email);
+            if (user == null) {
+                System.err.println("User not found for email: " + email);
+                return false;
+            }
+
+            if (user.getPassword() == null || user.getPassword().isEmpty()) {
+                System.err.println("No password stored for user: " + email);
+                return false;
+            }
+
+            boolean matches = BCrypt.checkpw(plainPassword, user.getPassword());
             return matches;
         } catch (Exception e) {
-            System.err.println("Password verification error for user: " + email);
-            e.printStackTrace();
+            System.err.println("Password verification error: " + e.getMessage());
             return false;
         }
     }
@@ -354,7 +377,6 @@ public class UserService implements IServices<User> {
                 return false;
             }
 
-            // Generate new token if expired
             if (user.getVerificationTokenExpiry() == null ||
                     user.getVerificationTokenExpiry().isBefore(LocalDateTime.now())) {
                 user.setVerificationToken(VerificationService.generateVerificationToken());
@@ -376,6 +398,7 @@ public class UserService implements IServices<User> {
             return false;
         }
     }
+
     public void checkAndUpdateSchema() throws SQLException {
         DatabaseMetaData dbMetaData = cnx.getMetaData();
         String[] columnsToCheck = {"verification_token", "verification_token_expiry"};
@@ -390,6 +413,4 @@ public class UserService implements IServices<User> {
             }
         }
     }
-
-
 }

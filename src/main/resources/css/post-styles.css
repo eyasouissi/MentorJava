@@ -1,4 +1,17 @@
 /* post-styles.css */
+.root-pane {
+    -fx-background-color: linear-gradient(
+            to bottom right,
+            #ffffff 0%,    /* Top-left corner: white */
+            #8c84a1 30%,   /* Soft purple appears */
+            #6f6280 50%,   /* Darker center */
+            #8c84a1 70%,   /* Lightens again */
+            #ffffff 100%   /* Bottom-right corner: white */
+    );
+
+
+}
+
 .create-post-container {
     -fx-background-color: white; /* Background color */
     -fx-background-radius: 12px; /* Rounded corners */
@@ -418,4 +431,15 @@
     -fx-border-radius: 5;
     -fx-padding: 5;
     -fx-cursor: hand;
+}
+.icon-button {
+    -fx-padding: 5;
+    -fx-cursor: hand;
+    -fx-background-radius: 5;
+    -fx-transition: all 0.3s ease;
+}
+
+.icon-button:hover {
+    -fx-background-color: #eeeeee;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.1, 0, 1);
 }

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.Category.CategoriesController"
+            stylesheets="@/css/categories.css">
+
+    <left>
+        <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
+    </left>
+
+    <center>
+        <VBox>
+            <!-- Top Section - Hero Banner -->
+            <StackPane fx:id="heroPane" styleClass="hero-pane">
+                <VBox alignment="CENTER" spacing="15">
+                    <Label text="Categories" styleClass="hero-title"/>
+                    <Label text="Explore different categories of courses available on our platform"
+                           styleClass="hero-subtitle"/>
+                </VBox>
+            </StackPane>
+
+            <!-- Categories Carousel -->
+            <VBox styleClass="categories-container">
+                <HBox fx:id="categoriesCarousel" styleClass="carousel-container">
+                    <!-- Categories will be added dynamically -->
+                </HBox>
+
+                <!-- Navigation Buttons -->
+                <HBox styleClass="nav-buttons">
+                    <Button fx:id="prevButton" styleClass="nav-button prev-button">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-chevron-left"/>
+                        </graphic>
+                    </Button>
+                    <Button fx:id="nextButton" styleClass="nav-button next-button">
+                        <graphic>
+                            <FontIcon iconLiteral="fas-chevron-right"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

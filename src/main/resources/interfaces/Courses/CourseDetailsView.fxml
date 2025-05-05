@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.image.ImageView?>
+
+<?import javafx.scene.image.Image?>
+<ScrollPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.Courses.CourseDetailsController"
+            style="-fx-background: #f9f5fa;">
+    <VBox fx:id="mainContainer" spacing="20" style="-fx-padding: 30;" prefWidth="900" prefHeight="700">
+        <!-- Header avec fond violet -->
+        <VBox style="-fx-background-color: #D8BFD8; -fx-background-radius: 10; -fx-padding: 20;">
+            <Label fx:id="titleLabel" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #4b2c4b;" />
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <Label fx:id="tutorLabel" style="-fx-font-size: 18px; -fx-text-fill: #5d3a5d;" />
+                <Label fx:id="premiumLabel" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 3 12; -fx-background-radius: 15; -fx-background-color: #9d65a5;" />
+                <!-- Nouveau bouton Share -->
+                <Button text="Partager" onAction="#handleShareCourse"
+                        style="-fx-background-color: #9d65a5; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 3 12; -fx-background-radius: 15;">
+                    <graphic>
+                        <ImageView fitWidth="16" fitHeight="16">
+                            <Image url="@/assets/icons/share-icon.png" />
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+            <HBox spacing="15">
+                <Label fx:id="categoryLabel" style="-fx-font-size: 16px; -fx-text-fill: #5d3a5d; -fx-font-weight: bold;" />
+                <Label fx:id="createdAtLabel" style="-fx-font-size: 14px; -fx-text-fill: #7a5c7a;" />
+            </HBox>
+        </VBox>
+
+        <!-- Description avec carte ombrée -->
+        <VBox style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <Label text="Description" style="-fx-font-weight: bold; -fx-text-fill: #5d3a5d; -fx-font-size: 18px;"/>
+            <Label fx:id="descriptionLabel" style="-fx-font-size: 15px; -fx-text-fill: #5d3a5d; -fx-wrap-text: true;" maxWidth="800"/>
+        </VBox>
+
+        <HBox fx:id="ratingContainer" spacing="5">
+            <Label fx:id="star1" text="★" styleClass="rating-star"/>
+            <Label fx:id="star2" text="★" styleClass="rating-star"/>
+            <Label fx:id="star3" text="★" styleClass="rating-star"/>
+            <Label fx:id="star4" text="★" styleClass="rating-star"/>
+            <Label fx:id="star5" text="★" styleClass="rating-star"/>
+        </HBox>
+        <Label fx:id="ratingFeedback" style="-fx-text-fill: #4B0082; -fx-padding: 5 0;"/>
+
+        <!-- Section Niveaux -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
+            <HBox alignment="CENTER_LEFT" spacing="15">
+                <Label text="Niveaux du cours" style="-fx-font-weight: bold; -fx-text-fill: #5d3a5d; -fx-font-size: 18px;"/>
+                <Button text="+ Ajouter Niveau"
+                        style="-fx-background-color: #D8BFD8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 20;"
+                        onAction="#handleAddLevel">
+                </Button>
+            </HBox>
+
+            <VBox fx:id="levelsContainer" spacing="15" style="-fx-padding: 10 0 0 0;">
+                <!-- Les niveaux seront ajoutés dynamiquement ici -->
+            </VBox>
+        </VBox>
+
+        <!-- Formulaire pour ajouter des fichiers (caché par défaut) -->
+        <VBox fx:id="addFilesContainer" visible="false" spacing="20"
+              style="-fx-padding: 25; -fx-background-color: white; -fx-background-radius: 8; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 0);">
+
+            <Label fx:id="selectedLevelLabel" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #5d3a5d; -fx-padding: 0 0 10 0;"/>
+
+            <!-- Section fichiers existants -->
+            <VBox spacing="10">
+                <Label text="Fichiers existants:" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #5d3a5d;"/>
+                <ListView fx:id="filesListView" style="-fx-pref-height: 200; -fx-border-color: #e0d0e0; -fx-border-radius: 5;">
+                    <placeholder>
+                        <Label text="Aucun fichier disponible pour ce niveau" style="-fx-text-fill: #a58fa5; -fx-font-style: italic;"/>
+                    </placeholder>
+                </ListView>
+            </VBox>
+
+            <!-- Section upload -->
+            <VBox spacing="15">
+                <Label text="Ajouter un nouveau fichier:" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #5d3a5d;"/>
+
+                <GridPane hgap="15" vgap="15">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="70"/>
+                        <ColumnConstraints percentWidth="30"/>
+                    </columnConstraints>
+
+                    <rowConstraints>
+                        <RowConstraints prefHeight="45"/>
+                        <RowConstraints prefHeight="45"/>
+                    </rowConstraints>
+
+                    <HBox spacing="15" GridPane.columnSpan="2">
+                        <Button text="Parcourir..." onAction="#handleFileUpload"
+                                style="-fx-background-color: #D8BFD8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 20;"/>
+                        <Label text="Aucun fichier sélectionné" fx:id="selectedFileLabel"
+                               style="-fx-text-fill: #a58fa5; -fx-font-style: italic;"/>
+                    </HBox>
+
+                    <TextField fx:id="fileNameField" promptText="Nom du fichier" GridPane.rowIndex="1"
+                               style="-fx-background-radius: 5; -fx-border-color: #e0d0e0; -fx-border-radius: 5;"/>
+                    <Button text="Ajouter" onAction="#addFile" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                            style="-fx-background-color: #9d65a5; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 20;"/>
+                </GridPane>
+            </VBox>
+
+            <!-- Boutons d'action -->
+            <HBox spacing="20" alignment="CENTER_RIGHT" style="-fx-padding: 15 0 0 0;">
+                <Button text="Annuler" onAction="#hideAddFilesForm"
+                        style="-fx-background-color: #c0a9c0; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 20;"/>
+                <Button text="Terminer" onAction="#hideAddFilesForm"
+                        style="-fx-background-color: #D8BFD8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 20;"/>
+            </HBox>
+        </VBox>
+    </VBox>
+</ScrollPane>

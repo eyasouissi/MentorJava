@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.Front.SidebarController"
+      fx:id="sidebar"
+      spacing="20"
+      styleClass="sidebar"
+      prefWidth="280"
+      stylesheets="@/css/sidebarFront.css">
+
+    <!-- Header -->
+    <Label text="MENTOR" styleClass="sidebar-title"/>
+    <Label text="Discover" styleClass="sidebar-section"/>
+
+    <!-- Navigation Menu -->
+    <VBox spacing="10">
+        <!-- Home -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToHome">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/assets/images/home.png"/>
+            </ImageView>
+            <Label text="Home" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Courses -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToCourses">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/assets/images/bookmark.png"/>
+            </ImageView>
+            <Label text="Courses" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Forum -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToForum">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/assets/images/message.png"/>
+            </ImageView>
+            <Label text="Forum" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Groups -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToGroups">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/assets/images/group.png"/>
+            </ImageView>
+            <Label text="Groups" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Events -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToEvents">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/assets/images/calendar.png"/>
+            </ImageView>
+            <Label text="Events" styleClass="nav-label"/>
+        </HBox>
+    </VBox>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <!-- Bottom Section -->
+    <VBox spacing="10">
+        <!-- Profile -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#goToProfile">
+            <StackPane>
+                <ImageView fx:id="sidebarProfileImage" fitWidth="32" fitHeight="32" preserveRatio="true">
+                    <image>
+                        <Image url="@/assets/images/profile.png"/>
+                    </image>
+                    <clip>
+                        <Circle radius="16" centerX="16" centerY="16"/>
+                    </clip>
+                </ImageView>
+                <Circle radius="16" centerX="16" centerY="16" fill="transparent" stroke="#b399d4" strokeWidth="2"/>
+            </StackPane>
+            <Label text="Profile" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Logout -->
+        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#handleLogout">
+            <ImageView fitWidth="18" fitHeight="18">
+                <Image url="@/assets/images/logout.png"/>
+            </ImageView>
+            <Label text="Logout" styleClass="nav-label"/>
+        </HBox>
+    </VBox>
+</VBox>

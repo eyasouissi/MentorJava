@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Courses.CoursesController"
+      stylesheets="@/styles/courses-styles.css"
+      spacing="0"
+      prefWidth="1200"
+      prefHeight="800">
+
+    <!-- Sidebar -->
+    <fx:include fx:id="sidebar" source="/interfaces/Admin/Sidebar.fxml"/>
+
+    <!-- Main Content -->
+    <VBox styleClass="main-content" HBox.hgrow="ALWAYS">
+        <!-- Header -->
+        <HBox styleClass="header-box">
+            <Label text="Courses Management" styleClass="title-label"/>
+        </HBox>
+
+        <!-- Toolbar -->
+        <HBox styleClass="toolbar" spacing="15">
+            <!-- Add Button -->
+            <Button text="Add" onAction="#showAddCourseView" styleClass="add-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-plus"/>
+                </graphic>
+            </Button>
+
+            <!-- Refresh Button -->
+            <Button text="Refresh" onAction="#refreshCoursesList" styleClass="refresh-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-sync-alt"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Filters -->
+        <HBox styleClass="filter-box" spacing="15">
+            <Label text="Filter:" styleClass="filter-label"/>
+
+            <ComboBox fx:id="categoryFilterCombo" styleClass="filter-combo">
+                <placeholder>
+                    <Label text="All categories"/>
+                </placeholder>
+            </ComboBox>
+
+            <CheckBox fx:id="premiumFilterCheck" text="Premium only" styleClass="filter-checkbox"/>
+            <CheckBox fx:id="publishedFilterCheck" text="Published only" styleClass="filter-checkbox"/>
+        </HBox>
+
+        <!-- Courses List -->
+        <ListView fx:id="coursesListView" styleClass="modern-list" VBox.vgrow="ALWAYS">
+            <placeholder>
+                <VBox styleClass="empty-state" alignment="CENTER" spacing="15">
+                    <Label text="No courses available" styleClass="empty-text"/>
+                    <Label text="Use the 'Add' button to create a new course" styleClass="empty-subtext"/>
+                </VBox>
+            </placeholder>
+        </ListView>
+
+        <!-- Context Actions -->
+        <HBox fx:id="actionButtonsBox" styleClass="action-buttons-box" spacing="10">
+            <Button text="Edit" onAction="#showEditCourseView" styleClass="edit-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-edit"/>
+                </graphic>
+            </Button>
+            <Button text="Delete" onAction="#deleteCourse" styleClass="delete-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-trash"/>
+                </graphic>
+            </Button>
+        </HBox>
+    </VBox>
+</HBox>

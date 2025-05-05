@@ -452,8 +452,22 @@ public class PostController implements Initializable {
         });
 
         // --- Action Buttons ---
-        Button editBtn = new Button("Edit");
-        Button deleteBtn = new Button("Delete");
+        ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/edit.png")));
+        editIcon.setFitWidth(20);
+        editIcon.setFitHeight(20);
+        Button editBtn = new Button("", editIcon);
+        editBtn.setStyle("-fx-background-color: transparent;");
+        editBtn.getStyleClass().add("icon-button");
+        Tooltip.install(editBtn, new Tooltip("Edit"));
+
+        ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/delete.png")));
+        deleteIcon.setFitWidth(20);
+        deleteIcon.setFitHeight(20);
+        Button deleteBtn = new Button("", deleteIcon);
+        deleteBtn.setStyle("-fx-background-color: transparent;");
+        deleteBtn.getStyleClass().add("icon-button");
+        Tooltip.install(deleteBtn, new Tooltip("Delete"));
+
 
         HBox actions = new HBox(10, editBtn, deleteBtn, translateBtn);
         actions.setAlignment(Pos.CENTER_RIGHT);

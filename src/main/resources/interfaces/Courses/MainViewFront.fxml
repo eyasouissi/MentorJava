@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.Courses.MainViewController"
+            stylesheets="@/styles/category-styles.css">
+
+    <!-- Sidebar (left) -->
+    <left>
+        <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
+    </left>
+
+    <!-- Main content -->
+    <center>
+        <StackPane>
+            <!-- Main view (courses list) -->
+            <VBox fx:id="mainView" style="-fx-background-color: #F5F0F5;">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <spacing>20</spacing>
+
+                <!-- Header with Add button -->
+                <HBox alignment="CENTER_RIGHT">
+                    <padding>
+                        <Insets bottom="10"/>
+                    </padding>
+                    <Button text="Add Course" onAction="#showAddCourseForm"
+                            style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 8 15; -fx-background-radius: 5;"/>
+                </HBox>
+
+                <!-- Filter buttons -->
+                <HBox spacing="15">
+                    <padding>
+                        <Insets bottom="15"/>
+                    </padding>
+                    <Button fx:id="allCoursesButton" text="All Courses" onAction="#loadAllCourses"
+                            style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-font-weight: bold; -fx-background-radius: 5;"/>
+                    <Button fx:id="premiumCoursesButton" text="Premium Courses" onAction="#loadPremiumCourses"
+                            style="-fx-background-color: transparent; -fx-text-fill: #4B0082; -fx-border-color: #D8BFD8; -fx-border-width: 1; -fx-border-radius: 5;"/>
+                    <Button fx:id="popularCoursesButton" text="Popular Courses"
+                            style="-fx-background-color: transparent; -fx-text-fill: #4B0082; -fx-border-color: #D8BFD8; -fx-border-width: 1; -fx-border-radius: 5;"/>
+                </HBox>
+
+                <!-- Current category label -->
+                <Label fx:id="currentCategoryLabel" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4B0082;">
+                    <VBox.margin>
+                        <Insets bottom="10"/>
+                    </VBox.margin>
+                </Label>
+
+                <!-- Categories container -->
+                <VBox style="-fx-background-color: #F5F0F5;">
+                    <HBox alignment="CENTER" spacing="10">
+                        <padding>
+                            <Insets top="10" bottom="10"/>
+                        </padding>
+                        <Button fx:id="prevCategoryButton" styleClass="nav-button">
+                            <graphic>
+                                <Text text="◀" style="-fx-font-size: 15; -fx-fill: white;"/>
+                            </graphic>
+                        </Button>
+
+                        <ScrollPane fx:id="categoriesScrollPane"
+                                    hbarPolicy="NEVER"
+                                    vbarPolicy="NEVER"
+                                    fitToWidth="true"
+                                    styleClass="category-scroll">
+                            <HBox fx:id="categoriesContainer"
+                                  spacing="15"
+                                  styleClass="category-container"/>
+                        </ScrollPane>
+
+                        <Button fx:id="nextCategoryButton" styleClass="nav-button">
+                            <graphic>
+                                <Text text="▶" style="-fx-font-size: 15; -fx-fill: white;"/>
+                            </graphic>
+                        </Button>
+                    </HBox>
+                </VBox>
+                <!-- Courses list -->
+                <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+                    <FlowPane fx:id="coursesContainer" hgap="20" vgap="20">
+                        <padding>
+                            <Insets top="20" right="20" bottom="20" left="20"/>
+                        </padding>
+                    </FlowPane>
+                </ScrollPane>
+
+                <Label fx:id="courseCountLabel" style="-fx-text-fill: #4B0082;"/>
+
+
+                <!-- Pagination -->
+                <HBox alignment="CENTER" spacing="10">
+                    <padding>
+                        <Insets top="15"/>
+                    </padding>
+                    <Button fx:id="prevPageButton" text="Previous" onAction="#previousPage"
+                            style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-background-radius: 5;"/>
+                    <Label fx:id="pageInfoLabel" style="-fx-text-fill: #4B0082;"/>
+                    <Button fx:id="nextPageButton" text="Next" onAction="#nextPage"
+                            style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-background-radius: 5;"/>
+                </HBox>
+            </VBox>
+
+            <!-- Add course form (hidden by default) -->
+            <VBox fx:id="addCourseView" visible="false" style="-fx-background-color: #F5F0F5; -fx-border-color: #D8BFD8; -fx-border-width: 1; -fx-border-radius: 5;">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <spacing>15</spacing>
+
+                <Label text="Add New Course" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+
+                <GridPane hgap="15" vgap="15">
+                    <padding>
+                        <Insets top="10"/>
+                    </padding>
+                    <Label text="Title:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                           style="-fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+                    <TextField fx:id="courseTitleField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                               style="-fx-pref-width: 300; -fx-background-color: white; -fx-border-color: #D8BFD8;"/>
+
+                    <Label text="Description:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                           style="-fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+                    <TextArea fx:id="courseDescriptionField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                              style="-fx-pref-width: 300; -fx-pref-height: 100; -fx-background-color: white; -fx-border-color: #D8BFD8;"/>
+
+                    <Label text="Category:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                           style="-fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+                    <ComboBox fx:id="categoryComboBox" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                              style="-fx-pref-width: 300; -fx-background-color: white; -fx-border-color: #D8BFD8;"/>
+
+                    <Label text="Tutor:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                           style="-fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+                    <TextField fx:id="tutorField" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                               style="-fx-pref-width: 300; -fx-background-color: white; -fx-border-color: #D8BFD8;"/>
+
+                    <Label text="Premium:" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                           style="-fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+                    <CheckBox fx:id="premiumCheckBox" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                              style="-fx-text-fill: #4B0082;"/>
+                </GridPane>
+
+                <!-- Levels section -->
+                <VBox fx:id="levelsContainer" spacing="10" style="-fx-background-color: #F8F5F8; -fx-border-color: #D8BFD8; -fx-border-width: 1; -fx-border-radius: 5;">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <Label text="Levels" style="-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: #4B0082;"/>
+
+                    <ListView fx:id="levelsListView" style="-fx-pref-height: 150; -fx-background-color: white; -fx-border-color: #D8BFD8;">
+                        <placeholder>
+                            <Label text="No levels added yet" style="-fx-text-fill: #9370DB;"/>
+                        </placeholder>
+                    </ListView>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="levelNameField" promptText="Level name"
+                                   style="-fx-pref-width: 200; -fx-background-color: white; -fx-border-color: #D8BFD8;"/>
+                        <Button text="Add Level" onAction="#addLevel"
+                                style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-background-radius: 5;"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Control buttons -->
+                <HBox spacing="15" alignment="CENTER_RIGHT">
+                    <padding>
+                        <Insets top="15"/>
+                    </padding>
+                    <Button text="Cancel" onAction="#cancelAddCourse"
+                            style="-fx-background-color: #9370DB; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
+
+                    <HBox spacing="10" alignment="CENTER_RIGHT">
+                        <Button text="Generate with AI" onAction="#AIGenerator"
+                                style="-fx-background-color: #4B0082; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
+                        <Button text="Manual Entry" onAction="#showManualForm" visible="false" fx:id="manualEntryBtn"
+                                style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
+                        <Button text="Save" onAction="#saveCourse" fx:id="saveButton" visible="false"
+                                style="-fx-background-color: #4B0082; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15;"/>
+                    </HBox>
+                </HBox>
+            </VBox>
+        </StackPane>
+    </center>
+</BorderPane>

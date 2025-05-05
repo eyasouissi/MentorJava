@@ -5,8 +5,15 @@ import jakarta.mail.internet.*;
 import java.util.Properties;
 
 public class EmailService {
-    private final String senderEmail = "workawayespritproject@gmail.com";
-    private final String senderPassword = "udwk asll fodw irlc"; // App Password
+    // Hardcoded credentials for immediate testing
+    private final String senderEmail = "esouissi870@gmail.com";
+    private final String senderPassword = "pcnk ggme rhkh caha";
+    private final boolean isConfigured = true;
+
+    public EmailService() {
+        System.out.println("🔥 EmailService FORCE-ENABLED");
+        System.out.println("Using SMTP: smtp.gmail.com:587");
+    }
 
     public void sendEmail(String recipient, String subject, String body) throws MessagingException {
         Properties props = new Properties();
@@ -14,7 +21,10 @@ public class EmailService {
         props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587");
-        props.put("mail.smtp.ssl.trust", "smtp.gmail.com");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        props.put("mail.smtp.ssl.trust", "*");
+        props.put("mail.smtp.connectiontimeout", "5000");
+        props.put("mail.smtp.timeout", "5000");
 
         Session session = Session.getInstance(props, new Authenticator() {
             protected PasswordAuthentication getPasswordAuthentication() {
@@ -22,27 +32,22 @@ public class EmailService {
             }
         });
 
-        Message message = new MimeMessage(session);
-        message.setFrom(new InternetAddress(senderEmail));
-        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
-        message.setSubject(subject);
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(senderEmail));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipient));
+            message.setSubject(subject);
+            message.setContent(body, "text/html; charset=utf-8");
 
-        // HTML Email Template
-        String htmlContent = """
-            <html>
-                <body style="font-family: Arial, sans-serif;">
-                    <h2 style="color: #4CAF50;">Account Verification</h2>
-                    <p>Click the button below to verify your account:</p>
-                    <a href="%s" style="background-color: #4CAF50; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                        Verify Account
-                    </a>
-                    <p>Or copy this link: <br>%s</p>
-                </body>
-            </html>
-            """.formatted(body, body);
+            Transport.send(message);
+            System.out.println("✅ Email sent to: " + recipient);
+        } catch (Exception e) {
+            System.err.println("❌ Email failed: " + e.getMessage());
+            throw new MessagingException("Failed to send email", e);
+        }
+    }
 
-        message.setContent(htmlContent, "text/html");
-        Transport.send(message);
-        System.out.println("Email sent successfully to " + recipient);
+    public boolean isConfigured() {
+        return true;
     }
 }

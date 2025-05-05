@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.Insets?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
+
+<HBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Category.CategoryController"
+      stylesheets="@/styles/category-styles.css"
+      spacing="0"
+      prefWidth="1000"
+      prefHeight="700">
+
+    <!-- Sidebar -->
+    <fx:include fx:id="sidebar" source="/interfaces/Admin/Sidebar.fxml"/>
+
+    <!-- Main Content -->
+    <VBox styleClass="main-content" HBox.hgrow="ALWAYS">
+        <!-- Header -->
+        <HBox styleClass="header-box">
+            <Label text="Category Management" styleClass="title-label"/>
+        </HBox>
+
+        <!-- Toolbar with enhanced search bar -->
+        <HBox styleClass="toolbar" spacing="15" alignment="CENTER_LEFT">
+            <Button fx:id="addButton" text="Add" onAction="#handleAddCategory" styleClass="add-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-plus"/>
+                </graphic>
+            </Button>
+
+            <!-- Styled search bar -->
+            <HBox styleClass="search-container">
+                <TextField fx:id="searchField" promptText="Search categories..." styleClass="search-field">
+                    <padding>
+                        <Insets top="5" right="5" bottom="5" left="30"/>
+                    </padding>
+                </TextField>
+                <FontIcon iconLiteral="fas-search" styleClass="search-icon"/>
+                <Button styleClass="clear-search-button" onAction="#clearSearch">
+                    <graphic>
+                        <FontIcon iconLiteral="fas-times"/>
+                    </graphic>
+                </Button>
+            </HBox>
+
+            <Button text="Refresh" onAction="#loadCategories" styleClass="refresh-button">
+                <graphic>
+                    <FontIcon iconLiteral="fas-sync-alt"/>
+                </graphic>
+            </Button>
+        </HBox>
+
+        <!-- Category List -->
+        <ListView fx:id="categoryListView" styleClass="modern-list" VBox.vgrow="ALWAYS">
+            <placeholder>
+                <VBox styleClass="empty-state" alignment="CENTER" spacing="15">
+                    <ImageView styleClass="clickable-icon empty-icon" onMouseClicked="#handleDefaultIconClick">
+                        <image>
+                            <Image url="@/interfaces/Category/images/default-icon.png"/>
+                        </image>
+                    </ImageView>
+                    <Label text="No categories available" styleClass="empty-text"/>
+                    <Label text="Click 'Add' to create a new category" styleClass="empty-subtext"/>
+                </VBox>
+            </placeholder>
+        </ListView>
+    </VBox>
+</HBox>

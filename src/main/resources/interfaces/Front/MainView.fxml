@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.Front.MainController"
+            stylesheets="@/styles/main.css">
+
+    <!-- Left Sidebar -->
+    <left>
+        <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <StackPane fx:id="contentPane">
+            <!-- Dashboard View -->
+            <VBox fx:id="dashboardView" alignment="TOP_CENTER" spacing="20" styleClass="content-view">
+                <!-- Contenu existant... -->
+            </VBox>
+
+            <!-- Courses View -->
+            <VBox fx:id="coursesView" alignment="TOP_CENTER" spacing="20" styleClass="content-view" visible="false">
+                <Label text="Mes Cours" styleClass="section-title"/>
+                <FlowPane fx:id="coursesGrid" hgap="20" vgap="20" prefWrapLength="800"/>
+            </VBox>
+
+            <!-- Events View -->
+            <VBox fx:id="eventsView" alignment="TOP_CENTER" spacing="20" styleClass="content-view" visible="false">
+                <Label text="Événements" styleClass="section-title"/>
+                <!-- Contenu des événements... -->
+            </VBox>
+
+            <!-- Messages View -->
+            <VBox fx:id="messagesView" alignment="TOP_CENTER" spacing="20" styleClass="content-view" visible="false">
+                <Label text="Messages" styleClass="section-title"/>
+                <!-- Contenu des messages... -->
+            </VBox>
+
+            <!-- Settings View -->
+            <VBox fx:id="settingsView" alignment="TOP_CENTER" spacing="20" styleClass="content-view" visible="false">
+                <Label text="Paramètres" styleClass="section-title"/>
+                <!-- Contenu des paramètres... -->
+            </VBox>
+        </StackPane>
+    </center>
+
+</BorderPane>

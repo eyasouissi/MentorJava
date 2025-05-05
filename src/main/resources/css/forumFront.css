@@ -10,9 +10,10 @@
 .title {
     -fx-font-size: 28px;
     -fx-font-weight: bold;
-    -fx-text-fill: #8c84a1; /* light black */
-    -fx-font-family: "Poppins", sans-serif;
+    -fx-text-fill: #8c84a1;
+    -fx-font-family: "Poppins";
 }
+
 
 .title:hover {
     -fx-text-fill: #5a5a72;

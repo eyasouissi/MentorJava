@@ -5,17 +5,17 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.scene.Node;
+import tn.esprit.controllers.Front.SidebarController;
 import tn.esprit.controllers.user.ProfileController;
 import tn.esprit.controllers.user.admin.AdminProfileController;
 import tn.esprit.entities.User;
-import javafx.scene.Node;
+
 import java.io.IOException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,12 +24,15 @@ public class MainController {
     @FXML private VBox coursesDropdown;
     @FXML private VBox eventsDropdown;
     @FXML private VBox pricingDropdown;
-    @FXML private VBox contentArea;
+    @FXML private VBox sidebarContainer;
+    @FXML private StackPane contentArea;
 
     private User currentUser;
+
     private static final Map<String, String> FXML_PATHS = new HashMap<>();
 
     static {
+        FXML_PATHS.put("Home", "/interfaces/Front/home.fxml");
         FXML_PATHS.put("Courses", "/interfaces/courses/courses.fxml");
         FXML_PATHS.put("Category", "/interfaces/courses/category.fxml");
         FXML_PATHS.put("Forum", "/interfaces/community/forum.fxml");
@@ -39,76 +42,110 @@ public class MainController {
         FXML_PATHS.put("Pricing", "/interfaces/pricing/pricing.fxml");
         FXML_PATHS.put("Subscription", "/interfaces/pricing/subscription.fxml");
     }
-
-    public void initializeWithUser(User user, String message) {
+    // Add this method to MainController.java
+    public void updateUserInfo(User user) {
         this.currentUser = user;
-        if (welcomeLabel != null && user != null) {
-            welcomeLabel.setText("Welcome, " + user.getName() + "! " + message);
+        if (welcomeLabel != null) {
+            welcomeLabel.setText("Welcome, " + user.getName() + "!");
+        }
+
+        // Force update the sidebar profile image
+        if (sidebarContainer != null && !sidebarContainer.getChildren().isEmpty()) {
+            Node sidebar = sidebarContainer.getChildren().get(0);
+            if (sidebar.getUserData() instanceof SidebarController) {
+                SidebarController sidebarController = (SidebarController) sidebar.getUserData();
+                sidebarController.setCurrentUser(user);
+                sidebarController.updateProfileImage(); // Now this works because method is public
+            }
         }
     }
 
-    @FXML
-    private void initialize() {
-        if (coursesDropdown != null && eventsDropdown != null && pricingDropdown != null) {
-            hideAllDropdowns();
+    // Add this method to MainController.java
+    public void notifyProfilePictureUpdated(String newPfpPath) {
+        if (sidebarContainer != null && !sidebarContainer.getChildren().isEmpty()) {
+            Node sidebar = sidebarContainer.getChildren().get(0);
+            if (sidebar.getUserData() instanceof SidebarController) {
+                SidebarController sidebarController = (SidebarController) sidebar.getUserData();
+                // Update the current user's pfp path
+                if (currentUser != null) {
+                    currentUser.setPfp(newPfpPath);
+                }
+                sidebarController.updateProfileImage();
+            }
+        }
+    }
+    public void initializeWithUser(User user, String message) {
+        this.currentUser = user;
+
+        if (welcomeLabel != null && user != null) {
+            welcomeLabel.setText("Welcome, " + user.getName() + "! " + message);
+        }
+
+        hideAllDropdowns();
+
+        try {
+            FXMLLoader sidebarLoader = new FXMLLoader(getClass().getResource("/interfaces/Front/Sidebar.fxml"));
+            Parent sidebar = sidebarLoader.load();
+            SidebarController sidebarController = sidebarLoader.getController();
+            sidebarController.setCurrentUser(user);
+            sidebarController.setContentArea(contentArea);
+
+            if (sidebarContainer != null) {
+                sidebarContainer.getChildren().clear();
+                sidebarContainer.getChildren().add(sidebar);
+
+                // Defer the binding until the VBox is attached to the Scene
+                sidebarContainer.sceneProperty().addListener((obs, oldScene, newScene) -> {
+                    if (newScene != null) {
+                        sidebarContainer.prefWidthProperty().bind(
+                                newScene.widthProperty().multiply(0.2).add(40)
+                        );
+                    }
+                });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void hideAllDropdowns() {
-        coursesDropdown.setVisible(false);
-        eventsDropdown.setVisible(false);
-        pricingDropdown.setVisible(false);
+        if (coursesDropdown != null) coursesDropdown.setVisible(false);
+        if (eventsDropdown != null) eventsDropdown.setVisible(false);
+        if (pricingDropdown != null) pricingDropdown.setVisible(false);
     }
 
-    @FXML
-    private void toggleCoursesDropdown() {
-        if (coursesDropdown != null) {
-            coursesDropdown.setVisible(!coursesDropdown.isVisible());
-            if (coursesDropdown.isVisible()) {
-                eventsDropdown.setVisible(false);
-                pricingDropdown.setVisible(false);
-            }
+    @FXML private void toggleCoursesDropdown() {
+        coursesDropdown.setVisible(!coursesDropdown.isVisible());
+        if (coursesDropdown.isVisible()) {
+            eventsDropdown.setVisible(false);
+            pricingDropdown.setVisible(false);
         }
     }
 
-    @FXML
-    private void toggleEventsDropdown() {
-        if (eventsDropdown != null) {
-            eventsDropdown.setVisible(!eventsDropdown.isVisible());
-            if (eventsDropdown.isVisible()) {
-                coursesDropdown.setVisible(false);
-                pricingDropdown.setVisible(false);
-            }
+    @FXML private void toggleEventsDropdown() {
+        eventsDropdown.setVisible(!eventsDropdown.isVisible());
+        if (eventsDropdown.isVisible()) {
+            coursesDropdown.setVisible(false);
+            pricingDropdown.setVisible(false);
         }
     }
 
-    @FXML
-    private void togglePricingDropdown() {
-        if (pricingDropdown != null) {
-            pricingDropdown.setVisible(!pricingDropdown.isVisible());
-            if (pricingDropdown.isVisible()) {
-                coursesDropdown.setVisible(false);
-                eventsDropdown.setVisible(false);
-            }
+    @FXML private void togglePricingDropdown() {
+        pricingDropdown.setVisible(!pricingDropdown.isVisible());
+        if (pricingDropdown.isVisible()) {
+            coursesDropdown.setVisible(false);
+            eventsDropdown.setVisible(false);
         }
     }
 
-    @FXML
-    private void navigateToCourses() { loadContent("Courses"); }
-    @FXML
-    private void navigateToCategory() { loadContent("Category"); }
-    @FXML
-    private void navigateToForum() { loadContent("Forum"); }
-    @FXML
-    private void navigateToGroupes() { loadContent("Groupes"); }
-    @FXML
-    private void navigateToEvents() { loadContent("Events"); }
-    @FXML
-    private void navigateToAnnouncements() { loadContent("Announcements"); }
-    @FXML
-    private void navigateToPricing() { loadContent("Pricing"); }
-    @FXML
-    private void navigateToSubscription() { loadContent("Subscription"); }
+    @FXML private void navigateToCourses() { loadContent("Courses"); }
+    @FXML private void navigateToCategory() { loadContent("Category"); }
+    @FXML private void navigateToForum() { loadContent("Forum"); }
+    @FXML private void navigateToGroupes() { loadContent("Groupes"); }
+    @FXML private void navigateToEvents() { loadContent("Events"); }
+    @FXML private void navigateToAnnouncements() { loadContent("Announcements"); }
+    @FXML private void navigateToPricing() { loadContent("Pricing"); }
+    @FXML private void navigateToSubscription() { loadContent("Subscription"); }
 
     private void loadContent(String viewName) {
         try {
@@ -139,50 +176,32 @@ public class MainController {
     @FXML
     private void goToProfile(ActionEvent event) {
         try {
-            System.out.println("Current user roles: " + currentUser.getRoles());
             String fxmlPath;
-
-            // Check user role to determine which profile to open
-            if (currentUser != null && currentUser.getRoles() != null) {
-                if (currentUser.getRoles().contains("ROLE_ADMIN")) {
-                    System.out.println("Loading admin profile");
-                    fxmlPath = "/interfaces/user/admin/adminprofile.fxml";
-                } else {
-                    System.out.println("Loading regular profile");
-                    fxmlPath = "/interfaces/user/profile.fxml";
-                }
+            if (currentUser != null && currentUser.getRoles() != null &&
+                    currentUser.getRoles().contains("ROLE_ADMIN")) {
+                fxmlPath = "/interfaces/user/admin/adminprofile.fxml";
             } else {
-                // Fallback if user or roles are null
-               fxmlPath = "/interfaces/user/profile.fxml";
-           }
+                fxmlPath = "/interfaces/user/profile.fxml";
+            }
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
-            // Set user data for both profile types
             if (fxmlPath.contains("adminprofile")) {
                 AdminProfileController adminController = loader.getController();
                 adminController.setUserData(currentUser);
             } else {
                 ProfileController profileController = loader.getController();
                 profileController.setUserData(currentUser);
+                profileController.setMainController(this); // Add this line
             }
 
             Stage stage = new Stage();
             stage.setScene(new Scene(root));
-            stage.setTitle(fxmlPath.contains("adminprofile") ? "Admin Profile" : "User Profile");
+            stage.setTitle("User Profile");
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert("Error", "Failed to load profile: " + e.getMessage());
         }
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 }

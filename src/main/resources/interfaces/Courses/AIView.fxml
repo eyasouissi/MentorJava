@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Courses.AIController"
+      spacing="15"
+      style="-fx-padding: 20; -fx-background-color: #F5F0F5;">
+
+    <Label text="AI Course Generator"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+
+    <TextArea fx:id="promptField"
+              promptText="Describe your course (e.g., 'Intro to Java Programming')"
+              prefHeight="100"
+              wrapText="true"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <ComboBox fx:id="modelCombo" promptText="Select AI Model">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="mistralai/Mixtral-8x7B-Instruct-v0.1"/>
+                    <String fx:value="meta-llama/Llama-3-70b-instruct"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <Button text="Generate" onAction="#generateCourse"
+                style="-fx-background-color: #9370DB; -fx-text-fill: white; -fx-font-weight: bold;"/>
+    </HBox>
+
+    <ProgressIndicator fx:id="progressIndicator" visible="false"/>
+
+    <ListView fx:id="resultListView" VBox.vgrow="ALWAYS"/>
+    <!-- Cell factory will be set programmatically in initialize() -->
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <ComboBox fx:id="formatCombo" promptText="Choose format">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="PDF"/>
+                    <String fx:value="DOCX"/>
+                    <String fx:value="PPTX"/>
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <Button text="Save File" onAction="#saveAsFile"
+                style="-fx-background-color: #4B0082; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Clear" onAction="#clearResults"
+                style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-font-weight: bold;"/>
+    </HBox>
+    <Label fx:id="successLabel"
+           text="✅ Fichier enregistré avec succès !"
+           style="-fx-text-fill: green; -fx-font-weight: bold; -fx-opacity: 0;"
+           alignment="CENTER"/>
+
+
+</VBox>

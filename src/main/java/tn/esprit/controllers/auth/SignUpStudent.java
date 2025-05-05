@@ -9,13 +9,10 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import tn.esprit.entities.User;
 import tn.esprit.services.UserService;
-import tn.esprit.services.EmailService;
 import tn.esprit.services.VerificationServer;
 import tn.esprit.services.VerificationService;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -36,9 +33,7 @@ public class SignUpStudent {
     @FXML private RadioButton femaleRadio;
     @FXML private ComboBox<String> countryComboBox;
 
-    @FXML
     private ToggleGroup genderGroup = new ToggleGroup();
-
     private String redirectTarget = "/interfaces/auth/login.fxml";
     private final UserService userService = UserService.getInstance();
 
@@ -74,12 +69,18 @@ public class SignUpStudent {
 
             userService.checkAndUpdateSchema();
             userService.ajouter(newUser);
-            sendVerificationEmail(newUser);
 
-            showSuccess("Registration successful! Please check your email to verify your account.");
+            if (userService.isEmailServiceAvailable()) {
+                showSuccess("Registration successful! Please check your email to verify your account.");
+            } else {
+                String manualVerificationUrl = VerificationServer.getVerificationUrl(newUser.getVerificationToken());
+                showAlert("Manual Verification Required",
+                        "Email service unavailable. Please visit this link to verify:\n" +
+                                manualVerificationUrl + "\n\nOr use this token: " +
+                                newUser.getVerificationToken());
+            }
+
             clearForm();
-            showAlert("Verification Needed", "Please check your email and click the verification link");
-
         } catch (Exception e) {
             showError("Registration failed: " + e.getMessage());
             e.printStackTrace();
@@ -169,47 +170,6 @@ public class SignUpStudent {
         newUser.setCountry(countryComboBox.getValue());
         newUser.getRoles().clear();
         return newUser;
-    }
-
-    private void sendVerificationEmail(User user) {
-        try {
-            EmailService emailService = new EmailService();
-            String verificationLink = VerificationServer.getVerificationUrl(user.getVerificationToken());
-
-            String emailBody = String.format("""
-                <html>
-                    <body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-                        <div style="background-color: #f8f9fa; padding: 20px; border-radius: 10px;">
-                            <h2 style="color: #4CAF50; text-align: center;">WorkAway Account Verification</h2>
-                            <p style="font-size: 16px;">Hello %s,</p>
-                            <p style="font-size: 16px;">Thank you for registering with WorkAway. Please verify your email address to activate your account.</p>
-                            
-                            <div style="text-align: center; margin: 25px 0;">
-                                <a href="%s" style="background-color: #4CAF50; color: white; padding: 12px 24px; 
-                                    text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
-                                    Verify Email Address
-                                </a>
-                            </div>
-                            
-                            <p style="font-size: 14px; color: #6c757d;">Or copy and paste this link into your browser:<br>
-                            <span style="word-break: break-all;">%s</span></p>
-                            
-                            <p style="font-size: 14px; color: #6c757d;">If you didn't create an account with WorkAway, 
-                            please ignore this email.</p>
-                        </div>
-                    </body>
-                </html>
-                """, user.getName(), verificationLink, verificationLink);
-
-            emailService.sendEmail(
-                    user.getEmail(),
-                    "Verify Your WorkAway Account",
-                    emailBody
-            );
-        } catch (Exception e) {
-            System.err.println("Failed to send verification email: " + e.getMessage());
-            throw new RuntimeException("Failed to send verification email", e);
-        }
     }
 
     private String getSelectedGender() {

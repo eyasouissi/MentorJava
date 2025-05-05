@@ -1,28 +1,11 @@
 package tn.esprit.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.util.Objects;
 
-@Entity
-@Table(name = "rating")
 public class Rating {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_rating_course"))
     private Courses course;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false, foreignKey = @ForeignKey(name = "fk_rating_user"))
     private User user;
-
-    @Column(nullable = false)
-    @Min(value = 1, message = "Rating must be at least 1")
-    @Max(value = 5, message = "Rating must be at most 5")
     private Integer rating;
 
     public Rating() {
@@ -35,14 +18,37 @@ public class Rating {
     }
 
     // Getters and Setters
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-    public Courses getCourse() { return course; }
-    public void setCourse(Courses course) { this.course = course; }
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-    public Integer getRating() { return rating; }
-    public void setRating(Integer rating) { this.rating = rating; }
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Courses getCourse() {
+        return course;
+    }
+
+    public void setCourse(Courses course) {
+        this.course = course;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
+    }
 
     @Override
     public boolean equals(Object o) {

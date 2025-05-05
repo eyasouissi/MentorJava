@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.Category.ListCoursesController"
+            stylesheets="@/css/courses.css">
+
+    <left>
+        <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true">
+            <VBox spacing="20" style="-fx-padding: 20;">
+                <!-- Category Header -->
+                <StackPane styleClass="category-header">
+                    <VBox alignment="CENTER" spacing="15" style="-fx-padding: 50 0;">
+                        <ImageView fx:id="categoryIcon" fitWidth="100" fitHeight="100" preserveRatio="true"
+                                   styleClass="category-icon"/>
+                        <Text fx:id="categoryName" styleClass="category-title"/>
+                        <Text fx:id="categoryDescription" styleClass="category-description" wrappingWidth="500"/>
+                    </VBox>
+                </StackPane>
+
+                <!-- Action Bar -->
+                <HBox styleClass="action-bar" alignment="CENTER_LEFT" spacing="20">
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Hyperlink text="Home" onAction="#goToHome" styleClass="breadcrumb-link"/>
+                        <Text text=">" styleClass="breadcrumb-separator"/>
+                        <Hyperlink text="Categories" onAction="#goToCategories" styleClass="breadcrumb-link"/>
+                        <Text text=">" styleClass="breadcrumb-separator"/>
+                        <Text fx:id="currentCategory" styleClass="breadcrumb-current"/>
+                    </HBox>
+
+                    <Button fx:id="addCourseBtn" text="+ Add Course" onAction="#createCourse"
+                            styleClass="add-course-btn" visible="false"/>
+                </HBox>
+
+                <!-- Courses Section -->
+                <VBox styleClass="courses-container" spacing="15">
+                    <!-- Search and Filter -->
+                    <HBox styleClass="search-filter-container" spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="searchInput" promptText="Search courses..."
+                                   styleClass="search-field"/>
+                        <ComboBox fx:id="filterSelect" styleClass="filter-combo">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="All courses"/>
+                                    <String fx:value="Free courses"/>
+                                    <String fx:value="Premium courses"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </HBox>
+
+                    <!-- Course List -->
+                    <FlowPane fx:id="courseList" hgap="20" vgap="20" styleClass="courses-flowpane">
+                        <!-- Template for course cards (hidden by default) -->
+                        <VBox fx:id="courseTemplate" styleClass="course-card" visible="false">
+                            <VBox styleClass="course-card-header">
+                                <Label fx:id="courseTitle" styleClass="course-title"/>
+                                <Label fx:id="tutorName" styleClass="course-tutor"/>
+                            </VBox>
+                            <Text fx:id="courseDescription" styleClass="course-description" wrappingWidth="280"/>
+                            <HBox styleClass="course-footer" spacing="10">
+                                <Label fx:id="createdAt" styleClass="course-date"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="courseButton" styleClass="course-btn"/>
+                            </HBox>
+                        </VBox>
+                    </FlowPane>
+
+                    <!-- Pagination -->
+                    <HBox styleClass="pagination-container" alignment="CENTER" spacing="15">
+                        <Button fx:id="prevBtn" text="Previous" styleClass="pagination-btn"/>
+                        <Label fx:id="pageNumber" styleClass="page-number"/>
+                        <Button fx:id="nextBtn" text="Next" styleClass="pagination-btn"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

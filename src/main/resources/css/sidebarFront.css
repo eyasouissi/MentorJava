@@ -1,0 +1,55 @@
+.sidebar {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 24 16;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0.3, 0, 2);
+    -fx-background-insets: 0;
+}
+
+.sidebar-title {
+    -fx-text-fill: #8A84A0;
+    -fx-font-size: 25px;
+    -fx-font-weight: bold;
+    -fx-padding: 0 0 20 0;
+}
+
+.sidebar-section {
+    -fx-text-fill: #8A84A0;
+    -fx-font-size: 13px;
+    -fx-padding: 0 0 10 0;
+}
+
+.nav-item {
+    -fx-padding: 10 12;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+    -fx-spacing: 8;
+    -fx-font-size: 13px;
+    -fx-text-fill: #8A84A0;
+    -fx-background-color: transparent;
+}
+
+.nav-item:hover {
+    -fx-background-color: #f2f2f2;
+}
+
+.nav-item.selected {
+    -fx-background-color: #f6f6f8;
+}
+
+.nav-label {
+    -fx-text-fill: #8A84A0;
+}
+
+.nav-item ImageView {
+    -fx-opacity: 0.8;
+}
+
+.nav-item:hover ImageView {
+    -fx-opacity: 1;
+}
+
+.logout {
+    -fx-text-fill: #8A84A0;
+    -fx-cursor: hand;
+}

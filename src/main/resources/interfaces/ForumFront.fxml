@@ -9,7 +9,7 @@
 <HBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.esprit.controllers.ForumFrontController"
-      stylesheets="@/css/sidebar.css,@/css/forumFront.css "
+      stylesheets="@/css/sidebarFront.css,@/css/forumFront.css "
       spacing="24"
       prefHeight="600"
       prefWidth="1000">

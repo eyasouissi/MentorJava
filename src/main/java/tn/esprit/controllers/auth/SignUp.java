@@ -6,16 +6,15 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import tn.esprit.entities.User;
 import tn.esprit.services.UserService;
 import tn.esprit.services.EmailService;
 import tn.esprit.services.VerificationServer;
 import tn.esprit.services.VerificationService;
-import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -37,6 +36,7 @@ public class SignUp {
     @FXML private ComboBox<String> countryComboBox;
     @FXML private RadioButton studentRadio;
     @FXML private RadioButton tutorRadio;
+    @FXML private Text titleText;
 
     @FXML
     private ToggleGroup genderGroup = new ToggleGroup();
@@ -45,6 +45,7 @@ public class SignUp {
 
     private String redirectTarget = "/interfaces/auth/login.fxml";
     private final UserService userService = UserService.getInstance();
+    private boolean isAdminMode = false;
 
     @FXML
     public void initialize() {
@@ -69,7 +70,17 @@ public class SignUp {
             showError("System error: Verification service unavailable");
         }
     }
-    // Add this method back
+
+    public void setAdminMode(boolean isAdminMode) {
+        this.isAdminMode = isAdminMode;
+    }
+
+    public void setFormTitle(String title) {
+        if (titleText != null) {
+            titleText.setText(title);
+        }
+    }
+
     public void setRedirectTarget(String target) {
         this.redirectTarget = target;
     }
@@ -84,21 +95,31 @@ public class SignUp {
             User newUser = createUserFromInput();
             System.out.println("Original password before processing: " + newUser.getPassword());
 
-            // REMOVED THE HASHING HERE - let UserService handle it
             userService.checkAndUpdateSchema();
-
             userService.ajouter(newUser);
-            sendVerificationEmail(newUser);
 
-            showSuccess("Registration successful! Please check your email to verify your account.");
+            if (isAdminMode) {
+                newUser.setVerified(true);
+                userService.modifier(newUser);
+
+                showSuccess("User added successfully!");
+                showAlert("Success", "User added successfully!");
+
+                ((Stage) emailField.getScene().getWindow()).close();
+            } else {
+                sendVerificationEmail(newUser);
+                showSuccess("Registration successful! Please check your email to verify your account.");
+                showAlert("Verification Needed", "Please check your email and click the verification link");
+                redirectToTarget();
+            }
+
             clearForm();
-            showAlert("Verification Needed", "Please check your email and click the verification link");
-
         } catch (Exception e) {
-            showError("Registration failed: " + e.getMessage());
+            showError("Operation failed: " + e.getMessage());
             e.printStackTrace();
         }
     }
+
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(title);
@@ -106,6 +127,7 @@ public class SignUp {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
     private boolean validateInputs() {
         String email = emailField.getText().trim();
         String plainPassword = passwordField.getText();
@@ -183,7 +205,6 @@ public class SignUp {
         newUser.addRole(getSelectedRole());
         return newUser;
     }
-
 
     private void sendVerificationEmail(User user) {
         try {
@@ -277,6 +298,8 @@ public class SignUp {
 
     @FXML
     public void handleLoginRedirect(ActionEvent event) {
-        redirectToTarget();
+        if (!isAdminMode) {
+            redirectToTarget();
+        }
     }
 }
