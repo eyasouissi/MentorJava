@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.paint.Color?>
+
+<VBox spacing="10" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.AjoutEvenementController">
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20" />
+    </padding>
+
+    <Label text="Titre *" />
+    <TextField fx:id="titreField" />
+    <Label fx:id="titreError" textFill="RED" visible="false" />
+
+    <Label text="Description *" />
+    <TextArea fx:id="descriptionField" wrapText="true" prefHeight="100" />
+    <Label fx:id="descriptionError" textFill="RED" visible="false" />
+
+    <Label text="Date et heure de début *" />
+    <HBox spacing="10">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <DatePicker fx:id="dateDebutPicker" maxWidth="Infinity" />
+        </VBox>
+        <VBox spacing="5">
+            <HBox spacing="5">
+                <ComboBox fx:id="heureDebutCombo" prefWidth="80" />
+                <Label text=":" />
+                <ComboBox fx:id="minuteDebutCombo" prefWidth="80" />
+            </HBox>
+        </VBox>
+    </HBox>
+
+    <Label text="Date et heure de fin *" />
+    <HBox spacing="10">
+        <VBox spacing="5" HBox.hgrow="ALWAYS">
+            <DatePicker fx:id="dateFinPicker" maxWidth="Infinity" />
+        </VBox>
+        <VBox spacing="5">
+            <HBox spacing="5">
+                <ComboBox fx:id="heureFinCombo" prefWidth="80" />
+                <Label text=":" />
+                <ComboBox fx:id="minuteFinCombo" prefWidth="80" />
+            </HBox>
+        </VBox>
+    </HBox>
+    <Label fx:id="dateError" textFill="RED" visible="false" />
+
+    <Label text="Lieu *" />
+    <TextField fx:id="lieuField" />
+    <Label fx:id="lieuError" textFill="RED" visible="false" />
+
+    <Label text="Image *" />
+    <HBox spacing="10">
+        <TextField fx:id="imagePathField" HBox.hgrow="ALWAYS" />
+        <Button text="Parcourir..." onAction="#chooseImage" />
+    </HBox>
+    <Label fx:id="imageError" textFill="RED" visible="false" />
+
+    <Label text="* Champs obligatoires" style="-fx-text-fill: #666; -fx-font-size: 0.9em;"/>
+
+    <HBox spacing="10" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#annuler" />
+        <Button text="Enregistrer" onAction="#enregistrer" style="-fx-background-color: #4CAF50; -fx-text-fill: white;" />
+    </HBox>
+</VBox>

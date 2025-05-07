@@ -8,13 +8,10 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.controllers.Courses.MainViewController"
+            fx:controller="tn.esprit.controllers.Courses.MainCourseController"
             stylesheets="@/styles/category-styles.css">
 
-    <!-- Sidebar (left) -->
-    <left>
-        <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
-    </left>
+
 
     <!-- Main content -->
     <center>
@@ -31,7 +28,7 @@
                     <padding>
                         <Insets bottom="10"/>
                     </padding>
-                    <Button text="Add Course" onAction="#showAddCourseForm"
+                    <Button fx:id="addButton" text="Add Course" onAction="#showAddCourseForm"
                             style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 8 15; -fx-background-radius: 5;"/>
                 </HBox>
 

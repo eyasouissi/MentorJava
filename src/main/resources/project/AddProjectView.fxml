@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.fxmisc.richtext.StyleClassedTextArea?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.project.AddProjectController"
+      prefWidth="1100" prefHeight="750"
+      spacing="20"
+      style="-fx-padding: 25; -fx-background-color: #f5f7fa;">
+
+    <!-- Header -->
+    <HBox fx:id="header" spacing="20" alignment="CENTER_LEFT">
+        <Label text="📚 Add New Project"
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Navigation Bar -->
+    <HBox fx:id="navbar" spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #336699; -fx-padding: 10 20;">
+        <Button text=" 👥 Groups " onAction="#goToGroups" 
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+        <Button text=" 📁 Projects " onAction="#goToProjects" 
+                style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+        </HBox>
+
+    <!-- Formulaire principal -->
+    <GridPane hgap="15" vgap="15"
+              style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20;">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" minWidth="120"/>
+            <ColumnConstraints hgrow="ALWAYS"/>
+        </columnConstraints>
+
+        <!-- Champ Titre -->
+        <Label text="Title:" style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="titleField" promptText="Enter title" style="-fx-font-size: 13px;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <!-- Champ Description -->
+        <Label text="Description:" style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <VBox spacing="5" GridPane.rowIndex="1" GridPane.columnIndex="1">
+            <!-- Toolbar -->
+            <ToolBar fx:id="formatToolbar" style="-fx-background-color: #f0f0f0; -fx-padding: 3;">
+                <ComboBox fx:id="fontFamilyCombo" promptText="Font" prefWidth="120"/>
+                <ComboBox fx:id="fontSizeCombo" promptText="Size" prefWidth="60"/>
+                <ColorPicker fx:id="textColorPicker" style="-fx-color-label-visible: false;" prefWidth="30"/>
+
+                <ToggleButton fx:id="boldButton" text="B" style="-fx-font-weight: bold; -fx-min-width: 30;">
+                    <tooltip>
+                        <Tooltip text="Bold"/>
+                    </tooltip>
+                </ToggleButton>
+                
+                <ToggleButton fx:id="italicButton" text="I" style="-fx-font-style: italic; -fx-min-width: 30;">
+                    <tooltip>
+                        <Tooltip text="Italic"/>
+                    </tooltip>
+                </ToggleButton>
+                
+                <ToggleButton fx:id="underlineButton" text="U" style="-fx-underline: true; -fx-min-width: 30;">
+                    <tooltip>
+                        <Tooltip text="Underline"/>
+                    </tooltip>
+                </ToggleButton>
+
+                <Separator orientation="VERTICAL"/>
+
+                <Button text="L" style="-fx-min-width: 30;" onAction="#alignLeft">
+                    <tooltip>
+                        <Tooltip text="Align left"/>
+                    </tooltip>
+                </Button>
+                
+                <Button text="C" style="-fx-min-width: 30;" onAction="#alignCenter">
+                    <tooltip>
+                        <Tooltip text="Center"/>
+                    </tooltip>
+                </Button>
+                
+                <Button text="R" style="-fx-min-width: 30;" onAction="#alignRight">
+                    <tooltip>
+                        <Tooltip text="Align right"/>
+                    </tooltip>
+                </Button>
+
+                <Separator orientation="VERTICAL"/>
+
+                <Button text="•" style="-fx-min-width: 30;" onAction="#insertBullet">
+                    <tooltip>
+                        <Tooltip text="Bullet list"/>
+                    </tooltip>
+                </Button>
+                
+                <Button text="1." style="-fx-min-width: 30;" onAction="#insertNumberedList">
+                    <tooltip>
+                        <Tooltip text="Numbered list"/>
+                    </tooltip>
+                </Button>
+
+                <Separator orientation="VERTICAL"/>
+
+                <Button fx:id="undoButton" text="↺" style="-fx-min-width: 30;">
+                    <tooltip>
+                        <Tooltip text="Undo"/>
+                    </tooltip>
+                </Button>
+                
+                <Button fx:id="redoButton" text="↻" style="-fx-min-width: 30;">
+                    <tooltip>
+                        <Tooltip text="Redo"/>
+                    </tooltip>
+                </Button>
+
+                <Button fx:id="emojiButton" text="😀" style="-fx-min-width: 30;">
+                    <tooltip>
+                        <Tooltip text="Insert emoji"/>
+                    </tooltip>
+                </Button>
+            </ToolBar>
+
+            <!-- Zone de texte -->
+            <StyleClassedTextArea fx:id="descriptionArea" 
+                style="-fx-font-family: 'Arial'; -fx-font-size: 13px;"
+                wrapText="true"
+                prefHeight="200"/>
+        </VBox>
+
+        <!-- Difficulté avec étoiles -->
+        <Label text="Difficulty:" style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <HBox fx:id="difficulteStars" spacing="3" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1">
+            <Button fx:id="star1" text="★" onAction="#handleStarClick" style="-fx-background-color: transparent; -fx-font-size: 18px;"/>
+            <Button fx:id="star2" text="★" onAction="#handleStarClick" style="-fx-background-color: transparent; -fx-font-size: 18px;"/>
+            <Button fx:id="star3" text="★" onAction="#handleStarClick" style="-fx-background-color: transparent; -fx-font-size: 18px;"/>
+            <Button fx:id="star4" text="★" onAction="#handleStarClick" style="-fx-background-color: transparent; -fx-font-size: 18px;"/>
+        </HBox>
+
+        <!-- Upload PDF -->
+        <Label text="PDF File:" style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <HBox spacing="5" GridPane.rowIndex="3" GridPane.columnIndex="1">
+            <TextField fx:id="pdfField" promptText="Select PDF" editable="false" style="-fx-font-size: 13px;" HBox.hgrow="ALWAYS"/>
+            <Button text="Browse" fx:id="browsePdfButton" onAction="#handleBrowsePdf"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+
+        <!-- Upload Image -->
+        <Label text="Image:" style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <HBox spacing="5" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <TextField fx:id="imageField" promptText="Select image" editable="false" style="-fx-font-size: 13px;" HBox.hgrow="ALWAYS"/>
+            <Button text="Browse" fx:id="browseImageButton" onAction="#handleBrowseImage"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+
+        <!-- Date limite -->
+        <Label text="Deadline:" style="-fx-text-fill: #7f8c8d; -fx-font-size: 13px;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="deadlinePicker" style="-fx-font-size: 13px;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+    </GridPane>
+
+    <!-- Actions -->
+    <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 15 0 0 0;">
+        <Button text="Cancel" onAction="#cancel"
+                style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;"/>
+        <Button text="Create" onAction="#handleSave"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;"/>
+    </HBox>
+</VBox>

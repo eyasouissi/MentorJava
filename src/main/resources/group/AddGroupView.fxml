@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.group.AddGroupController"
+      prefWidth="1100" prefHeight="750"
+      spacing="20"
+      style="-fx-padding: 25; -fx-background-color: #f5f7fa;">
+
+    <!-- Header -->
+    <HBox fx:id="header" spacing="20" alignment="CENTER_LEFT">
+        <Label text="📚 Add New Group"
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- Navigation Bar -->
+    <HBox fx:id="navbar" spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #336699; -fx-padding: 10 20;">
+        <Button text=" 👥 Groups " onAction="#goToGroupsView" 
+                style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+        <Button text=" 📁 Projects " onAction="#goToProjectsView" 
+                style="-fx-background-color: transparent; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+        </HBox>
+
+    <!-- Image Preview -->
+    <VBox alignment="CENTER" spacing="10">
+        <Circle fx:id="imageCircle" radius="60" fill="lightgray"
+                style="-fx-stroke: gray; -fx-stroke-width: 1;" />
+        <HBox spacing="10" alignment="CENTER">
+            <TextField fx:id="imagePathField" editable="false" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="browseImageButton" text="Browse" onAction="#handleBrowseImage"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Formulaire -->
+    <GridPane hgap="10" vgap="12" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 5;">
+        <!-- Nom -->
+        <Label text="Group Name*:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+        <!-- Description -->
+        <Label text="Description*:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextArea fx:id="descriptionField" prefRowCount="3" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+        <!-- Date -->
+        <Label text="Meeting Date:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="meetingDatePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+        <!-- Projets -->
+        <Label text="Select Projects:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <ListView fx:id="projectListView" prefHeight="120" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+        <!-- Fichier PDF -->
+        <Label text="PDF File:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <HBox spacing="5" GridPane.rowIndex="4" GridPane.columnIndex="1">
+            <TextField fx:id="pdfPathField" editable="false" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="browsePdfButton" text="Browse" onAction="#handleBrowsePdf"
+                    style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </HBox>
+    </GridPane>
+
+    <!-- Boutons -->
+    <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 15 0 0 0;">
+        <Button text="Cancel" onAction="#cancel"
+                style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;"/>
+        <Button fx:id="saveButton" text="Save" onAction="#handleSave"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 100;"/>
+    </HBox>
+</VBox>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.project.EditProjectController"
+      spacing="25"
+      alignment="TOP_CENTER"
+      style="-fx-background-color: #f8f9fa; -fx-padding: 30;"
+      prefWidth="650">
+
+    <!-- En-tête avec icône -->
+    <HBox alignment="CENTER" spacing="15" style="-fx-padding: 0 0 10 0;">
+        <ImageView fitWidth="32" fitHeight="32">
+            <image>
+                <Image url="@../assets/edit-icon.png" />
+            </image>
+            <style>
+                -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, 0);
+            </style>
+        </ImageView>
+        <Label text="Éditer le Projet" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;">
+            <font>
+                <Font name="Arial" size="24.0" />
+            </font>
+        </Label>
+    </HBox>
+
+    <!-- Carte principale -->
+    <VBox style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 15, 0, 0, 0); -fx-padding: 25;">
+        <GridPane hgap="20" vgap="20">
+            <columnConstraints>
+                <ColumnConstraints prefWidth="150" halignment="RIGHT"/>
+                <ColumnConstraints hgrow="ALWAYS" halignment="LEFT"/>
+            </columnConstraints>
+
+            <!-- ID -->
+            <Label text="ID:" style="-fx-text-fill: #5f6c7b; -fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+            <Label fx:id="idLabel" style="-fx-text-fill: #34495e;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+            <!-- Titre -->
+            <Label text="Titre:" style="-fx-text-fill: #5f6c7b; -fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="titleField" promptText="Titre du projet" style="-fx-font-size: 14px; -fx-padding: 8 12; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #dfe6e9; -fx-border-width: 1;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+            <!-- Description -->
+            <Label text="Description:" style="-fx-text-fill: #5f6c7b; -fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+            <TextArea fx:id="descriptionArea" promptText="Décris brièvement le projet" wrapText="true" 
+                     style="-fx-font-size: 14px; -fx-padding: 8 12; -fx-min-height: 100; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #dfe6e9; -fx-border-width: 1;" 
+                     GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+            <!-- Difficulté - Système d'étoiles -->
+            <Label text="Difficulté (max 4):" style="-fx-text-fill: #5f6c7b; -fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+            <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="3" GridPane.columnIndex="1">
+                <HBox fx:id="starsContainer" spacing="5" style="-fx-alignment: center-left;">
+                    <!-- Les étoiles seront ajoutées dynamiquement -->
+                </HBox>
+                <Label fx:id="ratingLabel" style="-fx-text-fill: #5f6c7b; -fx-font-size: 14px; -fx-padding: 0 0 0 10;"/>
+            </HBox>
+
+            <!-- Fichier associé -->
+            <Label text="Fichier associé:" style="-fx-text-fill: #5f6c7b; -fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+            <HBox spacing="5" GridPane.rowIndex="4" GridPane.columnIndex="1">
+                <TextField fx:id="fileField" promptText="Sélectionner un fichier..." editable="false" 
+                         style="-fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #dfe6e9; -fx-border-width: 1;" HBox.hgrow="ALWAYS"/>
+                <Button text="Browse" fx:id="browseFileButton" onAction="#handleBrowseFile" 
+                       style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 5; -fx-padding: 8 15; -fx-cursor: hand;"/>
+            </HBox>
+
+            <!-- Date limite -->
+            <Label text="Date limite:" style="-fx-text-fill: #5f6c7b; -fx-font-weight: bold;" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+            <DatePicker fx:id="deadlinePicker" style="-fx-font-size: 14px; -fx-background-radius: 5; -fx-border-radius: 5; -fx-border-color: #dfe6e9; -fx-border-width: 1;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        </GridPane>
+    </VBox>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="15" alignment="CENTER_RIGHT">
+        <Button text="Annuler" onAction="#cancel" 
+               style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 5; -fx-cursor: hand;"/>
+        <Button text="Mettre à jour" onAction="#handleUpdate" 
+               style="-fx-background-color: #2ecc71; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 8 25; -fx-background-radius: 5; -fx-cursor: hand;"/>
+    </HBox>
+</VBox>

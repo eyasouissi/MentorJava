@@ -1,0 +1,93 @@
+/* Main container styles */
+.root {
+    -fx-background-color: #f5f5f5;
+    -fx-font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* Action button style */
+.action-button {
+    -fx-background-color: #6a5acd;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 10px 20px;
+    -fx-background-radius: 5px;
+}
+
+.action-button:hover {
+    -fx-background-color: #5849b6;
+}
+
+/* Navigation buttons */
+.nav-button {
+    -fx-background-color: #7986cb;
+    -fx-text-fill: white;
+    -fx-padding: 8px 15px;
+    -fx-background-radius: 4px;
+}
+
+.nav-button:hover {
+    -fx-background-color: #5c6bc0;
+}
+
+/* Event card styling */
+.event-card {
+    -fx-background-color: white;
+    -fx-border-color: #e0e0e0;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 3);
+    -fx-padding: 15px;
+}
+
+.event-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 15, 0, 0, 5);
+}
+
+/* ScrollPane customization */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-border-width: 0;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane .scroll-bar:vertical {
+    -fx-background-color: #f5f5f5;
+    -fx-background-radius: 0;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #b0b0b0;
+    -fx-background-radius: 10px;
+}
+
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #909090;
+}
+
+/* Pagination styling */
+.event-pagination .pagination-control {
+    -fx-background-color: transparent;
+}
+
+.event-pagination .pagination-control .button,
+.event-pagination .pagination-control .toggle-button {
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 20;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+    -fx-text-fill: #333;
+}
+
+.event-pagination .pagination-control .button:hover,
+.event-pagination .pagination-control .toggle-button:hover {
+    -fx-background-color: #d0d0d0;
+}
+
+.event-pagination .pagination-control .toggle-button:selected {
+    -fx-background-color: #6a5acd;
+    -fx-text-fill: white;
+}

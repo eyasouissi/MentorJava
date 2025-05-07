@@ -1,149 +1,133 @@
 package tn.esprit.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import javafx.beans.property.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
-@Entity
-@Table(name = "evenement")
 public class Evenement {
+    private final IntegerProperty id = new SimpleIntegerProperty();
+    private final IntegerProperty userId = new SimpleIntegerProperty();
+    private final StringProperty titreE = new SimpleStringProperty();
+    private final StringProperty descriptionE = new SimpleStringProperty();
+    private final ObjectProperty<LocalDateTime> dateDebut = new SimpleObjectProperty<>();
+    private final ObjectProperty<LocalDateTime> dateFin = new SimpleObjectProperty<>();
+    private final StringProperty imageE = new SimpleStringProperty(); // Changé de imageUrl à imageE
+    private final StringProperty lieu = new SimpleStringProperty();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(name = "titre_e", length = 255)
-    @NotBlank(message = "Le titre est obligatoire.")
-    @Size(min = 3, message = "Le titre doit contenir au moins 3 caractères.")
-    private String titreE;
-
-    @Column(name = "description_e", columnDefinition = "TEXT")
-    @NotBlank(message = "La description est obligatoire.")
-    @Size(min = 10, message = "La description doit contenir au moins 10 caractères.")
-    private String descriptionE;
-
-    @Column(name = "date_debut")
-    @NotNull(message = "La date de début est obligatoire.")
-    private LocalDateTime dateDebut;
-
-    @Column(name = "date_fin")
-    @NotNull(message = "La date de fin est obligatoire.")
-    @Future(message = "La date de fin doit être dans le futur.")
-    private LocalDateTime dateFin;
-
-    @Column(name = "image_e", length = 255)
-    private String imageE;
-
-    @ManyToOne
-    @JoinColumn(name = "annonce_id", nullable = false)
-    private Annonce annonce;
-
-    // Constructors
+    // Constructeurs
     public Evenement() {
-        // Default constructor
-    }
-
-    public Evenement(String titreE, String descriptionE, LocalDateTime dateDebut, LocalDateTime dateFin) {
-        this.titreE = titreE;
-        this.descriptionE = descriptionE;
-        this.dateDebut = dateDebut;
-        this.dateFin = dateFin;
     }
 
     public Evenement(String titreE, String descriptionE, LocalDateTime dateDebut,
-                     LocalDateTime dateFin, String imageE, Annonce annonce) {
-        this(titreE, descriptionE, dateDebut, dateFin);
-        this.imageE = imageE;
-        this.annonce = annonce;
+                     LocalDateTime dateFin, String imageE, String lieu, int userId) {
+        setTitreE(titreE);
+        setDescriptionE(descriptionE);
+        setDateDebut(dateDebut);
+        setDateFin(dateFin);
+        setImageE(imageE); // Changé de setImageUrl à setImageE
+        setLieu(lieu);
+        setUserId(userId);
     }
 
-    // toString() method
-    @Override
-    public String toString() {
-        return "Evenement{" +
-                "id=" + id +
-                ", titreE='" + titreE + '\'' +
-                ", descriptionE='" + (descriptionE != null ?
-                descriptionE.substring(0, Math.min(descriptionE.length(), 30)) + "..." : "null") + '\'' +
-                ", dateDebut=" + dateDebut +
-                ", dateFin=" + dateFin +
-                ", imageE='" + imageE + '\'' +
-                ", annonceId=" + (annonce != null ? annonce.getId() : null) +
-                '}';
+    // Getters & Setters
+    public int getId() {
+        return id.get();
     }
 
-    // equals() method
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Evenement evenement = (Evenement) o;
-        return Objects.equals(id, evenement.id) &&
-                Objects.equals(titreE, evenement.titreE) &&
-                Objects.equals(dateDebut, evenement.dateDebut);
+    public void setId(int id) {
+        this.id.set(id);
     }
 
-    // hashCode() method
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, titreE, dateDebut);
+    public int getUserId() {
+        return userId.get();
     }
 
-    // Getters and Setters
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
+    public void setUserId(int userId) {
+        this.userId.set(userId);
     }
 
     public String getTitreE() {
-        return titreE;
+        return titreE.get();
     }
 
     public void setTitreE(String titreE) {
-        this.titreE = titreE;
+        this.titreE.set(titreE);
     }
 
     public String getDescriptionE() {
-        return descriptionE;
+        return descriptionE.get();
     }
 
     public void setDescriptionE(String descriptionE) {
-        this.descriptionE = descriptionE;
+        this.descriptionE.set(descriptionE);
     }
 
     public LocalDateTime getDateDebut() {
-        return dateDebut;
+        return dateDebut.get();
     }
 
     public void setDateDebut(LocalDateTime dateDebut) {
-        this.dateDebut = dateDebut;
+        this.dateDebut.set(dateDebut);
     }
 
     public LocalDateTime getDateFin() {
-        return dateFin;
+        return dateFin.get();
     }
 
     public void setDateFin(LocalDateTime dateFin) {
-        this.dateFin = dateFin;
+        this.dateFin.set(dateFin);
     }
 
-    public String getImageE() {
+    public String getImageE() { // Changé de getImageUrl à getImageE
+        return imageE.get();
+    }
+
+    public void setImageE(String imageE) { // Changé de setImageUrl à setImageE
+        this.imageE.set(imageE);
+    }
+
+    public String getLieu() {
+        return lieu.get();
+    }
+
+    public void setLieu(String lieu) {
+        this.lieu.set(lieu);
+    }
+
+    // Propriétés JavaFX
+    public IntegerProperty idProperty() {
+        return id;
+    }
+
+    public IntegerProperty userIdProperty() {
+        return userId;
+    }
+
+    public StringProperty titreEProperty() {
+        return titreE;
+    }
+
+    public StringProperty descriptionEProperty() {
+        return descriptionE;
+    }
+
+    public ObjectProperty<LocalDateTime> dateDebutProperty() {
+        return dateDebut;
+    }
+
+    public ObjectProperty<LocalDateTime> dateFinProperty() {
+        return dateFin;
+    }
+
+    public StringProperty imageEProperty() { // Changé de imageUrlProperty à imageEProperty
         return imageE;
     }
 
-    public void setImageE(String imageE) {
-        this.imageE = imageE;
+    public StringProperty lieuProperty() {
+        return lieu;
     }
 
-    public Annonce getAnnonce() {
-        return annonce;
-    }
-
-    public void setAnnonce(Annonce annonce) {
-        this.annonce = annonce;
+    @Override
+    public String toString() {
+        return getTitreE() + " (" + getLieu() + ")";
     }
 }

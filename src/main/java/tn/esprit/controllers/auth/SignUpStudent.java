@@ -33,7 +33,7 @@ public class SignUpStudent {
     @FXML private RadioButton femaleRadio;
     @FXML private ComboBox<String> countryComboBox;
 
-    private ToggleGroup genderGroup = new ToggleGroup();
+    public ToggleGroup genderGroup = new ToggleGroup();
     private String redirectTarget = "/interfaces/auth/login.fxml";
     private final UserService userService = UserService.getInstance();
 

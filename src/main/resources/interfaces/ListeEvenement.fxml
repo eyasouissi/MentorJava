@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ListeEvenementController"
+            prefWidth="800" prefHeight="600">
+
+    <children>
+        <!-- HBox to place sidebar and main content side by side -->
+        <HBox AnchorPane.topAnchor="0.0" AnchorPane.rightAnchor="0.0"
+              AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0"
+              prefHeight="Infinity" prefWidth="Infinity">
+
+            <!-- Sidebar taking full height -->
+            <VBox prefWidth="200" VBox.vgrow="ALWAYS" styleClass="sidebar"
+                  HBox.hgrow="NEVER">
+                <fx:include source="/interfaces/Admin/Sidebar.fxml"/>
+            </VBox>
+
+            <!-- Main content area -->
+            <VBox spacing="15" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
+                <padding>
+                    <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+                </padding>
+
+                <!-- Header -->
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Button text="Ajouter un événement" onAction="#ajouterEvenement" styleClass="action-button" />
+                    <Region HBox.hgrow="ALWAYS" />
+                    <Label text="Liste des événements" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+                </HBox>
+
+                <!-- Filters -->
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="30" />
+                        <ColumnConstraints percentWidth="30" />
+                        <ColumnConstraints percentWidth="30" />
+                        <ColumnConstraints percentWidth="10" />
+                    </columnConstraints>
+
+                    <!-- Search -->
+                    <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label text="Recherche:" />
+                        <TextField fx:id="searchField" promptText="Rechercher..." HBox.hgrow="ALWAYS" />
+                    </HBox>
+
+                    <!-- Sort -->
+                    <HBox spacing="5" alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label text="Trier par:" />
+                        <ComboBox fx:id="sortComboBox" prefWidth="150" />
+                    </HBox>
+
+                    <!-- Date filter -->
+                    <HBox spacing="10" alignment="CENTER_LEFT" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                        <Label text="Filtrer entre:" />
+                        <DatePicker fx:id="dateDebutFilter" promptText="Date début" />
+                        <Label text="et" />
+                        <DatePicker fx:id="dateFinFilter" promptText="Date fin" />
+                    </HBox>
+
+                    <!-- Clear filters -->
+                    <Button fx:id="clearFiltersButton" text="Effacer les filtres"
+                            GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                </GridPane>
+
+                <!-- Pagination -->
+                <Pagination fx:id="pagination" VBox.vgrow="ALWAYS" styleClass="event-pagination" />
+
+                <!-- Navigation -->
+                <HBox alignment="CENTER" spacing="10">
+                    <Button text="⬆️ Page précédente" onAction="#goToPreviousPage" styleClass="nav-button" />
+                    <Button text="⬇️ Page suivante" onAction="#goToNextPage" styleClass="nav-button" />
+                    <Button text="Voir Dashboard" onAction="#showDashboard" style="-fx-background-color: #7986cb; -fx-text-fill: white;" />
+                </HBox>
+            </VBox>
+        </HBox>
+    </children>
+</AnchorPane>

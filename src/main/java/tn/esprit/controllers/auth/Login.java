@@ -18,8 +18,9 @@ import org.opencv.videoio.VideoCapture;
 import tn.esprit.entities.User;
 import tn.esprit.services.FaceRecognitionService;
 import tn.esprit.services.UserService;
-import tn.esprit.controllers.user.admin.UserCrud;
+import tn.esprit.controllers.Admin.AdminDashboardController;
 import org.mindrot.jbcrypt.BCrypt;
+import java.util.prefs.Preferences;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +39,11 @@ public class Login {
 
     private final UserService userService = UserService.getInstance();
     private VideoCapture capture;
+    private static final String PREF_KEY_EMAIL = "email";
+    private static final String PREF_KEY_PASSWORD = "password";
+    private static final String PREF_KEY_REMEMBER_ME = "remember_me";
+
+    private Preferences preferences = Preferences.userRoot().node(getClass().getName());
 
     // OpenCV initialization moved to instance block
     {
@@ -52,6 +58,16 @@ public class Login {
 
     @FXML
     public void initialize() {
+        // Check if Remember Me is enabled and load stored email/password if available
+        boolean rememberMe = preferences.getBoolean(PREF_KEY_REMEMBER_ME, false);
+        rememberMeCheckbox.setSelected(rememberMe);
+
+        if (rememberMe) {
+            String email = preferences.get(PREF_KEY_EMAIL, "");
+            String password = preferences.get(PREF_KEY_PASSWORD, "");
+            emailField.setText(email);
+            passwordField.setText(password);
+        }
         try {
             String initialImagePath = "/assets/icons/richard_bored.png";
             InputStream imageStream = getClass().getResourceAsStream(initialImagePath);
@@ -217,70 +233,97 @@ public class Login {
     }
 
     @FXML
-    public void handleLogin(ActionEvent event) {
-        if (!passwordBox.isVisible()) {
-            showError("Please make Richard happy first!");
+    private void handleLogin(ActionEvent event) {
+        String email = emailField.getText();
+        String password = passwordField.getText();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            showAlert("Error", "Please enter both email and password");
             return;
         }
 
-        String email = emailField.getText().trim();
-        String password = passwordField.getText().trim();
-
         try {
-            if (email.isEmpty() || password.isEmpty()) {
-                showError("Email and password are required");
-                return;
-            }
-
             User user = userService.getByEmail(email);
+
             if (user == null) {
-                showError("Invalid email or password");
+                showAlert("Error", "User not found");
                 return;
             }
 
             if (!userService.verifyPassword(email, password)) {
-                showError("Invalid email or password");
-                return;
-            }
-
-            if (user.isRestricted()) {
-                showError("Account restricted. Contact support.");
+                showAlert("Error", "Invalid credentials");
                 return;
             }
 
             if (!user.isVerified()) {
-                showAlert("Warning", "Your account is not yet verified.\nSome features may be limited.");
+                showAlert("Error", "Please verify your email first");
+                return;
             }
 
+            // Successful login
+            UserSession.getInstance().setCurrentUser(user);
+
+            // Use redirectToMainPage which handles role-based redirection
             redirectToMainPage(user);
+
         } catch (Exception e) {
-            showError("Login error: " + e.getMessage());
-            System.err.println("Error during login: " + e.getMessage());
+            showAlert("Error", "Login failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+
     private void redirectToMainPage(User user) {
         try {
-            String fxmlPath = user.getRoles().contains("ROLE_ADMIN")
-                    ? "/interfaces/user/admin/user_crud.fxml"
-                    : "/interfaces/auth/main.fxml";
+            System.out.println("Attempting to redirect user: " + user.getEmail());
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            String fxmlPath;
+            if (user.getRoles().contains("ROLE_ADMIN")) {
+                fxmlPath = "/interfaces/Admin/AdminDashboard.fxml";
+                System.out.println("Redirecting to Admin Dashboard");
+            } else {
+                fxmlPath = "/interfaces/auth/main.fxml";
+                System.out.println("Redirecting to User Dashboard");
+            }
+
+            System.out.println("Loading FXML from: " + fxmlPath);
+
+            URL location = getClass().getResource(fxmlPath);
+            if (location == null) {
+                System.err.println("FXML file not found at: " + fxmlPath);
+                showError("Configuration error - please contact support");
+                return;
+            }
+
+            FXMLLoader loader = new FXMLLoader(location);
             Parent root = loader.load();
 
             if (user.getRoles().contains("ROLE_ADMIN")) {
-                ((UserCrud)loader.getController()).initializeWithUser(user);
+                AdminDashboardController controller = loader.getController();
+                controller.initializeWithUser(user);
             } else {
-                ((MainController)loader.getController()).initializeWithUser(user, "Welcome back!");
+                MainController controller = loader.getController();
+                controller.initializeWithUser(user, "Welcome back!");
             }
 
-            Stage stage = (Stage) emailField.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle(user.getRoles().contains("ROLE_ADMIN") ? "Admin Dashboard" : "Main Application");
-            stage.show();
+            UserSession.getInstance().start(user);
+
+            Stage currentStage = (Stage) emailField.getScene().getWindow();
+            if (currentStage == null) {
+                currentStage = new Stage();
+            }
+
+            Scene scene = new Scene(root);
+            currentStage.setScene(scene);
+            currentStage.setTitle(user.getRoles().contains("ROLE_ADMIN")
+                    ? "Admin Dashboard"
+                    : "Main Application");
+            currentStage.show();
+
         } catch (IOException e) {
-            showError("Cannot redirect to main page: " + e.getMessage());
+            System.err.println("Redirection error:");
             e.printStackTrace();
+            showError("Cannot redirect to main page: " + e.getMessage());
         }
     }
 
@@ -319,4 +362,35 @@ public class Login {
         errorLabel.setText(message);
         errorLabel.setStyle("-fx-text-fill: red;");
     }
+
+    public void logout() {
+        // Remove credentials when logging out
+        preferences.remove(PREF_KEY_EMAIL);
+        preferences.remove(PREF_KEY_PASSWORD);
+        preferences.putBoolean(PREF_KEY_REMEMBER_ME, false);
+        // Additional logout logic can go here (e.g., clearing session, redirecting to login screen, etc.)
+    }
+    @FXML
+    public void handleRememberMeChange(ActionEvent event) {
+        // Check the state of the checkbox
+        boolean rememberMe = rememberMeCheckbox.isSelected();
+
+        // If Remember Me is checked, save the credentials
+        if (rememberMe) {
+            String email = emailField.getText().trim();
+            String password = passwordField.getText().trim();
+
+            if (!email.isEmpty() && !password.isEmpty()) {
+                preferences.put(PREF_KEY_EMAIL, email);
+                preferences.put(PREF_KEY_PASSWORD, password);  // You might want to hash the password before saving
+                preferences.putBoolean(PREF_KEY_REMEMBER_ME, true);
+            }
+        } else {
+            // If unchecked, remove credentials from preferences
+            preferences.remove(PREF_KEY_EMAIL);
+            preferences.remove(PREF_KEY_PASSWORD);
+            preferences.putBoolean(PREF_KEY_REMEMBER_ME, false);
+        }
+    }
+
 }

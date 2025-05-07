@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.171"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="tn.esprit.controllers.FrontAnnonceListController"
+            stylesheets="@/css/listeAF.css">
+
+    <!-- Top: Header avec recherche -->
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 20;">
+            <Label text="Annonces" fx:id="mainTitle" styleClass="main-title"/>
+            <TextField fx:id="searchField" styleClass="search-field" promptText="Rechercher..."/>
+            <Label fx:id="resultsCount" styleClass="results-count"/>
+        </HBox>
+    </top>
+
+    <!-- Center: Contenu principal -->
+    <center>
+        <StackPane>
+            <!-- Liste des annonces -->
+            <ScrollPane fx:id="scrollPane" styleClass="scroll-pane">
+                <GridPane fx:id="annoncesContainer" styleClass="grid-pane"/>
+            </ScrollPane>
+
+            <!-- Overlay des détails -->
+            <VBox fx:id="eventDetailsOverlay" alignment="CENTER" visible="false">
+                <VBox styleClass="event-details-container">
+                    <!-- Header -->
+                    <HBox alignment="CENTER_RIGHT">
+                        <Button fx:id="closeDetailsButton" styleClass="close-button" text="×"/>
+                    </HBox>
+
+                    <!-- Contenu -->
+                    <HBox spacing="20" alignment="TOP_CENTER">
+                        <!-- Image -->
+                        <ImageView fx:id="eventImage" styleClass="event-image" fitWidth="300" fitHeight="200"/>
+
+                        <!-- Détails -->
+                        <VBox spacing="10" style="-fx-padding: 0 0 0 20;">
+                            <Label fx:id="eventTitle" styleClass="event-title"/>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="📅" styleClass="emoji"/>
+                                <Label fx:id="eventDate" styleClass="event-date"/>
+                            </HBox>
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="📍" styleClass="emoji"/>
+                                <Label fx:id="eventLocation" styleClass="event-location"/>
+                            </HBox>
+                            <Label fx:id="eventStatus" styleClass="event-status"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- Description -->
+                    <TextArea fx:id="eventDescription" styleClass="event-description" editable="false" wrapText="true"/>
+
+                    <!-- QR Code -->
+                    <HBox alignment="CENTER" spacing="20" style="-fx-padding: 20 0 0 0;">
+                        <Label text="Scanner pour partager:" styleClass="qr-label"/>
+                        <ImageView fx:id="eventQrCode" styleClass="qr-code" fitWidth="120" fitHeight="120"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </StackPane>
+    </center>
+
+    <!-- Bottom: Pagination -->
+    <bottom>
+        <HBox alignment="CENTER" spacing="15" style="-fx-padding: 15;">
+            <Button text="◄" fx:id="previousButton" styleClass="nav-button"/>
+            <Label fx:id="pageLabel" styleClass="page-label"/>
+            <Button text="►" fx:id="nextButton" styleClass="nav-button"/>
+        </HBox>
+    </bottom>
+</BorderPane>

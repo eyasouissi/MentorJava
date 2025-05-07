@@ -11,7 +11,9 @@ import javafx.scene.layout.*;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 import javafx.util.Callback;
+import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.entities.Forum;
+import tn.esprit.entities.User;
 import tn.esprit.tools.MyDataBase;
 
 import java.net.URL;
@@ -260,15 +262,26 @@ public class ForumFrontController implements Initializable {
                 if (selectedForum != null) {
                     updateRecentForums(selectedForum);
                     try {
+                        // Load the PostView.fxml (previously PostView.fxml, now Post.fxml)
                         FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/PostView.fxml"));
+
                         Parent root = loader.load();
 
+                        // Get the controller for the Post.fxml
                         PostController controller = loader.getController();
+
+                        // Get the current user from UserSession and pass it to the controller
+                        User currentUser = UserSession.getInstance().getCurrentUser();
+                        controller.setCurrentUser(currentUser);  // Pass the user manually
+
+                        // Set the forum to the controller as before
                         controller.setForum(selectedForum);
 
+                        // Get the current stage and set the scene
                         Stage currentStage = (Stage) forumListView.getScene().getWindow();
                         currentStage.setTitle("Posts in " + selectedForum.getTitle());
                         currentStage.setScene(new Scene(root));
+                        currentStage.show();
 
                         // Increment views count
                         selectedForum.incrementViews();
@@ -276,12 +289,13 @@ public class ForumFrontController implements Initializable {
 
                     } catch (IOException e) {
                         e.printStackTrace();
-                        showAlert("Load Error", "Could not load PostView.fxml: " + e.getMessage());
+                        showAlert("Load Error", "Could not load Post.fxml: " + e.getMessage());
                     }
                 }
             }
         });
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

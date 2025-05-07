@@ -8,7 +8,7 @@ import java.util.*;
 
 public class AIImageService {
     private static final String DREAMSTUDIO_API_URL = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
-    private static final String API_KEY = "sk-n9aAiX67uZBzYxqxcHtphdB2yTz0FeVSRUFVGL9zfsbyLGxv"; // Replace with real API key
+    private static final String API_KEY = "sk-92ICikfLUSv4KVnAOVNsQJ8GfcOCZ2djmSErthTQ50pAuneD"; // Replace with real API key
 
     public static File generateImage(String prompt) throws IOException {
         try {

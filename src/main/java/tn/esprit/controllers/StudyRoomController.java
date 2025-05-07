@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.entities.Room;
 import tn.esprit.entities.User;
 import tn.esprit.services.RoomService;
@@ -43,6 +44,8 @@ public class StudyRoomController {
 
     @FXML
     public void initialize() {
+        this.currentUser = UserSession.getInstance().getCurrentUser(); // Get the logged-in user
+
         setupNavigationButtons();
         loadExistingRooms();
         tilePane.getStylesheets().add(getClass().getResource("/css/studyroom.css").toExternalForm());
@@ -209,6 +212,7 @@ public class StudyRoomController {
 
     @FXML
     private void handleCreateRoom() {
+
         Dialog<Boolean> dialog = new Dialog<>();
         dialog.setTitle("Create Study Room");
         dialog.setHeaderText("Enter room details:");
@@ -234,10 +238,13 @@ public class StudyRoomController {
                     return null;
                 }
 
-                if (currentUser == null) {
+                if (!UserSession.getInstance().isLoggedIn()) {
                     statusLabel.setText("You must be logged in to create a room!");
                     return null;
                 }
+                User currentUser = UserSession.getInstance().getCurrentUser();
+
+
 
                 Room createdRoom = roomService.createRoom(roomName, currentUser, isPublic);
 

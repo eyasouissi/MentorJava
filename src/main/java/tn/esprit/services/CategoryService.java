@@ -2,12 +2,14 @@ package tn.esprit.services;
 
 import tn.esprit.entities.Category;
 import tn.esprit.tools.MyDataBase;
+
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService implements IServices<Category> {
+
     private Connection cnx;
     private static CategoryService instance;
 
@@ -29,8 +31,8 @@ public class CategoryService implements IServices<Category> {
         try (PreparedStatement pst = cnx.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
             pst.setString(1, category.getName());
             pst.setString(2, category.getDescription());
-            pst.setTimestamp(3, Timestamp.valueOf(category.getCreatedAt() != null ?
-                    category.getCreatedAt() : LocalDateTime.now()));
+            pst.setTimestamp(3, Timestamp.valueOf(
+                    category.getCreatedAt() != null ? category.getCreatedAt() : LocalDateTime.now()));
             pst.setBoolean(4, category.getIsActive());
             pst.setString(5, category.getIcon());
 
@@ -73,7 +75,6 @@ public class CategoryService implements IServices<Category> {
 
     @Override
     public void supprimer(int id) {
-        // D'abord supprimer ou mettre à null les références dans les cours associés
         String updateCoursesQuery = "UPDATE courses SET category_id = NULL WHERE category_id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(updateCoursesQuery)) {
             pst.setInt(1, id);
@@ -82,7 +83,6 @@ public class CategoryService implements IServices<Category> {
             throw new RuntimeException("Failed to update associated courses: " + e.getMessage(), e);
         }
 
-        // Ensuite supprimer la catégorie
         String deleteQuery = "DELETE FROM category WHERE id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(deleteQuery)) {
             pst.setInt(1, id);
@@ -114,18 +114,21 @@ public class CategoryService implements IServices<Category> {
         return null;
     }
 
-    @Override
     public List<Category> getAll() {
         List<Category> categories = new ArrayList<>();
         String query = "SELECT * FROM category";
-        try (Statement st = cnx.createStatement();
+
+        try (Statement st = MyDataBase.getInstance().getCnx().createStatement();
              ResultSet rs = st.executeQuery(query)) {
+
             while (rs.next()) {
                 categories.add(mapResultSetToCategory(rs));
             }
+
         } catch (SQLException e) {
             throw new RuntimeException("Failed to get categories: " + e.getMessage(), e);
         }
+
         return categories;
     }
 
@@ -137,9 +140,6 @@ public class CategoryService implements IServices<Category> {
         category.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
         category.setIsActive(rs.getBoolean("is_active"));
         category.setIcon(rs.getString("icon"));
-
-        // Note: La liste des cours n'est pas chargée ici pour éviter les requêtes N+1
-        // Vous pourriez ajouter une méthode séparée pour charger les cours si nécessaire
         return category;
     }
 
@@ -157,7 +157,6 @@ public class CategoryService implements IServices<Category> {
         return null;
     }
 
-    // Méthode pour compter le nombre de cours par catégorie
     public int getCourseCount(int categoryId) {
         String query = "SELECT COUNT(*) FROM courses WHERE category_id = ?";
         try (PreparedStatement pst = cnx.prepareStatement(query)) {

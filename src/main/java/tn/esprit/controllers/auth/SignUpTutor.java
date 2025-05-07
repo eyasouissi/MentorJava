@@ -41,7 +41,7 @@ public class SignUpTutor {
 
     private File diplomaFile;
     private String diplomaFilePath;
-    private ToggleGroup genderGroup = new ToggleGroup();
+    public ToggleGroup genderGroup = new ToggleGroup();
     private String redirectTarget = "/interfaces/auth/login.fxml";
     private final UserService userService = UserService.getInstance();
 

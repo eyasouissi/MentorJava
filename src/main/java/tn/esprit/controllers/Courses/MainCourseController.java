@@ -17,9 +17,11 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.entities.Category;
 import tn.esprit.entities.Courses;
 import tn.esprit.entities.Level;
+import tn.esprit.entities.User;
 import tn.esprit.services.CategoryService;
 import tn.esprit.services.CoursesService;
 import tn.esprit.services.EmailSender;
@@ -30,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-public class MainViewController implements Initializable {
+public class MainCourseController implements Initializable {
 
     @FXML private Button allCoursesButton;
     @FXML private Button premiumCoursesButton;
@@ -56,6 +58,8 @@ public class MainViewController implements Initializable {
     @FXML private ScrollPane categoriesScrollPane;
     @FXML private Button manualEntryBtn;
     @FXML private Button saveButton;
+    @FXML private Button addButton; // Add this line if missing
+
 
     private final CoursesService coursesService = CoursesService.getInstance();
     private final CategoryService categoryService = CategoryService.getInstance();
@@ -68,10 +72,13 @@ public class MainViewController implements Initializable {
     private int totalCourses = 0;
     private String currentFilter = "all";
     private Category currentCategory = null;
-
+    private User currentUser;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Initialize optional labels
+        // Vérifier la session utilisateur
+        checkUserSession();
+
+        // Le reste de votre initialisation existante
         if (currentCategoryLabel == null) {
             currentCategoryLabel = new Label();
         }
@@ -88,6 +95,74 @@ public class MainViewController implements Initializable {
 
         categoriesScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         categoriesScrollPane.setFitToHeight(true);
+    }
+
+
+
+    private void checkUserSession() {
+        this.currentUser = UserSession.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            redirectToLogin();
+        } else {
+            updateUIForUserRole();
+        }
+    }
+
+    private void redirectToLogin() {
+        try {
+            Parent root = FXMLLoader.load(getClass().getResource("/interfaces/auth/login.fxml"));
+            Stage stage = (Stage) coursesContainer.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login");
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @FXML
+    private void showAddCourseForm() {
+        if (currentUser == null) {
+            checkUserSession(); // Vérifier à nouveau la session
+            return;
+        }
+
+        if (!currentUser.getRoles().contains("ROLE_TUTOR")) {
+            showAlert("Access Denied", "Only tutors can add courses");
+            return;
+        }
+
+        // Initialisation du formulaire avec l'utilisateur de la session
+        initializeCategoryComboBox();
+        levelsListView.getItems().clear();
+        tempLevels.clear();
+
+        tutorField.setText(currentUser.getName());
+        tutorField.setDisable(true);
+
+        courseTitleField.clear();
+        courseDescriptionField.clear();
+        categoryComboBox.getSelectionModel().clearSelection();
+        premiumCheckBox.setSelected(false);
+        levelNameField.clear();
+
+        setFormFieldsEditable(false);
+        manualEntryBtn.setVisible(true);
+        saveButton.setVisible(false);
+
+        mainView.setVisible(false);
+        addCourseView.setVisible(true);
+    }
+
+    private void updateUIForUserRole() {
+        if (addButton != null) { // Vérification ajoutée ici
+            if (currentUser != null && currentUser.getRoles().contains("ROLE_TUTOR")) {
+                addButton.setVisible(true);
+            } else {
+                addButton.setVisible(false);
+            }
+        }
     }
 
     private void initializeCategoryComboBox() {
@@ -259,33 +334,6 @@ public class MainViewController implements Initializable {
         }
     }
 
-    private VBox createCourseCard(Courses course) {
-        VBox card = new VBox(10);
-        card.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-border-color: #D8BFD8; -fx-border-radius: 10;");
-        card.setPrefSize(250, 160);
-
-        Label titleLabel = new Label(course.getTitle() != null ? course.getTitle() : "Untitled Course");
-        titleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #4B0082; -fx-wrap-text: true;");
-
-        Label tutorLabel = new Label("By " + (course.getTutorName() != null ? course.getTutorName() : "Unknown"));
-        tutorLabel.setStyle("-fx-text-fill: #9370DB; -fx-font-size: 12px;");
-
-        HBox footer = new HBox(10);
-        Label ratingLabel = new Label(String.format("★ %.1f", course.getAverageRating()));
-        ratingLabel.setStyle("-fx-text-fill: #f39c12;");
-
-        Label premiumLabel = new Label(course.getIsPremium() ? "PREMIUM" : "FREE");
-        premiumLabel.setStyle(course.getIsPremium()
-                ? "-fx-text-fill: #4B0082; -fx-font-weight: bold;"
-                : "-fx-text-fill: #2ecc71; -fx-font-weight: bold;");
-
-        footer.getChildren().addAll(ratingLabel, premiumLabel);
-        card.getChildren().addAll(titleLabel, tutorLabel, footer);
-
-        card.setOnMouseClicked(event -> openCourseDetails(course));
-
-        return card;
-    }
 
     @FXML
     private void previousPage() {
@@ -320,29 +368,41 @@ public class MainViewController implements Initializable {
         popularCoursesButton.setStyle(activeButton.equals("popular") ? activeStyle : inactiveStyle);
     }
 
-    @FXML
-    private void showAddCourseForm() {
-        initializeCategoryComboBox(); // Reload categories
-        levelsListView.getItems().clear();
-        tempLevels.clear();
-
-        // Disable fields initially
-        setFormFieldsEditable(false);
-
-        // Configure button visibility
-        manualEntryBtn.setVisible(true);
-        saveButton.setVisible(false);
-
-        mainView.setVisible(false);
-        addCourseView.setVisible(true);
+    public void initializeWithUser(User user) {
+        Platform.runLater(() -> {
+            this.currentUser = user;
+            System.out.println("User set: " + (user != null ? user.getName() : "null"));
+            updateUIForUserRole();
+        });
     }
+
 
     @FXML
     private void cancelAddCourse() {
+        // Réinitialiser tous les champs
+        courseTitleField.clear();
+        courseDescriptionField.clear();
+        categoryComboBox.getSelectionModel().clearSelection();
+        tutorField.clear();
+        premiumCheckBox.setSelected(false);
+        levelsListView.getItems().clear();
+        tempLevels.clear();
+        levelNameField.clear();
+
+        // Retour à la vue principale
         addCourseView.setVisible(false);
         mainView.setVisible(true);
     }
 
+    // Modifiez la méthode checkSessionBeforeAction
+    private boolean checkSessionBeforeAction() {
+        if (!UserSession.getInstance().isLoggedIn()) {
+            showAlert("Session Expired", "Your session has expired. Please login again.");
+            redirectToLogin();
+            return false;
+        }
+        return true;
+    }
     @FXML
     private void addLevel() {
         String levelName = levelNameField.getText().trim();
@@ -356,59 +416,66 @@ public class MainViewController implements Initializable {
 
     @FXML
     private void saveCourse() {
-        // Validation
-        if (courseTitleField.getText().trim().isEmpty() ||
-                categoryComboBox.getValue() == null ||
-                tutorField.getText().trim().isEmpty()) {
-            showAlert("Error", "Please fill all required fields");
+        // Validation des champs obligatoires
+        if (courseTitleField.getText().trim().isEmpty()) {
+            showAlert("Error", "Please enter a course title");
+            return;
+        }
+
+        if (categoryComboBox.getValue() == null) {
+            showAlert("Error", "Please select a category");
             return;
         }
 
         if (tempLevels.isEmpty()) {
-            showAlert("Error", "Add at least one level.");
+            showAlert("Error", "Please add at least one level");
             return;
         }
 
-        // Find the selected category by name
+        // Trouver la catégorie sélectionnée
         String selectedCategoryName = categoryComboBox.getValue();
-        Category selectedCategory = null;
-        for (Category category : allCategories) {
-            if (category.getName().equals(selectedCategoryName)) {
-                selectedCategory = category;
-                break;
-            }
-        }
+        Category selectedCategory = allCategories.stream()
+                .filter(c -> c.getName().equals(selectedCategoryName))
+                .findFirst()
+                .orElse(null);
 
         if (selectedCategory == null) {
             showAlert("Error", "Invalid category selected");
             return;
         }
 
-        // Create course
+        // Création du nouveau cours
         Courses newCourse = new Courses();
-        newCourse.setTitle(courseTitleField.getText());
-        newCourse.setDescription(courseDescriptionField.getText());
+        newCourse.setTitle(courseTitleField.getText().trim());
+        newCourse.setDescription(courseDescriptionField.getText().trim());
         newCourse.setCategory(selectedCategory);
-        newCourse.setTutorName(tutorField.getText());
+        newCourse.setTutorName(tutorField.getText()); // Nom du tuteur pré-rempli
         newCourse.setIsPremium(premiumCheckBox.isSelected());
 
-        for (Level level : tempLevels) {
-            newCourse.addLevel(level);
-        }
+        // Ajouter les niveaux
+        tempLevels.forEach(newCourse::addLevel);
 
-        // Save course
+        // Sauvegarde du cours
         try {
             coursesService.ajouter(newCourse);
+
+            // Envoyer une notification
+            sendEmailToAdminWithAlert(newCourse.getTitle(), newCourse.getTutorName());
+
+            // Retour à la vue principale
             cancelAddCourse();
             loadAllCourses();
 
-            // Send email WITH SweetAlert
-            sendEmailToAdminWithAlert(newCourse.getTitle(), newCourse.getTutorName());
+            // Confirmation
+            showSweetAlert(Alert.AlertType.INFORMATION,
+                    "Success",
+                    "Course added successfully!",
+                    FontAwesomeSolid.CHECK_CIRCLE);
 
         } catch (Exception e) {
             showSweetAlert(Alert.AlertType.ERROR,
                     "Error",
-                    "Save failed: " + e.getMessage(),
+                    "Failed to save course: " + e.getMessage(),
                     FontAwesomeSolid.EXCLAMATION_TRIANGLE);
         }
     }
@@ -456,22 +523,6 @@ public class MainViewController implements Initializable {
         alert.showAndWait();
     }
 
-    private void openCourseDetails(Courses course) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/Courses/CourseDetailsView.fxml"));
-            Parent root = loader.load();
-
-            CourseDetailsController controller = loader.getController();
-            controller.setCourse(course);
-
-            Stage stage = new Stage();
-            stage.setTitle("Course Details");
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -507,18 +558,16 @@ public class MainViewController implements Initializable {
     private void showManualForm() {
         manualEntryBtn.setVisible(false);
         saveButton.setVisible(true);
-
-        // Enable all form fields
-        setFormFieldsEditable(true);
+        setFormFieldsEditable(true); // Active tous les champs sauf tutor
     }
 
     private void setFormFieldsEditable(boolean editable) {
         courseTitleField.setDisable(!editable);
         courseDescriptionField.setDisable(!editable);
         categoryComboBox.setDisable(!editable);
-        tutorField.setDisable(!editable);
         premiumCheckBox.setDisable(!editable);
         levelNameField.setDisable(!editable);
+        // Note: tutorField reste toujours désactivé
     }
 
     public void setAIGeneratedContent(String title, String description, Category category) {
@@ -539,4 +588,89 @@ public class MainViewController implements Initializable {
             setFormFieldsEditable(true);
         });
     }
+
+
+
+    /////////////////////////////////////////////
+////////////////Patie emna//////////////////////////
+///////////////////////////////////////////////////////////////
+
+
+    private void openCourseDetails(Courses course) {
+        try {
+            if (course.getIsPremium()) {
+                // Redirection vers la page d'abonnement pour les cours premium
+                redirectToSubscriptionPage(course);
+            } else {
+                // Affichage normal pour les cours gratuits
+                FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/Courses/CourseDetailsView.fxml"));
+                Parent root = loader.load();
+
+                CourseDetailsController controller = loader.getController();
+                controller.setCourse(course);
+
+                Stage stage = new Stage();
+                stage.setTitle("Course Details");
+                stage.setScene(new Scene(root));
+                stage.show();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not open course details");
+        }
+    }
+
+    private void redirectToSubscriptionPage(Courses course) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/Courses/SubscriptionRequired.fxml"));
+            Parent root = loader.load();
+
+            // Passer les données du cours si nécessaire
+            SubscriptionRequiredController controller = loader.getController();
+            controller.setCourseTitle(course.getTitle());
+
+            Stage stage = new Stage();
+            stage.setTitle("Subscription Required");
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Error", "Could not load subscription page");
+        }
+    }
+
+    private VBox createCourseCard(Courses course) {
+        VBox card = new VBox(10);
+        card.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-border-color: #D8BFD8; -fx-border-radius: 10;");
+        card.setPrefSize(250, 160);
+
+        Label titleLabel = new Label(course.getTitle() != null ? course.getTitle() : "Untitled Course");
+        titleLabel.setStyle("-fx-font-weight: bold; -fx-text-fill: #4B0082; -fx-wrap-text: true;");
+
+        Label tutorLabel = new Label("By " + (course.getTutorName() != null ? course.getTutorName() : "Unknown"));
+        tutorLabel.setStyle("-fx-text-fill: #9370DB; -fx-font-size: 12px;");
+
+        HBox footer = new HBox(10);
+        Label ratingLabel = new Label(String.format("★ %.1f", course.getAverageRating()));
+        ratingLabel.setStyle("-fx-text-fill: #f39c12;");
+
+        Label premiumLabel = new Label(course.getIsPremium() ? "PREMIUM" : "FREE");
+        premiumLabel.setStyle(course.getIsPremium()
+                ? "-fx-text-fill: #4B0082; -fx-font-weight: bold; -fx-border-color: #4B0082; -fx-border-width: 1; -fx-padding: 2 5;"
+                : "-fx-text-fill: #2ecc71; -fx-font-weight: bold;");
+
+        footer.getChildren().addAll(ratingLabel, premiumLabel);
+        card.getChildren().addAll(titleLabel, tutorLabel, footer);
+
+        // Ajouter un effet au survol pour indiquer que c'est cliquable
+        card.setOnMouseEntered(e -> card.setStyle("-fx-background-color: #f0e6f0; -fx-padding: 15; -fx-background-radius: 10; -fx-border-color: #4B0082; -fx-border-radius: 10;"));
+        card.setOnMouseExited(e -> card.setStyle("-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-border-color: #D8BFD8; -fx-border-radius: 10;"));
+
+        card.setOnMouseClicked(event -> openCourseDetails(course));
+
+        return card;
+    }
+    /////////////////////////////////////////////
+//////////////////////////////////////////
+///////////////////////////////////////////////////////////////
 }

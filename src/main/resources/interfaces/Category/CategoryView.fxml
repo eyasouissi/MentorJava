@@ -16,7 +16,6 @@
       prefHeight="700">
 
     <!-- Sidebar -->
-    <fx:include fx:id="sidebar" source="/interfaces/Admin/Sidebar.fxml"/>
 
     <!-- Main Content -->
     <VBox styleClass="main-content" HBox.hgrow="ALWAYS">

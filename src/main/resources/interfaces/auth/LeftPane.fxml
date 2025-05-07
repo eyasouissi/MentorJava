@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.paint.*?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            style="-fx-background-color: linear-gradient(to bottom right, #c78ad4, #b970d1);">
+
+    <VBox alignment="CENTER" spacing="30"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+
+        <!-- Logo or Icon -->
+        <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
+            <Image url="@/assets/icons/mentor-logo.png"/>
+        </ImageView>
+
+        <!-- Welcome Text -->
+        <VBox alignment="CENTER" spacing="10">
+            <Text text="Welcome to"
+                  style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: white;"/>
+            <Text text="MENTOR"
+                  style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: white;">
+                <effect>
+                    <DropShadow color="#EEA0FF" radius="15" spread="0.5"/>
+                </effect>
+            </Text>
+        </VBox>
+
+        <!-- Tagline -->
+        <Text text="Your learning journey starts here"
+              style="-fx-font-size: 18px; -fx-font-style: italic; -fx-fill: white;"/>
+
+        <!-- Decorative Elements -->
+        <HBox alignment="CENTER" spacing="20">
+            <Circle radius="8" fill="#EEA0FF" opacity="0.7"/>
+            <Circle radius="12" fill="#47AEFF" opacity="0.7"/>
+            <Circle radius="8" fill="#EEA0FF" opacity="0.7"/>
+        </HBox>
+
+        <!-- Quote -->
+        <Text text='"Education is the most powerful weapon which you can use to change the world."'
+              style="-fx-font-size: 14px; -fx-text-alignment: center; -fx-fill: white;"/>
+    </VBox>
+</AnchorPane>

@@ -1,0 +1,166 @@
+/* style-annonces.css */
+
+/* Styles généraux */
+.root {
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    -fx-background-color: #f5f7fa;
+    -fx-padding: 15px;
+}
+
+/* Titre principal */
+.label {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 0 0 10px 0;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 1, 1, 1, 1);
+}
+
+/* Style de la TableView */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-table-cell-border-color: transparent;
+    -fx-border-radius: 8px;
+    -fx-background-radius: 8px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 10, 0, 0, 2);
+}
+
+/* En-tête de la table */
+.table-view .column-header-background {
+    -fx-background-color: #3498db;
+    -fx-background-radius: 8px 8px 0 0;
+    -fx-padding: 0 0 5px 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
+    -fx-text-fill: white;
+    -fx-padding: 10px;
+    -fx-alignment: CENTER-LEFT;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-padding: 5px;
+}
+
+/* Style des cellules */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent;
+    -fx-padding: 5px;
+    -fx-cell-size: 60px;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #ecf0f1;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #d6eaf8;
+    -fx-cursor: hand;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:selected .text {
+    -fx-fill: white;
+}
+
+/* Cellules de la table */
+.table-cell {
+    -fx-alignment: CENTER-LEFT;
+    -fx-padding: 8px;
+    -fx-border-color: transparent;
+    -fx-font-size: 13px;
+}
+
+/* Style pour la colonne d'image */
+.table-column#imageColumn {
+    -fx-alignment: CENTER;
+}
+
+/* Barre de défilement */
+.scroll-bar:vertical {
+    -fx-background-color: transparent;
+    -fx-pref-width: 12px;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #3498db;
+    -fx-background-radius: 6px;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: #ecf0f1;
+    -fx-background-radius: 6px;
+}
+
+/* Boutons */
+.button {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 8px 16px;
+    -fx-border-radius: 4px;
+    -fx-background-radius: 4px;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.1), 4, 0, 0, 1);
+}
+
+.button:hover {
+    -fx-background-color: #2980b9;
+}
+
+.button:pressed {
+    -fx-background-color: #1f618d;
+}
+
+/* Boutons spécifiques */
+#editButton {
+    -fx-background-color: #2ecc71;
+}
+
+#editButton:hover {
+    -fx-background-color: #27ae60;
+}
+
+#deleteButton {
+    -fx-background-color: #e74c3c;
+}
+
+#deleteButton:hover {
+    -fx-background-color: #c0392b;
+}
+
+#viewImageButton {
+    -fx-background-color: #9b59b6;
+}
+
+#viewImageButton:hover {
+    -fx-background-color: #8e44ad;
+}
+
+/* Style pour le bouton désactivé */
+.button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* Conteneur des boutons */
+.hbox {
+    -fx-spacing: 10px;
+    -fx-padding: 10px 0;
+    -fx-alignment: CENTER-RIGHT;
+}
+
+/* Effets lors de la sélection */
+.focused-row {
+    -fx-background-color: #d6eaf8;
+}

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<TabPane fx:id="tabPane" stylesheets="@/css/dashboard.css"
+         xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="tn.esprit.controllers.DashboardController">
+    <tabs>
+        <Tab fx:id="dailyTab" text="Daily" styleClass="dashboard-tab">
+            <content>
+                <StackPane styleClass="chart-container" />
+            </content>
+        </Tab>
+        <Tab fx:id="weeklyTab" text="Weekly" styleClass="dashboard-tab">
+            <content>
+                <StackPane styleClass="chart-container" />
+            </content>
+        </Tab>
+        <Tab fx:id="monthlyTab" text="Monthly" styleClass="dashboard-tab">
+            <content>
+                <StackPane styleClass="chart-container" />
+            </content>
+        </Tab>
+    </tabs>
+</TabPane>

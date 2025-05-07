@@ -87,6 +87,7 @@ public class MainController {
             FXMLLoader sidebarLoader = new FXMLLoader(getClass().getResource("/interfaces/Front/Sidebar.fxml"));
             Parent sidebar = sidebarLoader.load();
             SidebarController sidebarController = sidebarLoader.getController();
+
             sidebarController.setCurrentUser(user);
             sidebarController.setContentArea(contentArea);
 

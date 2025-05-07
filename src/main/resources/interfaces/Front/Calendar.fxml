@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+
+<?import java.net.URL?>
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:id="calendarContainer"
+      fx:controller="tn.esprit.controllers.FrontCalendarController"
+      styleClass="calendar-container"
+      spacing="10">
+
+    <HBox fx:id="monthHeader" styleClass="month-header" alignment="CENTER" spacing="20">
+        <Button onAction="#previousMonth" styleClass="nav-button">
+            <graphic>
+                <Text text="&lt;" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+            </graphic>
+        </Button>
+
+        <Label fx:id="monthYearLabel" styleClass="month-year-label"/>
+
+        <Button onAction="#nextMonth" styleClass="nav-button">
+            <graphic>
+                <Text text="&gt;" style="-fx-font-weight: bold; -fx-font-size: 16;"/>
+            </graphic>
+        </Button>
+
+        <Button text="Aujourd'hui" onAction="#goToToday" styleClass="today-button"/>
+    </HBox>
+
+    <GridPane fx:id="calendarGrid" styleClass="calendar-grid" VBox.vgrow="ALWAYS">
+        <columnConstraints>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28"/>
+            <ColumnConstraints hgrow="ALWAYS" percentWidth="14.28"/>
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER" minHeight="30"/>
+            <RowConstraints vgrow="ALWAYS" minHeight="100" />
+            <RowConstraints vgrow="ALWAYS" minHeight="100" />
+            <RowConstraints vgrow="ALWAYS" minHeight="100" />
+            <RowConstraints vgrow="ALWAYS" minHeight="100" />
+            <RowConstraints vgrow="ALWAYS" minHeight="100" />
+            <RowConstraints vgrow="ALWAYS" minHeight="100" />
+        </rowConstraints>
+
+        <Label text="Lundi" styleClass="day-header" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+        <Label text="Mardi" styleClass="day-header" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+        <Label text="Mercredi" styleClass="day-header" GridPane.columnIndex="2" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+        <Label text="Jeudi" styleClass="day-header" GridPane.columnIndex="3" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+        <Label text="Vendredi" styleClass="day-header" GridPane.columnIndex="4" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+        <Label text="Samedi" styleClass="day-header" GridPane.columnIndex="5" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+        <Label text="Dimanche" styleClass="day-header" GridPane.columnIndex="6" GridPane.rowIndex="0" GridPane.halignment="CENTER"/>
+    </GridPane>
+
+    <stylesheets>
+        <URL value="@/css/calendar.css"/>
+    </stylesheets>
+</VBox>

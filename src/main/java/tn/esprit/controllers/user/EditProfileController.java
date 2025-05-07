@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import org.opencv.imgproc.Imgproc;
 import tn.esprit.entities.User;
 import tn.esprit.services.FaceRecognitionService;
+import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.services.UserService;
 import tn.esprit.tools.FileUploadUtil;
 import tn.esprit.services.AIImageService;
@@ -80,6 +81,7 @@ public class EditProfileController {
             specialityField.setText(currentUser.getSpeciality() != null ? currentUser.getSpeciality() : "");
             bioArea.setText(currentUser.getBio() != null ? currentUser.getBio() : "");
 
+            // Use the same default paths as ProfileController
             loadImage(profileImageView, currentUser.getPfp(), "/assets/images/pfp/default-profile.png");
             loadImage(backgroundImageView, currentUser.getBg(), "/assets/images/bg/default-bg.jpg");
 
@@ -89,27 +91,35 @@ public class EditProfileController {
             }
         }
     }
-
     protected void loadImage(ImageView imageView, String path, String defaultPath) {
         try {
-            InputStream is = null;
-
             if (path != null && !path.isEmpty()) {
-                is = getClass().getResourceAsStream(path.startsWith("/") ? path : "/" + path);
-                if (is != null) {
-                    imageView.setImage(new Image(is));
-                    return;
+                // First try to load from file system with relative path
+                File file = new File(path);
+                if (!file.exists()) {
+                    // Try with uploads directory prefix if direct path doesn't work
+                    file = new File("uploads/" + path);
+                    if (!file.exists()) {
+                        // Try with specific subdirectories
+                        if (path.startsWith("pfp/") || path.startsWith("bg/")) {
+                            file = new File("uploads/" + path);
+                        } else {
+                            file = new File("uploads/pfp/" + path);
+                            if (!file.exists()) {
+                                file = new File("uploads/bg/" + path);
+                            }
+                        }
+                    }
                 }
 
-                File file = FileUploadUtil.getUploadedFile(path);
-                if (file != null && file.exists()) {
-                    imageView.setImage(new Image(file.toURI().toString()));
+                if (file.exists()) {
+                    String imageUrl = file.toURI().toString();
+                    imageView.setImage(new Image(imageUrl));
                     return;
                 }
-
-                System.err.println("Could not load image for: " + path);
             }
 
+            // Load default if specified
             if (defaultPath != null) {
                 InputStream defaultStream = getClass().getResourceAsStream(defaultPath);
                 if (defaultStream != null) {
@@ -118,6 +128,7 @@ public class EditProfileController {
             }
         } catch (Exception e) {
             System.err.println("Error loading image: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -177,60 +188,139 @@ public class EditProfileController {
     @FXML
     protected void handleSave() {
         try {
+            // Validate required fields
+            if (nameField.getText().trim().isEmpty()) {
+                showAlert("Validation Error", "Name is required");
+                return;
+            }
+
+            // Update user object with form data
             currentUser.setName(nameField.getText().trim());
 
-            if (!ageField.getText().isEmpty()) {
-                currentUser.setAge(Integer.parseInt(ageField.getText()));
-            } else {
-                currentUser.setAge(null);
+            try {
+                if (!ageField.getText().isEmpty()) {
+                    currentUser.setAge(Integer.parseInt(ageField.getText()));
+                } else {
+                    currentUser.setAge(null);
+                }
+            } catch (NumberFormatException e) {
+                showAlert("Invalid Age", "Please enter a valid number for age");
+                return;
             }
 
             currentUser.setCountry(countryField.getText().trim());
             currentUser.setSpeciality(specialityField.getText().trim());
             currentUser.setBio(bioArea.getText().trim());
 
+            // Handle profile picture upload
             if (profileImageFile != null) {
-                String pfpPath = FileUploadUtil.uploadFile(profileImageFile, "pfp");
-                currentUser.setPfp(pfpPath);
+                // Create pfp directory if it doesn't exist
+                File pfpDir = new File("uploads/pfp");
+                if (!pfpDir.exists()) {
+                    pfpDir.mkdirs();
+                }
+
+                // Generate unique filename
+                String uniqueFileName = System.currentTimeMillis() + "_" + profileImageFile.getName();
+                File destinationFile = new File("uploads/pfp/" + uniqueFileName);
+
+                // Copy the file
+                Files.copy(profileImageFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Store relative path
+                currentUser.setPfp("pfp/" + uniqueFileName);
             }
 
+            // Handle background image upload
             if (backgroundImageFile != null) {
-                String bgPath = FileUploadUtil.uploadFile(backgroundImageFile, "bg");
-                currentUser.setBg(bgPath);
+                // Create bg directory if it doesn't exist
+                File bgDir = new File("uploads/bg");
+                if (!bgDir.exists()) {
+                    bgDir.mkdirs();
+                }
+
+                // Generate unique filename
+                String uniqueFileName = System.currentTimeMillis() + "_" + backgroundImageFile.getName();
+                File destinationFile = new File("uploads/bg/" + uniqueFileName);
+
+                // Copy the file
+                Files.copy(backgroundImageFile.toPath(), destinationFile.toPath(), StandardCopyOption.REPLACE_EXISTING);
+
+                // Store relative path
+                currentUser.setBg("bg/" + uniqueFileName);
             }
 
+            // Handle diploma upload
             if (diplomaFile != null) {
-                currentUser.setDiplome(diplomaFile.getPath());
+                currentUser.setDiplome("diplomas/" + diplomaFile.getName());
             }
 
-            new UserService().modifier(currentUser);
+            // Save to database
+            UserService userService = new UserService();
+            userService.modifier(currentUser);
 
+            // Refresh the current user from database
+            User updatedUser = userService.getById(currentUser.getId());
+            currentUser = updatedUser;
+
+            // Update session with fresh user data
+            UserSession.getInstance().setCurrentUser(updatedUser);
+
+            // Refresh parent view if exists
             if (parentController != null) {
                 parentController.refreshUserData();
+
+                // Add delay to ensure all updates are processed
+                Platform.runLater(() -> {
+                    if (parentController.getMainController() != null) {
+                        parentController.getMainController().updateUserInfo(updatedUser);
+                        parentController.getMainController().notifyProfilePictureUpdated(updatedUser.getPfp());
+                    }
+                });
             }
 
+            // Close the edit window
             ((Stage) profileImageView.getScene().getWindow()).close();
+
+            // Show success message
+            showSuccessAlert("Profile Updated", "Your profile has been updated successfully!");
+
         } catch (NumberFormatException e) {
-            showAlert("Invalid Age", "Please enter a valid number for age.");
+            showAlert("Invalid Input", "Please enter valid information in all fields");
         } catch (IOException e) {
-            showAlert("Upload Error", "Failed to upload file: " + e.getMessage());
+            showAlert("File Upload Error", "Failed to upload files: " + e.getMessage());
+            e.printStackTrace();
         } catch (Exception e) {
-            showAlert("Error", "Failed to save: " + e.getMessage());
+            showAlert("Error", "An unexpected error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
+    private void showSuccessAlert(String title, String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
+
+    private void showAlert(String title, String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
+    }
     @FXML
     protected void handleCancel() {
         ((Stage) profileImageView.getScene().getWindow()).close();
     }
 
-    protected void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
+
 
     @FXML
     protected void handleGenerateProfilePicture() {

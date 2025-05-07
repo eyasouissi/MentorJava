@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.AjoutAnnonceController"
+      spacing="10"
+      style="-fx-padding: 20;">
+
+    <Label text="Titre de l'annonce:" style="-fx-font-weight: bold;"/>
+    <TextField fx:id="titreField" promptText="Entrez le titre"/>
+
+    <Label text="Description:" style="-fx-font-weight: bold;"/>
+    <TextArea fx:id="descriptionField" promptText="Description de l'annonce"
+              wrapText="true" prefRowCount="3"/>
+
+    <Label text="Date et heure:" style="-fx-font-weight: bold;"/>
+    <HBox spacing="10">
+        <DatePicker fx:id="datePicker" promptText="Sélectionnez une date"/>
+        <TextField fx:id="heureField" promptText="HH:mm"/>
+    </HBox>
+
+    <!-- Bouton pour choisir l'image et champ de texte pour afficher le chemin de l'image -->
+    <Label text="Choisir une image:" style="-fx-font-weight: bold;"/>
+    <HBox spacing="10">
+        <Button text="Choisir une image" onAction="#choisirImage"/>
+        <TextField fx:id="imageUrlField" promptText="Sélectionnez une image" editable="false"/>
+    </HBox>
+
+    <HBox spacing="10" style="-fx-padding: 10 0 0 0;">
+        <Button text="Annuler" onAction="#annuler"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white;"/>
+        <Button text="Enregistrer" onAction="#enregistrer" defaultButton="true"
+                style="-fx-background-color: #2ecc71; -fx-text-fill: white;"/>
+    </HBox>
+</VBox>

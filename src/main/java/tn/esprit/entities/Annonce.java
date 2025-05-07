@@ -1,132 +1,108 @@
 package tn.esprit.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
+import javafx.beans.property.*;
 import java.time.LocalDateTime;
-import java.util.Objects;
-
-@Entity
-@Table(name = "annonce")
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 public class Annonce {
+    private final IntegerProperty id = new SimpleIntegerProperty();
+    private final StringProperty titreA = new SimpleStringProperty();
+    private final StringProperty descriptionA = new SimpleStringProperty();
+    private final ObjectProperty<LocalDateTime> dateA = new SimpleObjectProperty<>();
+    private final StringProperty imageUrl = new SimpleStringProperty();
+    private final IntegerProperty evenementId = new SimpleIntegerProperty();
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @Column(name = "image_a", length = 255)
-    private String imageA;
-
-    @Column(name = "titre_a", length = 255)
-    @NotBlank(message = "Le titre est obligatoire.")
-    @Size(min = 3, message = "Le titre doit contenir au moins {min} caractères.")
-    private String titreA;
-
-    @Column(name = "description_a", columnDefinition = "TEXT")
-    @NotBlank(message = "La description est obligatoire.")
-    @Size(min = 10, message = "La description doit contenir au moins {min} caractères.")
-    private String descriptionA;
-
-    @Column(name = "date_a")
-    private LocalDateTime dateA;
-
-    @ManyToOne
-    @JoinColumn(name = "evenement_id", nullable = false)
-    private Evenement evenement;
-
-    // Constructors
+    // Constructeurs
     public Annonce() {
-        this.dateA = LocalDateTime.now();
     }
 
-    public Annonce(String titreA, String descriptionA) {
-        this();
-        this.titreA = titreA;
-        this.descriptionA = descriptionA;
+    public Annonce(String titreA, String descriptionA, LocalDateTime dateA,
+                   String imageUrl, int evenementId) {
+        setTitreA(titreA);
+        setDescriptionA(descriptionA);
+        setDateA(dateA);
+        setImageUrl(imageUrl);
+        setEvenementId(evenementId);
     }
 
-    public Annonce(String imageA, String titreA, String descriptionA, Evenement evenement) {
-        this(titreA, descriptionA);
-        this.imageA = imageA;
-        this.evenement = evenement;
+    // Getters & Setters standards
+    public int getId() {
+        return id.get();
     }
 
-    // toString() method
-    @Override
-    public String toString() {
-        return "Annonce{" +
-                "id=" + id +
-                ", imageA='" + imageA + '\'' +
-                ", titreA='" + titreA + '\'' +
-                ", descriptionA='" + (descriptionA != null ?
-                descriptionA.substring(0, Math.min(descriptionA.length(), 30)) + "..." : "null") + '\'' +
-                ", dateA=" + dateA +
-                ", evenementId=" + (evenement != null ? evenement.getId() : null) +
-                '}';
-    }
-
-    // equals() method
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Annonce annonce = (Annonce) o;
-        return Objects.equals(id, annonce.id) &&
-                Objects.equals(titreA, annonce.titreA) &&
-                Objects.equals(dateA, annonce.dateA);
-    }
-
-    // hashCode() method
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, titreA, dateA);
-    }
-
-    // Getters and Setters
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getImageA() {
-        return imageA;
-    }
-
-    public void setImageA(String imageA) {
-        this.imageA = imageA;
+    public void setId(int id) {
+        this.id.set(id);
     }
 
     public String getTitreA() {
-        return titreA;
+        return titreA.get();
     }
 
     public void setTitreA(String titreA) {
-        this.titreA = titreA;
+        this.titreA.set(titreA);
     }
 
     public String getDescriptionA() {
-        return descriptionA;
+        return descriptionA.get();
     }
 
     public void setDescriptionA(String descriptionA) {
-        this.descriptionA = descriptionA;
+        this.descriptionA.set(descriptionA);
     }
 
     public LocalDateTime getDateA() {
-        return dateA;
+        return dateA.get();
     }
 
     public void setDateA(LocalDateTime dateA) {
-        this.dateA = dateA;
+        this.dateA.set(dateA);
     }
 
-    public Evenement getEvenement() {
-        return evenement;
+    public String getImageUrl() {
+        return imageUrl.get();
     }
 
-    public void setEvenement(Evenement evenement) {
-        this.evenement = evenement;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl.set(imageUrl);
+    }
+
+    public int getEvenementId() {
+        return evenementId.get();
+    }
+
+    public void setEvenementId(int evenementId) {
+        this.evenementId.set(evenementId);
+    }
+
+    // Propriétés JavaFX (pour la liaison avec TableView)
+    public IntegerProperty idProperty() {
+        return id;
+    }
+
+    public StringProperty titreAProperty() {
+        return titreA;
+    }
+
+    public StringProperty descriptionAProperty() {
+        return descriptionA;
+    }
+
+    public ObjectProperty<LocalDateTime> dateAProperty() {
+        return dateA;
+    }
+
+    public StringProperty imageUrlProperty() {
+        return imageUrl;
+    }
+
+    public IntegerProperty evenementIdProperty() {
+        return evenementId;
+    }
+
+    @Override
+    public String toString() {
+        return getTitreA() + " - " + getDateA().toString();
     }
 }

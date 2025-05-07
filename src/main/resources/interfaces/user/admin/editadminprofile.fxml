@@ -14,7 +14,7 @@
             <Label text="Edit Admin Profile" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #6a3093;" />
 
             <!-- Inherit all the profile editing controls from the base FXML -->
-            <fx:include source="../../user/editprofile.fxml" />
+            <fx:include source="../../user/EditProfile.fxml" />
 
             <!-- Admin-specific Role Management Section -->
             <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-padding: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);">

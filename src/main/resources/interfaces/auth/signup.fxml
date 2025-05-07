@@ -1,85 +1,88 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<VBox xmlns="http://javafx.com/javafx/17"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="tn.esprit.controllers.Front.SidebarController"
-      fx:id="sidebar"
-      spacing="15"
-      styleClass="sidebar"
-      minWidth="250"
-      maxWidth="300"
-      stylesheets="@/css/sidebarFront.css">
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.auth.SignUp"
+            style="-fx-background-color: #f5f5f5;">
 
-    <!-- Header -->
-    <Label text="MENTOR" styleClass="sidebar-title"/>
-    <Label text="Discover" styleClass="sidebar-section"/>
+    <VBox alignment="CENTER" spacing="20" prefWidth="500"
+          AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+          AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50"
+          style="-fx-background-color: white; -fx-padding: 30px; -fx-background-radius: 15px;
+                 -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.2, 0, 4);">
 
-    <!-- Navigation Menu -->
-    <VBox spacing="8" style="-fx-padding: 0 0 0 5;">
-        <!-- Home -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToHome">
-            <ImageView fitWidth="18" fitHeight="18">
-                <Image url="@/assets/images/home.png"/>
-            </ImageView>
-            <Label text="Home" styleClass="nav-label"/>
-        </HBox>
+        <Text fx:id="titleText" text="Create Account"
+              style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #572063;" />
 
-        <!-- Courses -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToCourses">
-            <ImageView fitWidth="18" fitHeight="18">
-                <Image url="@/assets/images/bookmark.png"/>
-            </ImageView>
-            <Label text="Courses" styleClass="nav-label"/>
-        </HBox>
+        <GridPane hgap="15" vgap="15">
+            <Label text="Email:" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <TextField fx:id="emailField" GridPane.rowIndex="0" GridPane.columnIndex="1"
+                       style="-fx-pref-width: 250px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                              -fx-background-radius: 10px; -fx-border-radius: 10px;
+                              -fx-border-color: #EEA0FF; -fx-border-width: 1.5px;" />
 
-        <!-- Forum -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToForum">
-            <ImageView fitWidth="18" fitHeight="18">
-                <Image url="@/assets/images/message.png"/>
-            </ImageView>
-            <Label text="Forum" styleClass="nav-label"/>
-        </HBox>
+            <Label text="Name:" GridPane.rowIndex="1" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <TextField fx:id="nameField" GridPane.rowIndex="1" GridPane.columnIndex="1"
+                       style="-fx-pref-width: 250px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                              -fx-background-radius: 10px; -fx-border-radius: 10px;
+                              -fx-border-color: #EEA0FF; -fx-border-width: 1.5px;" />
 
-        <!-- Groups -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToGroups">
-            <ImageView fitWidth="18" fitHeight="18">
-                <Image url="@/assets/images/group.png"/>
-            </ImageView>
-            <Label text="Groups" styleClass="nav-label"/>
-        </HBox>
+            <Label text="Password:" GridPane.rowIndex="2" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <PasswordField fx:id="passwordField" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                           style="-fx-pref-width: 250px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                                  -fx-background-radius: 10px; -fx-border-radius: 10px;
+                                  -fx-border-color: #EEA0FF; -fx-border-width: 1.5px;" />
 
-        <!-- Events -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToEvents">
-            <ImageView fitWidth="18" fitHeight="18">
-                <Image url="@/assets/images/calendar.png"/>
-            </ImageView>
-            <Label text="Events" styleClass="nav-label"/>
-        </HBox>
+            <Label text="Confirm Password:" GridPane.rowIndex="3" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <PasswordField fx:id="confirmPasswordField" GridPane.rowIndex="3" GridPane.columnIndex="1"
+                           style="-fx-pref-width: 250px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                                  -fx-background-radius: 10px; -fx-border-radius: 10px;
+                                  -fx-border-color: #EEA0FF; -fx-border-width: 1.5px;" />
+
+            <Label text="Age:" GridPane.rowIndex="4" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <TextField fx:id="ageField" GridPane.rowIndex="4" GridPane.columnIndex="1"
+                       style="-fx-pref-width: 250px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                              -fx-background-radius: 10px; -fx-border-radius: 10px;
+                              -fx-border-color: #EEA0FF; -fx-border-width: 1.5px;" />
+
+            <Label text="Gender:" GridPane.rowIndex="5" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <HBox spacing="10" GridPane.rowIndex="5" GridPane.columnIndex="1">
+                <RadioButton fx:id="maleRadio" text="Male" style="-fx-text-fill: #444;" />
+                <RadioButton fx:id="femaleRadio" text="Female" style="-fx-text-fill: #444;" />
+            </HBox>
+
+            <Label text="Country:" GridPane.rowIndex="6" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <ComboBox fx:id="countryComboBox" GridPane.rowIndex="6" GridPane.columnIndex="1"
+                      style="-fx-pref-width: 250px; -fx-pref-height: 40px; -fx-font-size: 14px;
+                             -fx-background-radius: 10px; -fx-border-radius: 10px;
+                             -fx-border-color: #EEA0FF; -fx-border-width: 1.5px;" />
+
+            <Label text="Role:" GridPane.rowIndex="7" GridPane.columnIndex="0"
+                   style="-fx-font-weight: bold; -fx-text-fill: #555;" />
+            <HBox spacing="10" GridPane.rowIndex="7" GridPane.columnIndex="1">
+                <RadioButton fx:id="studentRadio" text="Student" selected="true" style="-fx-text-fill: #444;" />
+                <RadioButton fx:id="tutorRadio" text="Tutor" style="-fx-text-fill: #444;" />
+            </HBox>
+        </GridPane>
+
+        <Label fx:id="errorLabel" style="-fx-text-fill: red; -fx-font-style: italic; -fx-font-size: 14px;" />
+
+        <Button text="Sign Up" onAction="#handleSignUp"
+                style="-fx-pref-width: 250px; -fx-pref-height: 40px;
+                       -fx-background-color: #4CAF50; -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-font-size: 15px;
+                       -fx-background-radius: 20px; -fx-cursor: hand;" />
     </VBox>
-
-    <Region VBox.vgrow="ALWAYS"/>
-
-    <!-- Bottom Section -->
-    <VBox spacing="8">
-        <!-- Profile -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#goToProfile">
-            <ImageView fitWidth="32" fitHeight="32">
-                <Image url="@/assets/images/profile.png"/>
-            </ImageView>
-            <Label text="Profile" styleClass="nav-label"/>
-        </HBox>
-
-        <!-- Logout -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#handleLogout">
-            <ImageView fitWidth="18" fitHeight="18">
-                <Image url="@/assets/images/logout.png"/>
-            </ImageView>
-            <Label text="Logout" styleClass="nav-label"/>
-        </HBox>
-    </VBox>
-</VBox>
+</AnchorPane>

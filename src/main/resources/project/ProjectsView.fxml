@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/11.0.1"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.project.ProjectsController"
+      prefWidth="1100" prefHeight="750"
+      spacing="20"
+      style="-fx-padding: 25; -fx-background-color: #f5f7fa;">
+
+    <!-- Header -->
+    <HBox fx:id="header" spacing="20" alignment="CENTER_LEFT">
+        <Label text="📁 Projects Management"
+               style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="toggleThemeButton" text="🌙" onAction="#toggleTheme"
+                style="-fx-font-size: 22px; -fx-background-color: transparent;"/>
+    </HBox>
+
+    <!-- Navigation Bar -->
+    <HBox fx:id="navbar" spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #336699; -fx-padding: 10 20;">
+        <Button fx:id="homeButton" text=" 🏠 Home " onAction="#goToHomeFront" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+        <Button text=" 👥 Groups " onAction="#navigateToGroupsView" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+        <Button text=" 📁 Projects " onAction="#goToProjectsView" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;" />
+        <Button text="📊 Statistiques" onAction="#showStatsView" styleClass="nav-button" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;" /> 
+        <Button text="📅 Calendrier" onAction="#showCalendar" styleClass="nav-button" 
+        style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+    
+    </HBox>
+
+    <!-- Toolbar -->
+    <HBox fx:id="toolbar" spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10 0;">
+        <Button text="➕ Add Project" onAction="#showAddProjectView"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 130;"/>
+        <Button text="🔄 Refresh List" onAction="#refreshProjectsList"
+                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 130;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <TextField fx:id="searchField" promptText="Search by Title or Description..."
+                   style="-fx-pref-width: 250; -fx-background-radius: 5; -fx-border-radius: 5;"/>
+       
+    </HBox>
+
+    <!-- Filters -->
+    <HBox spacing="15" alignment="CENTER_LEFT">
+        <Label text="Filter by:"/>
+        <DatePicker fx:id="startDatePicker" promptText="Start Date"/>
+        <DatePicker fx:id="endDatePicker" promptText="End Date"/>
+        <ComboBox fx:id="difficulteComboBox" promptText="Difficulty"/>
+        <Button text="Apply Filter" onAction="#applyFilters"
+                style="-fx-background-color: #FF5722; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        <Button text="Clear" onAction="#clearFilters"/>
+    </HBox>
+
+    <!-- Projects Table -->
+    <TableView fx:id="projectsTable" VBox.vgrow="ALWAYS"
+               style="-fx-background-color: white; -fx-text-fill: black; -fx-table-cell-border-color: #d1d1d1;">
+        <columns>
+            <TableColumn fx:id="titleColumn" text="📌 Title" prefWidth="200"/>
+            <TableColumn fx:id="descriptionColumn" text="📝 Description" prefWidth="350"/>
+            <TableColumn fx:id="difficulteColumn" text="🌟 Difficulty" prefWidth="120"/>
+            <TableColumn fx:id="deadlineColumn" text="📅 Deadline" prefWidth="150"/>
+        </columns>
+    </TableView>
+
+    <!-- Action Buttons -->
+    <HBox fx:id="actionButtonsBox" spacing="15" style="-fx-padding: 15 0 0 0;" visible="false" alignment="CENTER_LEFT">
+        <Button text="✏️ Edit" onAction="#showEditProjectView"
+                style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
+        <Button text="🗑️ Delete" onAction="#deleteProject"
+                style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
+        <Button text="🔍 Details" onAction="#showProjectDetails"
+                style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
+    </HBox>
+<!-- Pagination -->
+<Pagination fx:id="pagination" 
+style="-fx-table-cell-border-visible: false;"            VBox.vgrow="NEVER"/>
+</VBox>

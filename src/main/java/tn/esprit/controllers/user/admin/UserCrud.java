@@ -8,6 +8,7 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -23,6 +24,7 @@ import tn.esprit.entities.User;
 import tn.esprit.services.UserService;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -166,8 +168,8 @@ public class UserCrud {
                     private final Button deleteBtn = new Button("Delete");
 
                     {
-                        editBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white; -fx-pref-width: 60;");
-                        deleteBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-pref-width: 70;");
+                        editBtn.setStyle("-fx-background-color: #e8b8f3; -fx-text-fill: white; -fx-pref-width: 60;");
+                        deleteBtn.setStyle("-fx-background-color: #296198; -fx-text-fill: white; -fx-pref-width: 70;");
                         editBtn.setOnAction(event -> {
                             User user = getTableView().getItems().get(getIndex());
                             showEditDialog(user);
@@ -195,7 +197,12 @@ public class UserCrud {
     @FXML
     private void handleAddUser() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/auth/SignUp.fxml"));
+            URL fxmlLocation = getClass().getResource("/interfaces/auth/SignUp.fxml");
+            if (fxmlLocation == null) {
+                throw new IOException("FXML file not found at: /interfaces/auth/SignUp.fxml");
+            }
+
+            FXMLLoader loader = new FXMLLoader(fxmlLocation);
             Parent root = loader.load();
 
             SignUp controller = loader.getController();
@@ -208,10 +215,12 @@ public class UserCrud {
             stage.setTitle("Add New User");
             stage.show();
         } catch (IOException e) {
-            showAlert("Error", "Could not open user creation form: " + e.getMessage());
+            showAlert("Error", "Could not open user creation form.\n" +
+                    "File path: /interfaces/auth/SignUp.fxml\n" +
+                    "Error details: " + e.getMessage());
+            e.printStackTrace();
         }
     }
-
     @FXML
     private void handleProfile() {
         try {
@@ -284,20 +293,32 @@ public class UserCrud {
     private void showEditDialog(User user) {
         try {
             Dialog<User> dialog = new Dialog<>();
-            dialog.setTitle("Edit User");
-            dialog.setHeaderText("Editing: " + user.getName());
+            dialog.setTitle("Modifier l'utilisateur");
+            dialog.setHeaderText(null);
 
-            ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
+            DialogPane dialogPane = dialog.getDialogPane();
+            dialogPane.setPrefWidth(400);
+            dialogPane.setStyle("-fx-background-color: #bb94ed; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 15, 0, 0, 5);");
+
+            ButtonType saveButtonType = new ButtonType("Enregistrer", ButtonBar.ButtonData.OK_DONE);
+            dialogPane.getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
             GridPane grid = new GridPane();
-            grid.setHgap(10);
-            grid.setVgap(10);
+            grid.setHgap(15);
+            grid.setVgap(15);
+            grid.setAlignment(Pos.CENTER);
 
             TextField emailField = new TextField(user.getEmail());
+            emailField.setPromptText("Email");
+            emailField.setStyle("-fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 8; -fx-border-color: #cfb5ea; -fx-background-color: white;");
+
             TextField nameField = new TextField(user.getName());
+            nameField.setPromptText("Nom");
+            nameField.setStyle("-fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 8; -fx-border-color: #cfb5ea; -fx-background-color: white;");
+
             PasswordField passwordField = new PasswordField();
-            passwordField.setPromptText("Leave blank to keep current");
+            passwordField.setPromptText("Laisser vide pour garder l’ancien");
+            passwordField.setStyle("-fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 8; -fx-border-color: #cfb5ea; -fx-background-color: white;");
 
             ComboBox<String> rolesComboBox = new ComboBox<>();
             rolesComboBox.getItems().addAll("ROLE_STUDENT", "ROLE_TUTOR");
@@ -306,17 +327,40 @@ public class UserCrud {
                     .findFirst()
                     .orElse("ROLE_STUDENT");
             rolesComboBox.getSelectionModel().select(userRole);
+            rolesComboBox.setStyle("-fx-background-radius: 10; -fx-border-radius: 10; -fx-padding: 5; -fx-border-color: #cfb5ea; -fx-background-color: white;");
 
-            grid.add(new Label("Email:"), 0, 0);
+            grid.add(new Label("Email :"), 0, 0);
             grid.add(emailField, 1, 0);
-            grid.add(new Label("Name:"), 0, 1);
+            grid.add(new Label("Nom :"), 0, 1);
             grid.add(nameField, 1, 1);
-            grid.add(new Label("Password:"), 0, 2);
+            grid.add(new Label("Mot de passe :"), 0, 2);
             grid.add(passwordField, 1, 2);
-            grid.add(new Label("Role:"), 0, 3);
+            grid.add(new Label("Rôle :"), 0, 3);
             grid.add(rolesComboBox, 1, 3);
 
-            dialog.getDialogPane().setContent(grid);
+            dialogPane.setContent(grid);
+
+            // Styling buttons with rounded corners and colors
+            Platform.runLater(() -> {
+                Button saveButton = (Button) dialogPane.lookupButton(saveButtonType);
+                saveButton.setStyle(
+                        "-fx-background-color: #9a5daa; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-pref-width: 100; " +
+                                "-fx-cursor: hand;");
+
+                Button cancelButton = (Button) dialogPane.lookupButton(ButtonType.CANCEL);
+                cancelButton.setStyle(
+                        "-fx-background-color: #5e8cb8; " +
+                                "-fx-text-fill: white; " +
+                                "-fx-font-weight: bold; " +
+                                "-fx-background-radius: 10; " +
+                                "-fx-pref-width: 100; " +
+                                "-fx-cursor: hand;");
+            });
+
             dialog.setResultConverter(dialogButton -> {
                 if (dialogButton == saveButtonType) {
                     user.setEmail(emailField.getText());
@@ -336,16 +380,17 @@ public class UserCrud {
                     try {
                         userService.modifier(updatedUser);
                         refreshTable();
-                        showAlert("Success", "User updated successfully!");
+                        showAlert("Succès", "Utilisateur modifié avec succès !");
                     } catch (Exception e) {
-                        showAlert("Error", "Failed to update user: " + e.getMessage());
+                        showAlert("Erreur", "Échec de la modification : " + e.getMessage());
                     }
                 }
             });
         } catch (Exception e) {
-            showAlert("Error", "Failed to edit user: " + e.getMessage());
+            showAlert("Erreur", "Erreur lors de l’édition : " + e.getMessage());
         }
     }
+
 
     private void showAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

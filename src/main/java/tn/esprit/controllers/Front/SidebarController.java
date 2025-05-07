@@ -1,48 +1,57 @@
 package tn.esprit.controllers.Front;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
-import tn.esprit.entities.User;
-import javafx.scene.input.MouseEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
+import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.controllers.user.ProfileController;
 import tn.esprit.controllers.user.admin.AdminProfileController;
+import tn.esprit.entities.User;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
-import javafx.scene.shape.Circle;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.util.Duration;
 public class SidebarController {
     @FXML private ImageView sidebarProfileImage;
+    @FXML private Label usernameLabel;
 
     private User currentUser;
     private static final Map<String, String> FXML_PATHS = new HashMap<>();
     private StackPane contentArea;
+    private UserSession sessionService = UserSession.getInstance();
 
     private Timeline imageCheckTimeline;
     private String lastProfileImagePath;
+
     static {
-        FXML_PATHS.put("Home", "");
-        FXML_PATHS.put("Courses", "");
-        FXML_PATHS.put("Forum", "");
-        FXML_PATHS.put("Groups", "");
-        FXML_PATHS.put("Events", "");
+        FXML_PATHS.put("Home", "/interfaces/auth/main.fxml");
+        FXML_PATHS.put("Courses", "/interfaces/Courses/MainCourseFront.fxml");
+        FXML_PATHS.put("Forum", "/interfaces/ForumFront.fxml");
+        FXML_PATHS.put("Groups", "/group/GroupsView.fxml");
+        FXML_PATHS.put("Events", "/interfaces/front/AnnonceList.fxml");
         FXML_PATHS.put("Profile", "/interfaces/user/profile.fxml");
         FXML_PATHS.put("AdminProfile", "/interfaces/user/admin/adminprofile.fxml");
+        FXML_PATHS.put("StudyRoom", "/interfaces/rooms/StudyRoom.fxml");
+        FXML_PATHS.put("Subscription", "");
+
+
     }
 
     public void setContentArea(StackPane contentArea) {
@@ -53,48 +62,38 @@ public class SidebarController {
         this.currentUser = user;
         if (user != null) {
             this.lastProfileImagePath = user.getPfp();
+            usernameLabel.setText(user.getName());
         }
         updateProfileImage();
     }
 
     public void updateProfileImage() {
+        this.currentUser = sessionService.getCurrentUser();
         if (currentUser != null) {
             try {
-                final Image finalImage;
                 Image image = null;
-
-                if (currentUser.getPfp() != null && !currentUser.getPfp().isEmpty()) {
-                    InputStream is = getClass().getResourceAsStream("/" + currentUser.getPfp());
-                    if (is != null) {
-                        image = new Image(is);
-                    } else {
-                        File file = new File(currentUser.getPfp());
-                        if (!file.exists()) {
-                            file = new File("uploads/" + currentUser.getPfp());
-                        }
-                        if (file.exists()) {
-                            image = new Image(file.toURI().toString());
-                        }
-                    }
-                }
-
-                if (image == null) {
+                String imagePath = currentUser.getPfp();
+                File file = new File(imagePath);
+                if (!file.exists()) file = new File("uploads/" + imagePath);
+                if (!file.exists()) file = new File("uploads/pfp/" + imagePath);
+                if (file.exists()) {
+                    image = new Image(file.toURI().toString());
+                } else {
                     InputStream defaultStream = getClass().getResourceAsStream("/assets/images/profile.png");
                     if (defaultStream != null) {
                         image = new Image(defaultStream);
                     }
                 }
 
-                finalImage = image;
-
-                if (finalImage != null) {
+                if (image != null) {
+                    final Image finalImage = image;
                     Platform.runLater(() -> {
                         sidebarProfileImage.setImage(finalImage);
                         sidebarProfileImage.setFitWidth(32);
                         sidebarProfileImage.setFitHeight(32);
                         sidebarProfileImage.setPreserveRatio(true);
-                        Circle clip = new Circle(16, 16, 16);
-                        sidebarProfileImage.setClip(clip);
+                        sidebarProfileImage.setClip(new Circle(16, 16, 16));
+                        sidebarProfileImage.requestFocus();
                     });
                 }
             } catch (Exception e) {
@@ -103,33 +102,62 @@ public class SidebarController {
         }
     }
 
-    @FXML
     public void initialize() {
-        // Initialize the clip for the profile image
-        Circle clip = new Circle(16, 16, 16);
-        sidebarProfileImage.setClip(clip);
+        this.currentUser = sessionService.getCurrentUser();
+        if (currentUser == null) {
+            // Vérifier si la redirection vers la page de login a déjà eu lieu.
+            if (!isLoginPageDisplayed()) {
+                redirectToLogin();
+            }
+            return;
+        }
+
+        usernameLabel.setText(currentUser.getName());
+        updateProfileImage();
+
+        sidebarProfileImage.setClip(new Circle(16, 16, 16));
         sidebarProfileImage.setFitWidth(32);
         sidebarProfileImage.setFitHeight(32);
         sidebarProfileImage.setPreserveRatio(true);
 
-        // Initialize the timeline for checking image updates
         setupImageChecker();
     }
 
-    @FXML
-    private void navigateToHome() { loadView("Home"); }
+    private boolean isLoginPageDisplayed() {
+        Stage currentStage = (Stage) (contentArea != null ? contentArea.getScene().getWindow() : null);
+        if (currentStage != null) {
+            Scene scene = currentStage.getScene();
+            if (scene != null && scene.getRoot() != null) {
+                String rootFXML = scene.getRoot().getId();  // Assurez-vous que votre page de login a un ID ou une autre méthode pour la reconnaître.
+                return rootFXML != null && rootFXML.equals("loginPage");  // Ajustez cette ligne selon votre logique de validation.
+            }
+        }
+        return false;
+    }
 
-    @FXML
-    private void navigateToCourses() { loadView("Courses"); }
 
-    @FXML
-    private void navigateToForum() { loadView("Forum"); }
+    private void redirectToLogin() {
+        Platform.runLater(() -> {
+            try {
+                Parent root = FXMLLoader.load(getClass().getResource("/interfaces/auth/login.fxml"));
+                Stage stage = (Stage) (contentArea != null ? contentArea.getScene().getWindow() : new Stage());
+                stage.setScene(new Scene(root));
+                stage.setTitle("Login");
+                stage.show();
+            } catch (IOException e) {
+                showAlert("Error", "Failed to redirect to login: " + e.getMessage());
+            }
+        });
+    }
 
-    @FXML
-    private void navigateToGroups() { loadView("Groups"); }
-
-    @FXML
-    private void navigateToEvents() { loadView("Events"); }
+    private boolean checkSessionBeforeAction() {
+        if (sessionService.getCurrentUser() == null) {
+            showAlert("Session Expired", "Your session has expired. Please login again.");
+            redirectToLogin();
+            return false;
+        }
+        return true;
+    }
 
     private void loadView(String viewName) {
         try {
@@ -144,9 +172,21 @@ public class SidebarController {
         }
     }
 
+    @FXML private void navigateToHome()    { if (checkSessionBeforeAction()) loadView("Home"); }
+    @FXML private void navigateToCourses() { if (checkSessionBeforeAction()) loadView("Courses"); }
+    @FXML private void navigateToForum()   { if (checkSessionBeforeAction()) loadView("Forum"); }
+    @FXML private void navigateToGroups()  { if (checkSessionBeforeAction()) loadView("Groups"); }
+    @FXML private void navigateToEvents()  { if (checkSessionBeforeAction()) loadView("Events"); }
+    @FXML private void navigateTOStudyRoom()  { if (checkSessionBeforeAction()) loadView("StudyRoom"); }
+    @FXML private void navigateTOSubscription()  { if (checkSessionBeforeAction()) loadView("Subscription"); }
+
+
+
+
     @FXML
     private void handleLogout(MouseEvent event) {
         try {
+            sessionService.clearSession();
             Parent root = FXMLLoader.load(getClass().getResource("/interfaces/auth/login.fxml"));
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -159,22 +199,21 @@ public class SidebarController {
 
     @FXML
     private void goToProfile(MouseEvent event) {
+        if (!checkSessionBeforeAction()) return;
         try {
-            String fxmlPath = "/interfaces/user/profile.fxml";
-
-            if (currentUser != null && currentUser.getRoles().contains("ROLE_ADMIN")) {
-                fxmlPath = "/interfaces/user/admin/adminprofile.fxml";
-            }
+            String fxmlPath = currentUser.getRoles().contains("ROLE_ADMIN") ?
+                    "/interfaces/user/admin/adminprofile.fxml" :
+                    "/interfaces/user/profile.fxml";
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
 
             if (fxmlPath.contains("adminprofile")) {
-                AdminProfileController adminController = loader.getController();
-                adminController.setUserData(currentUser);
+                AdminProfileController ctrl = loader.getController();
+                ctrl.setUserData(currentUser);
             } else {
-                ProfileController profileController = loader.getController();
-                profileController.setUserData(currentUser);
+                ProfileController ctrl = loader.getController();
+                ctrl.setUserData(currentUser);
             }
 
             if (contentArea != null) {
@@ -183,21 +222,12 @@ public class SidebarController {
             } else {
                 Stage stage = new Stage();
                 stage.setScene(new Scene(root));
-                stage.setTitle(fxmlPath.contains("adminprofile") ? "Admin Profile" : "User Profile");
+                stage.setTitle("Profile");
                 stage.show();
             }
         } catch (IOException e) {
             showAlert("Error", "Failed to load profile: " + e.getMessage());
-            e.printStackTrace();
         }
-    }
-
-    private void showAlert(String title, String message) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
     }
 
     private void setupImageChecker() {
@@ -211,11 +241,8 @@ public class SidebarController {
     private void checkForImageUpdates() {
         if (currentUser != null) {
             String currentPath = currentUser.getPfp();
-
-            // Check if the path has changed or if the file has been modified
-            if (!currentPath.equals(lastProfileImagePath) ||
-                    (currentPath != null && !currentPath.isEmpty() && isFileModified(currentPath))) {
-
+            if ((currentPath != null && !currentPath.equals(lastProfileImagePath)) ||
+                    isFileModified(currentPath)) {
                 lastProfileImagePath = currentPath;
                 updateProfileImage();
             }
@@ -224,20 +251,21 @@ public class SidebarController {
 
     private boolean isFileModified(String path) {
         try {
-            File file;
-            if (path.startsWith("/")) {
-                // Resource path
-                return false; // Resources can't be modified at runtime
-            } else {
-                // File system path
-                file = new File(path);
-                if (!file.exists()) {
-                    file = new File("uploads/" + path);
-                }
-                return file.exists() && file.lastModified() > System.currentTimeMillis() - 2000;
-            }
+            File file = new File(path);
+            if (!file.exists()) file = new File("uploads/" + path);
+            return file.exists() && file.lastModified() > System.currentTimeMillis() - 2000;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private void showAlert(String title, String message) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(title);
+            alert.setHeaderText(null);
+            alert.setContentText(message);
+            alert.showAndWait();
+        });
     }
 }

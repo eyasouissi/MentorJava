@@ -3,41 +3,89 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.geometry.*?>
 
-<AnchorPane style="-fx-background-color: #f5f5f5;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.auth.RoleChoiceController">
+<?import javafx.scene.shape.Circle?>
+<HBox xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.auth.RoleChoiceController" prefHeight="600" prefWidth="1000">
 
-    <ScrollPane fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent;" AnchorPane.bottomAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+    <!-- Left Pane (Welcome Section) -->
+    <AnchorPane style="-fx-background-color: linear-gradient(to bottom right, #572063, #47AEFF);" HBox.hgrow="ALWAYS">
+        <VBox alignment="CENTER" spacing="30"
+              AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+              AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
 
-        <VBox alignment="CENTER" prefWidth="400" spacing="15"
-              style="-fx-padding: 30; -fx-background-color: white; -fx-background-radius: 15;
-                     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0.2, 0, 4);">
+            <ImageView fitWidth="200" fitHeight="200" preserveRatio="true">
+                <Image url="@/assets/icons/mentor-logo.png"/>
+            </ImageView>
 
-            <!-- Title -->
-            <Text text="Select Your Role"
-                  style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #5d236a;" />
-
-            <!-- Role Selection -->
-            <VBox spacing="20" style="-fx-pref-width: 300px;">
-                <Button text="Sign Up as Student" onAction="#handleStudentChoice"
-                        style="-fx-pref-width: 300px; -fx-pref-height: 50px;
-                               -fx-background-color: #EEA0FF; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-font-size: 16px;
-                               -fx-background-radius: 20px; -fx-cursor: hand;" />
-
-                <Button text="Sign Up as Tutor" onAction="#handleTutorChoice"
-                        style="-fx-pref-width: 300px; -fx-pref-height: 50px;
-                               -fx-background-color: #47AEFF; -fx-text-fill: white;
-                               -fx-font-weight: bold; -fx-font-size: 16px;
-                               -fx-background-radius: 20px; -fx-cursor: hand;" />
+            <VBox alignment="CENTER" spacing="10">
+                <Text text="Welcome to"
+                      style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: white;"/>
+                <Text text="MENTOR"
+                      style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: white;">
+                    <effect>
+                        <Glow level="0.8"/>
+                    </effect>
+                </Text>
             </VBox>
 
-            <!-- Login Link -->
-            <HBox alignment="CENTER" spacing="5" style="-fx-padding: 10px 0;">
-                <Label text="Already have an account?" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
-                <Hyperlink text="Login" onAction="#handleLoginRedirect"
-                           style="-fx-text-fill: #47AEFF; -fx-font-size: 14px;" />
+            <Text text="Your learning journey starts here"
+                  style="-fx-font-size: 18px; -fx-font-style: italic; -fx-fill: white;"/>
+
+            <HBox alignment="CENTER" spacing="20">
+                <Circle radius="8" fill="#EEA0FF" opacity="0.7"/>
+                <Circle radius="12" fill="#47AEFF" opacity="0.7"/>
+                <Circle radius="8" fill="#EEA0FF" opacity="0.7"/>
             </HBox>
 
+            <Text text='"Education is the most powerful weapon which you can use to change the world."'
+                  style="-fx-font-size: 14px; -fx-text-alignment: center; -fx-fill: white;"/>
         </VBox>
-    </ScrollPane>
-</AnchorPane>
+    </AnchorPane>
+
+    <!-- Right Pane (Role Choice) -->
+    <AnchorPane style="-fx-background-color: #f5f5f5;" minWidth="400" prefWidth="400" maxWidth="400">
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;"
+                    AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"
+                    AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+            <VBox alignment="CENTER" spacing="30" style="-fx-padding: 40;">
+                <Text text="Select Your Role"
+                      style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #5d236a;" />
+
+                <HBox alignment="CENTER" spacing="30">
+                    <Button fx:id="studentButton" text="Student"
+                            onAction="#handleStudentChoice"
+                            onMouseEntered="#hoverStudent"
+                            onMouseExited="#resetStudent"
+                            style="-fx-pref-width: 180px; -fx-pref-height: 60px;
+                                   -fx-background-color: white; -fx-text-fill: #5d236a;
+                                   -fx-font-weight: bold; -fx-font-size: 16px;
+                                   -fx-background-radius: 30px; -fx-border-color: #EEA0FF;
+                                   -fx-border-width: 2px; -fx-border-radius: 30px;
+                                   -fx-cursor: hand;" />
+
+                    <Button fx:id="tutorButton" text="Tutor"
+                            onAction="#handleTutorChoice"
+                            onMouseEntered="#hoverTutor"
+                            onMouseExited="#resetTutor"
+                            style="-fx-pref-width: 180px; -fx-pref-height: 60px;
+                                   -fx-background-color: white; -fx-text-fill: #5d236a;
+                                   -fx-font-weight: bold; -fx-font-size: 16px;
+                                   -fx-background-radius: 30px; -fx-border-color: #47AEFF;
+                                   -fx-border-width: 2px; -fx-border-radius: 30px;
+                                   -fx-cursor: hand;" />
+                </HBox>
+
+                <HBox alignment="CENTER" spacing="5">
+                    <Label text="Already have an account?" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
+                    <Hyperlink text="Login"
+                               onAction="#handleLoginRedirect"
+                               style="-fx-text-fill: #47AEFF; -fx-font-size: 14px;" />
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </AnchorPane>
+</HBox>

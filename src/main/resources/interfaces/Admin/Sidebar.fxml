@@ -1,114 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<?import javafx.geometry.Insets?>
-<?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import javafx.scene.shape.*?>
 
-<VBox xmlns="http://javafx.com/javafx/11.0.1"
-      xmlns:fx="http://javafx.com/fxml/1"
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
       fx:controller="tn.esprit.controllers.Admin.SidebarController"
+      fx:id="sidebar"
+      spacing="15"
       styleClass="sidebar"
-      stylesheets="@../../css/Sidebar.css">
-
-    <!-- Logo/Titre -->
-    <Label text="MENTOR" styleClass="sidebar-title"/>
-
-    <!-- Menu de navigation -->
-    <VBox styleClass="sidebar-menu" spacing="5">
-        <!-- Courses Dropdown -->
-        <VBox styleClass="dropdown-container">
-            <Button styleClass="dropdown-btn" onAction="#toggleCoursesDropdown">
-                <graphic>
-                    <FontIcon iconLiteral="fas-book" styleClass="sidebar-icon"/>
-                </graphic>
-                <text>Courses</text>
-                <padding>
-                    <Insets left="15" right="15"/>
-                </padding>
-            </Button>
-            <VBox fx:id="coursesDropdown" styleClass="dropdown-content" managed="false">
-                <Button text="1. Courses" styleClass="dropdown-item" onAction="#navigateToCourses"/>
-                <Button text="2. Category" styleClass="dropdown-item" onAction="#navigateToCategory"/>
-            </VBox>
-        </VBox>
-
-        <!-- Forum Dropdown -->
-        <VBox styleClass="dropdown-container">
-            <Button styleClass="dropdown-btn" onAction="#toggleForumDropdown">
-                <graphic>
-                    <FontIcon iconLiteral="fas-comments" styleClass="sidebar-icon"/>
-                </graphic>
-                <text>Forum</text>
-                <padding>
-                    <Insets left="15" right="15"/>
-                </padding>
-            </Button>
-            <VBox fx:id="forumDropdown" styleClass="dropdown-content" managed="false">
-                <Button text="1. Forum" styleClass="dropdown-item" onAction="#navigateToForum"/>
-            </VBox>
-        </VBox>
-
-        <!-- Groupes Dropdown -->
-        <VBox styleClass="dropdown-container">
-            <Button styleClass="dropdown-btn" onAction="#toggleGroupesDropdown">
-                <graphic>
-                    <FontIcon iconLiteral="fas-users" styleClass="sidebar-icon"/>
-                </graphic>
-                <text>Groupes</text>
-                <padding>
-                    <Insets left="15" right="15"/>
-                </padding>
-            </Button>
-            <VBox fx:id="groupesDropdown" styleClass="dropdown-content" managed="false">
-                <Button text="1. Groupes" styleClass="dropdown-item" onAction="#navigateToGroupes"/>
-                <Button text="2. Projects" styleClass="dropdown-item" onAction="#navigateToProjects"/>
-            </VBox>
-        </VBox>
-
-        <!-- Events Dropdown -->
-        <VBox styleClass="dropdown-container">
-            <Button styleClass="dropdown-btn" onAction="#toggleEventsDropdown">
-                <graphic>
-                    <FontIcon iconLiteral="fas-calendar-alt" styleClass="sidebar-icon"/>
-                </graphic>
-                <text>Events</text>
-                <padding>
-                    <Insets left="15" right="15"/>
-                </padding>
-            </Button>
-            <VBox fx:id="eventsDropdown" styleClass="dropdown-content" managed="false">
-                <Button text="1. Events" styleClass="dropdown-item" onAction="#navigateToEvents"/>
-                <Button text="2. Announcements" styleClass="dropdown-item" onAction="#navigateToAnnouncements"/>
-            </VBox>
-        </VBox>
-
-        <!-- Pricing Dropdown -->
-        <VBox styleClass="dropdown-container">
-            <Button styleClass="dropdown-btn" onAction="#togglePricingDropdown">
-                <graphic>
-                    <FontIcon iconLiteral="fas-tag" styleClass="sidebar-icon"/>
-                </graphic>
-                <text>Pricing</text>
-                <padding>
-                    <Insets left="15" right="15"/>
-                </padding>
-            </Button>
-            <VBox fx:id="pricingDropdown" styleClass="dropdown-content" managed="false">
-                <Button text="1. Pricing" styleClass="dropdown-item" onAction="#navigateToPricing"/>
-                <Button text="2. Subscription" styleClass="dropdown-item" onAction="#navigateToSubscription"/>
-            </VBox>
-        </VBox>
+      prefWidth="320"
+      minWidth="320"
+      VBox.vgrow="ALWAYS"
+      stylesheets="@/css/sidebar.css">
+    <!-- Navigation Header -->
+    <VBox styleClass="navigation-header" spacing="5">
+        <Label text="MENTOR ADMIN" styleClass="sidebar-title"/>
+        <Label text="Management" styleClass="sidebar-section"/>
     </VBox>
 
-    <!-- Espace vide -->
+    <!-- Navigation Menu -->
+    <VBox spacing="8" styleClass="menu-container">
+        <!-- Dashboard -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToDashboard" >
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/dashboard.png"/>
+            </ImageView>
+            <Label text="Dashboard" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Users -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToUsers" >
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/users.png"/>
+            </ImageView>
+            <Label text="Users" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Courses -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToCourses">
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/courses.png"/>
+            </ImageView>
+            <Label text="Courses" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Forum -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToForum">
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/forums.png"/>
+            </ImageView>
+            <Label text="Forum" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- Groups -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item">
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/groups.png"/>
+            </ImageView>
+            <Label text="Groups" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- events -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item">
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/events.png"/>
+            </ImageView>
+            <Label text="events" styleClass="nav-label"/>
+        </HBox>
+
+        <!-- subscription -->
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item">
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/subscription.png"/>
+            </ImageView>
+            <Label text="subscription" styleClass="nav-label"/>
+        </HBox>
+    </VBox>
+
     <Region VBox.vgrow="ALWAYS"/>
 
-    <!-- Déconnexion -->
-    <Button text="Déconnexion" styleClass="sidebar-button logout-btn" onAction="#logout">
-        <graphic>
-            <FontIcon iconLiteral="fas-sign-out-alt" styleClass="sidebar-icon"/>
-        </graphic>
-    </Button>
+    <!-- Bottom Section -->
+    <VBox styleClass="sidebar-footer" spacing="10">
+        <HBox alignment="CENTER_LEFT" spacing="10" styleClass="nav-item" onMouseClicked="#goToProfile">
+            <!-- Profile Image with Circular Clip and Border -->
+            <StackPane styleClass="profile-image-container">
+                <ImageView fx:id="sidebarProfileImage" fitWidth="40" fitHeight="40" preserveRatio="true" styleClass="profile-image">
+                    <image>
+                        <Image url="@/assets/images/profile.png"/>
+                    </image>
+                </ImageView>
+            </StackPane>
+
+            <!-- Username -->
+            <Label fx:id="usernameLabel" text="Admin" styleClass="username-label"/>
+        </HBox>
+
+        <!-- Logout -->
+        <HBox styleClass="nav-item logout-item" onMouseClicked="#handleLogout">
+            <!-- Logout content -->
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+                <Image url="@/assets/images/logout.png"/>
+            </ImageView>
+            <Label text="Logout" styleClass="nav-label"/>
+        </HBox>
+    </VBox>
 </VBox>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.Courses.SubscriptionRequiredController"
+      alignment="CENTER" spacing="20" style="-fx-padding: 30; -fx-background-color: #f5f5f5;">
+
+    <Label fx:id="messageLabel" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+
+    <Label text="Please subscribe to access this premium course" style="-fx-font-size: 16px;"/>
+
+    <Button text="Back to Courses" onAction="#goBackToCourses"
+            style="-fx-background-color: #4B0082; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 20;"/>
+</VBox>

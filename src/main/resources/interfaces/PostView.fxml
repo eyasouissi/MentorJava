@@ -14,87 +14,8 @@
       prefWidth="1000">
 
     <!-- LEFT SIDEBAR -->
-    <VBox fx:id="sidebar" spacing="20" styleClass="sidebar" prefWidth="280">
-        <!-- Header -->
-        <Label text="MENTOR" styleClass="sidebar-title"/>
-        <Label text="Discover" styleClass="sidebar-section"/>
-        <Button fx:id="returnButton" onAction="#handleReturnToForum" styleClass="return-btn">
-            <graphic>
-                <ImageView fitWidth="24" fitHeight="24">
-                    <Image url="@/images/arrow-left.png"/>
-                </ImageView>
-            </graphic>
-        </Button>
+    <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
 
-        <!-- Full Navigation Menu -->
-        <VBox spacing="10">
-            <!-- Home -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-                <ImageView fitWidth="18" fitHeight="18">
-                    <Image url="@/images/home.png"/>
-                </ImageView>
-                <Label text="Home" styleClass="sidebar-section"/>
-            </HBox>
-
-            <!-- Browse -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-                <ImageView fitWidth="18" fitHeight="18">
-                    <Image url="@/images/search.png"/>
-                </ImageView>
-                <Label text="Browse" styleClass="sidebar-section"/>
-            </HBox>
-
-            <!-- Courses -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-                <ImageView fitWidth="18" fitHeight="18">
-                    <Image url="@/images/bookmark.png"/>
-                </ImageView>
-                <Label text="Courses" styleClass="sidebar-section"/>
-            </HBox>
-
-            <!-- Forum -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-                <ImageView fitWidth="18" fitHeight="18">
-                    <Image url="@/images/message.png"/>
-                </ImageView>
-                <Label text="Forum" styleClass="sidebar-section"/>
-            </HBox>
-
-            <!-- Groups -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-                <ImageView fitWidth="18" fitHeight="18">
-                    <Image url="@/images/group.png"/>
-                </ImageView>
-                <Label text="Groups" styleClass="sidebar-section"/>
-            </HBox>
-
-            <!-- Events -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-                <ImageView fitWidth="18" fitHeight="18">
-                    <Image url="@/images/calendar.png"/>
-                </ImageView>
-                <Label text="Events" styleClass="sidebar-section"/>
-            </HBox>
-
-            <!-- Notifications -->
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-                <ImageView fitWidth="18" fitHeight="18">
-                    <Image url="@/images/notification.png"/>
-                </ImageView>
-                <Label text="Notifications" styleClass="sidebar-section"/>
-            </HBox>
-        </VBox>
-
-        <Region VBox.vgrow="ALWAYS"/>
-
-        <!-- Logout -->
-        <HBox spacing="10" alignment="CENTER_LEFT" styleClass="nav-item">
-            <ImageView fitWidth="18" fitHeight="18">
-                <Image url="@/images/logout.png"/>
-            </ImageView>
-            <Label text="Logout" styleClass="sidebar-section"/>
-        </HBox>
-    </VBox>
 
     <!-- MAIN CONTENT AREA -->
     <VBox spacing="20" HBox.hgrow="ALWAYS" styleClass="post-container">

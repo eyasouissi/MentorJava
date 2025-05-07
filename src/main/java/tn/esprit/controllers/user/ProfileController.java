@@ -11,8 +11,8 @@ import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 import tn.esprit.controllers.auth.MainController;
 import tn.esprit.entities.User;
+import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.services.UserService;
-import tn.esprit.tools.FileUploadUtil;
 import tn.esprit.tools.HostServicesProvider;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -41,21 +41,9 @@ public class ProfileController {
         this.currentUser = user;
         updateUI();
     }
+
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
-    }
-    @FXML
-    private void handleLogout(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/auth/login.fxml"));
-            Parent root = loader.load();
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Login");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @FXML
@@ -72,99 +60,103 @@ public class ProfileController {
         } catch (Exception e) {
             editButton.setText("Edit");
         }
+
         editButton.setOnAction(event -> handleEditProfile());
     }
 
-    private void updateUI() {
-        if (currentUser != null) {
-            nameLabel.setText(currentUser.getName());
-            ageLabel.setText(currentUser.getAge() != null ? currentUser.getAge().toString() : "Not specified");
-            countryLabel.setText(currentUser.getCountry() != null ? currentUser.getCountry() : "Not specified");
-            bioLabel.setText(currentUser.getBio() != null ? currentUser.getBio() : "No bio yet");
-            specialityLabel.setText(currentUser.getSpeciality() != null ? currentUser.getSpeciality() : "Not specified");
+    @FXML
+    private void handleLogout(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/auth/login.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Login");
+            stage.show();
+        } catch (IOException e) {
+            showAlert("Error", "Failed to load login screen: " + e.getMessage());
+        }
+    }
 
-            // Handle diploma display
-            if (currentUser.getDiplome() != null && !currentUser.getDiplome().isEmpty()) {
-                File diplomaFile = new File(currentUser.getDiplome());
-                if (diplomaFile.exists()) {
-                    diplomaLabel.setText(diplomaFile.getName());
-                    diplomaLink.setVisible(true);
-                    diplomaLink.setOnAction(event -> openDiplomaPDF());
-                } else {
-                    // Try with relative path if absolute path doesn't work
-                    diplomaFile = new File("uploads/" + currentUser.getDiplome());
-                    if (diplomaFile.exists()) {
-                        diplomaLabel.setText(diplomaFile.getName());
-                        diplomaLink.setVisible(true);
-                        diplomaLink.setOnAction(event -> openDiplomaPDF());
-                    } else {
-                        diplomaLabel.setText("File not found");
-                        diplomaLink.setVisible(false);
-                    }
-                }
+    private void updateUI() {
+        if (currentUser == null) return;
+
+        nameLabel.setText(currentUser.getName());
+        ageLabel.setText(currentUser.getAge() != null ? currentUser.getAge().toString() : "Not specified");
+        countryLabel.setText(nonEmptyOrDefault(currentUser.getCountry(), "Not specified"));
+        bioLabel.setText(nonEmptyOrDefault(currentUser.getBio(), "No bio yet"));
+        specialityLabel.setText(nonEmptyOrDefault(currentUser.getSpeciality(), "Not specified"));
+
+        handleDiplomaDisplay();
+        loadImage(profileImageView, currentUser.getPfp(), "/assets/images/pfp/default-profile.png");
+        loadImage(backgroundImageView, currentUser.getBg(), "/assets/images/bg/default-bg.jpg");
+    }
+
+    private void handleDiplomaDisplay() {
+        String diplomaPath = currentUser.getDiplome();
+        if (diplomaPath != null && !diplomaPath.isEmpty()) {
+            File file = resolveFile(diplomaPath);
+            if (file != null && file.exists()) {
+                diplomaLabel.setText(file.getName());
+                diplomaLink.setVisible(true);
+                diplomaLink.setOnAction(event -> openDiplomaPDF());
             } else {
-                diplomaLabel.setText("No diploma uploaded");
+                diplomaLabel.setText("File not found");
                 diplomaLink.setVisible(false);
             }
-
-            loadImage(profileImageView, currentUser.getPfp(), "/assets/images/pfp/default-profile.png");
-            loadImage(backgroundImageView, currentUser.getBg(), "/assets/images/bg/default-bg.jpg");
+        } else {
+            diplomaLabel.setText("No diploma uploaded");
+            diplomaLink.setVisible(false);
         }
     }
 
     @FXML
     private void openDiplomaPDF() {
-        try {
-            if (currentUser.getDiplome() == null || currentUser.getDiplome().isEmpty()) {
-                showAlert("Information", "No diploma file has been uploaded yet.");
-                return;
-            }
+        String path = currentUser.getDiplome();
+        if (path == null || path.isEmpty()) {
+            showAlert("Information", "No diploma file has been uploaded yet.");
+            return;
+        }
 
-            File diplomaFile = new File(currentUser.getDiplome());
-            if (!diplomaFile.exists()) {
-                // Try with relative path if absolute path doesn't work
-                diplomaFile = new File("uploads/" + currentUser.getDiplome());
-            }
+        File diplomaFile = resolveFile(path);
+        if (diplomaFile == null || !diplomaFile.exists()) {
+            showAlert("Error", "Diploma file not found");
+            return;
+        }
 
-            if (!diplomaFile.exists()) {
-                showAlert("Error", "Diploma file not found");
-                return;
-            }
-
-            javafx.application.HostServices hostServices = HostServicesProvider.getHostServices();
-            if (hostServices != null) {
-                hostServices.showDocument(diplomaFile.getAbsolutePath());
-            } else {
-                showAlert("Information",
-                        "Could not automatically open the PDF.\n" +
-                                "Please open the file manually at:\n" +
-                                diplomaFile.getAbsolutePath());
-            }
-
-        } catch (Exception e) {
-            showAlert("Error", "Could not open diploma: " + e.getMessage());
-            e.printStackTrace();
+        javafx.application.HostServices hostServices = HostServicesProvider.getHostServices();
+        if (hostServices != null) {
+            hostServices.showDocument(diplomaFile.getAbsolutePath());
+        } else {
+            showAlert("Information", "Please open the file manually at:\n" + diplomaFile.getAbsolutePath());
         }
     }
+
+    private File resolveFile(String path) {
+        File file = new File(path);
+        if (file.exists()) return file;
+
+        file = new File("uploads/" + path);
+        if (file.exists()) return file;
+
+        if (path.startsWith("pfp/") || path.startsWith("bg/")) {
+            file = new File("uploads/" + path);
+        } else {
+            file = new File("uploads/pfp/" + path);
+            if (!file.exists()) file = new File("uploads/bg/" + path);
+        }
+
+        return file.exists() ? file : null;
+    }
+
     private void loadImage(ImageView imageView, String path, String defaultPath) {
         try {
-            if (path != null && !path.isEmpty()) {
-                // First try to load as resource
-                InputStream is = getClass().getResourceAsStream("/" + path);
-                if (is != null) {
-                    imageView.setImage(new Image(is));
-                    return;
-                }
-
-                // Then try to load as uploaded file
-                File file = FileUploadUtil.getUploadedFile(path);
-                if (file != null && file.exists()) {
-                    imageView.setImage(new Image(file.toURI().toString()));
-                    return;
-                }
+            File file = resolveFile(path);
+            if (file != null && file.exists()) {
+                imageView.setImage(new Image(file.toURI().toString()));
+                return;
             }
 
-            // Load default if specified
             if (defaultPath != null) {
                 InputStream defaultStream = getClass().getResourceAsStream(defaultPath);
                 if (defaultStream != null) {
@@ -179,8 +171,6 @@ public class ProfileController {
     private void handleEditProfile() {
         try {
             URL location = getClass().getResource("/interfaces/user/EditProfile.fxml");
-            System.out.println("FXML location = " + location);  // DEBUG LINE
-
             if (location == null) {
                 throw new IllegalStateException("FXML file not found at /interfaces/user/EditProfile.fxml");
             }
@@ -204,18 +194,19 @@ public class ProfileController {
         }
     }
 
-
-    // In ProfileController.java
     public void refreshUserData() {
         UserService userService = new UserService();
         User updatedUser = userService.getById(currentUser.getId());
         if (updatedUser != null) {
             currentUser = updatedUser;
             updateUI();
+
+            UserSession.getInstance().setCurrentUser(updatedUser);
             if (mainController != null) {
                 mainController.updateUserInfo(updatedUser);
-                // Notify the sidebar to update its image
                 mainController.notifyProfilePictureUpdated(updatedUser.getPfp());
+            } else {
+                System.out.println("Warning: mainController is null in ProfileController");
             }
         }
     }
@@ -226,5 +217,13 @@ public class ProfileController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private String nonEmptyOrDefault(String value, String defaultValue) {
+        return (value != null && !value.trim().isEmpty()) ? value : defaultValue;
+    }
+
+    public MainController getMainController() {
+        return mainController;
     }
 }

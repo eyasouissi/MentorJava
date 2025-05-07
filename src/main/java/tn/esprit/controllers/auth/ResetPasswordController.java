@@ -116,13 +116,11 @@ public class ResetPasswordController {
     }
 
     @FXML
-    private void handleBackToLogin(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("/interfaces/auth/login.fxml"));
+    private void handleBackToLogin(ActionEvent event) {
+        // Get the current stage (window) from the event source and close it
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
-        stage.setTitle("Login");
+        stage.close();
     }
-
     private void showError(String message) {
         errorLabel.setText(message);
         errorLabel.setStyle("-fx-text-fill: red;");

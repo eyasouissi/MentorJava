@@ -30,6 +30,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.DefaultStringConverter;
+import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.entities.Forum;
 import tn.esprit.entities.Post;
 import tn.esprit.entities.User;
@@ -95,6 +96,8 @@ public class PostController implements Initializable {
     @FXML private Button returnButton;
     @FXML private FlowPane gifReactionsContainer;
     private final GiphyService giphyService = new GiphyService();
+    private User currentUser;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -105,6 +108,11 @@ public class PostController implements Initializable {
                 resetPostState();
             }
         });
+    }
+
+    // In PostController.java
+    private User getCurrentUser() {
+        return UserSession.getInstance().getCurrentUser();
     }
 
     private void setupInputValidation() {
@@ -138,9 +146,17 @@ public class PostController implements Initializable {
         loadPosts();
     }
 
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+    }
+
     private void loadPosts() {
         posts.clear();
-        String sql = "SELECT id, content, created_at, user_id, photos FROM post WHERE forum_id = ?";
+        String sql = "SELECT p.*, u.name as user_name, u.pfp as user_pfp " +
+                "FROM post p " +
+                "JOIN user u ON p.user_id = u.id " +
+                "WHERE forum_id = ?";
+
 
         try (Connection conn = MyDataBase.getInstance().getCnx();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -154,12 +170,12 @@ public class PostController implements Initializable {
                 post.setContent(rs.getString("content"));
                 post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
 
-                // Retrieve user_id as Long from database
-                Long userId = rs.getLong("user_id"); // Use getLong() instead of getInt()
+                // Retrieve current user
                 User postUser = new User();
-                postUser.setId(userId); // Now passing a Long
+                postUser.setId(rs.getLong("user_id"));
+                postUser.setName(rs.getString("user_name"));
+                postUser.setPfp(rs.getString("user_pfp"));
                 post.setUser(postUser);
-                post.setPhotos(rs.getString("photos"));  // Add this line
 
                 posts.add(post);
             }
@@ -258,9 +274,8 @@ public class PostController implements Initializable {
         card.setPadding(new Insets(10));
         card.setPrefWidth(400);
 
-        // Get user with ID 8
-        UserService userService = new UserService();
-        User user8 = userService.getById(8L);
+        // Get user
+        User user = post.getUser();
 
         // --- Header: Profile Pic + Info ---
         HBox postHeader = new HBox(10);
@@ -283,8 +298,9 @@ public class PostController implements Initializable {
         avatarContainer.getChildren().add(profilePic);
 
         try {
-            if (user8 != null) {
-                String pfpPath = user8.getPfp();
+            User postUser = post.getUser(); // Get the user who is the owner of the post
+            if (postUser != null) {
+                String pfpPath = postUser.getPfp(); // Get the profile picture path of the post's user
                 if (pfpPath != null && !pfpPath.isEmpty()) {
                     String resourcePath = "/assets/uploads/pfp/" + pfpPath.substring(pfpPath.lastIndexOf("/") + 1);
                     try (InputStream imageStream = getClass().getResourceAsStream(resourcePath)) {
@@ -304,16 +320,27 @@ public class PostController implements Initializable {
 
                 VBox userInfo = new VBox(5);
                 userInfo.getStyleClass().add("user-info");
-                Label userName = new Label(user8.getName() != null ? user8.getName() : "User 8");
+
+                // Set user name, fall back to "User" if not available
+                Label userName = new Label(postUser.getName() != null ? postUser.getName() : "User");
                 userName.getStyleClass().add("user-name");
+
+                // Display the post creation date
                 Label postDate = new Label("Posted: " + post.getCreatedAt().toLocalDate());
                 postDate.getStyleClass().add("post-date");
+
+                // Add user info and post date to the VBox
                 userInfo.getChildren().addAll(userName, postDate);
+
+                // Add avatar container and user info to post header
                 postHeader.getChildren().addAll(avatarContainer, userInfo);
             }
         } catch (Exception e) {
-            postHeader.getChildren().addAll(avatarContainer, new Label("User 8"));
+            // In case of error, add default user info
+            postHeader.getChildren().addAll(avatarContainer, new Label("User"));
+            e.printStackTrace(); // Optionally log the error
         }
+
 
         // --- Post Content ---
         TextArea postContent = new TextArea(post.getContent());
@@ -872,6 +899,7 @@ public class PostController implements Initializable {
 
     @FXML
     private void handleCreatePost() {
+
         // Clear previous errors and styles
         postContent.pseudoClassStateChanged(errorClass, false);
         charCountLabel.pseudoClassStateChanged(errorClass, false);
@@ -976,6 +1004,7 @@ public class PostController implements Initializable {
 
         new Thread(checkTask).start();
     }
+
     private void checkSentiment(String content) {
         LocalSentimentAnalyzer.SentimentResult result = sentimentAnalyzer.analyze(content);
 
@@ -997,9 +1026,15 @@ public class PostController implements Initializable {
         }
     }
     private void createCleanPost(String cleanContent) {
+        if (currentUser == null) {
+            showAlert("Error", "No logged-in user found. Cannot create post.");
+            return;
+        }
+
         Post newPost = new Post();
         newPost.setContent(cleanContent);
         newPost.setForum(currentForum);
+        newPost.setUser(currentUser); // Set the current user on the Post object
         newPost.setCreatedAt(LocalDateTime.now());
         newPost.setUpdatedAt(LocalDateTime.now());
         newPost.setLikes(0);
@@ -1013,7 +1048,7 @@ public class PostController implements Initializable {
 
             pstmt.setString(1, newPost.getContent());
             pstmt.setLong(2, currentForum.getId());
-            pstmt.setInt(3, 1); // Replace with actual user ID
+            pstmt.setInt(3, currentUser.getId().intValue());
             pstmt.setInt(4, newPost.getLikes());
             pstmt.setString(5, newPost.getPhotos());
             pstmt.setTimestamp(6, Timestamp.valueOf(newPost.getCreatedAt()));
@@ -1025,7 +1060,6 @@ public class PostController implements Initializable {
                 if (rs.next()) newPost.setId(rs.getInt(1));
             }
 
-            // Update UI on JavaFX thread
             Platform.runLater(() -> {
                 posts.add(newPost);
                 postContent.clear();
@@ -1035,11 +1069,10 @@ public class PostController implements Initializable {
             });
 
         } catch (SQLException e) {
-            Platform.runLater(() ->
-                    showAlert("Database Error", "Create post failed: " + e.getMessage())
-            );
+            Platform.runLater(() -> showAlert("Database Error", "Create post failed: " + e.getMessage()));
         }
     }
+
 
     private void playPopAnimation(Node node) {
         ScaleTransition st = new ScaleTransition(Duration.millis(150), node);

@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.effect.*?>
+
+<?import javafx.scene.shape.Rectangle?>
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="controllers.FrontEvenementDetailsController"
+      styleClass="root"
+      stylesheets="@/css/eventDetails.css"
+      spacing="0"
+      alignment="TOP_CENTER"
+      prefWidth="900"
+      maxWidth="900">
+
+    <!-- Section d'en-tête avec image principale -->
+    <StackPane styleClass="image-container">
+        <ImageView fx:id="imageEvenementImageView"
+                   fitWidth="900"
+                   fitHeight="500"
+                   preserveRatio="true"
+                   styleClass="main-image">
+            <effect>
+                <DropShadow color="#000000" radius="15.0" spread="0.1" />
+            </effect>
+        </ImageView>
+
+        <!-- Gradient overlay pour améliorer la lisibilité -->
+        <Rectangle styleClass="image-overlay" width="900" height="500" />
+    </StackPane>
+
+    <!-- Contenu principal avec padding amélioré -->
+    <VBox styleClass="content-container" spacing="25">
+        <padding>
+            <Insets top="30" right="40" bottom="40" left="40"/>
+        </padding>
+
+        <!-- Titre avec gestion du wrapping -->
+        <Label fx:id="titreEvenementLabel"
+               styleClass="event-title"
+               wrapText="true"
+               maxWidth="820"/>
+
+        <!-- Grid des détails réorganisée -->
+        <GridPane styleClass="details-grid" hgap="30" vgap="15">
+            <columnConstraints>
+                <ColumnConstraints minWidth="200" prefWidth="400" maxWidth="400"/>
+                <ColumnConstraints minWidth="200" prefWidth="400" maxWidth="400"/>
+            </columnConstraints>
+
+            <!-- Dates -->
+            <VBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="0">
+                <Label text="DATE DE DÉBUT" styleClass="detail-label"/>
+                <HBox spacing="12" alignment="CENTER_LEFT" styleClass="detail-box">
+                    <Label text="📅" styleClass="emoji"/>
+                    <Label fx:id="dateDebutLabel" styleClass="detail-value" wrapText="true"/>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="8" GridPane.rowIndex="0" GridPane.columnIndex="1">
+                <Label text="DATE DE FIN" styleClass="detail-label"/>
+                <HBox spacing="12" alignment="CENTER_LEFT" styleClass="detail-box">
+                    <Label text="📅" styleClass="emoji"/>
+                    <Label fx:id="dateFinLabel" styleClass="detail-value" wrapText="true"/>
+                </HBox>
+            </VBox>
+
+            <!-- Lieu sur toute la largeur -->
+            <VBox spacing="8" GridPane.rowIndex="1" GridPane.columnIndex="0" GridPane.columnSpan="2">
+                <Label text="LIEU" styleClass="detail-label"/>
+                <HBox spacing="12" alignment="CENTER_LEFT" styleClass="detail-box">
+                    <Label text="📍" styleClass="emoji"/>
+                    <Label fx:id="lieuLabel" styleClass="detail-value" wrapText="true"/>
+                </HBox>
+            </VBox>
+        </GridPane>
+
+        <!-- Description améliorée -->
+        <VBox spacing="12">
+            <Label text="DESCRIPTION" styleClass="section-title"/>
+            <ScrollPane fitToWidth="true" styleClass="description-scroll" maxHeight="200">
+                <TextArea fx:id="descriptionEvenementLabel"
+                          styleClass="event-description"
+                          wrapText="true"
+                          editable="false"
+                          prefHeight="150"/>
+            </ScrollPane>
+        </VBox>
+
+        <!-- Section QR Code et bouton réorganisée avec effet de carte -->
+        <HBox spacing="40" alignment="CENTER" styleClass="qr-section">
+            <VBox spacing="15" alignment="CENTER" styleClass="qr-card">
+                <padding>
+                    <Insets top="20" right="20" bottom="20" left="20"/>
+                </padding>
+                <effect>
+                    <DropShadow color="#6a1b9a33" radius="10.0" spread="0.1" />
+                </effect>
+
+                <Label text="INVITATION DIGITALE" styleClass="qr-title"/>
+                <StackPane styleClass="qr-container">
+                    <ImageView fx:id="qrCodeImageView"
+                               fitWidth="200"
+                               fitHeight="200"
+                               preserveRatio="true"
+                               styleClass="qr-code"/>
+
+                    <!-- Animation de chargement pendant la génération -->
+                    <ProgressIndicator fx:id="qrLoadingIndicator"
+                                       visible="true"
+                                       maxWidth="40"
+                                       maxHeight="40"
+                                       styleClass="qr-loading"/>
+                </StackPane>
+                <Label text="Scannez pour partager" styleClass="qr-subtitle"/>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="15">
+                <Button text="FERMER"
+                        onAction="#handleClose"
+                        styleClass="close-button"
+                        minWidth="140"
+                        minHeight="50"/>
+
+                <Button text="SAUVEGARDER QR"
+                        fx:id="saveQrButton"
+                        styleClass="save-button"
+                        minWidth="140"
+                        minHeight="50"/>
+            </VBox>
+        </HBox>
+    </VBox>
+</VBox>
