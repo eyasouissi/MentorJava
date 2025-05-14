@@ -1,7 +1,8 @@
 <p align="center">
-  <img src="https://img.shields.io/badge/Platform-Mentor-blueviolet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Team-Brainiacs-2ecc71?style=for-the-badge" />
+  <img alt="symfony logo" src="https://symfony.com/images/logos/header-logo.svg" width="300">
 </p>
+
+<h1 align="center">Mentor - Symfony Application</h1>
 
 # 🎓 Mentor - Educational Platform
 
@@ -85,7 +86,7 @@ MentorJava/
 Read the steps to install and run this Symfony project in your region:
 
 ### 1. Clone the repository
-git clone https://github.com/azerdachraoui00/AidEcole.git my_project
+git clone https://github.com/eyasouissi/MentorSymf.git
 cd my_project
 
 ### 2. Install PHP dependencies
@@ -94,8 +95,8 @@ composer install
 ### 3. Create and configure `.env.local`
 cp .env .env.local
 # Edit the .env.local file:
-# DATABASE_URL="mysql://username:password@127.0.0.1:3306/aidecole"
-# Replace `username`, `password`, and `aidecole` with your actual DB credentials
+# DATABASE_URL="mysql://username:password@127.0.0.1:3306/mentordb"
+# Replace `username`, `password`, and `mentordb` with your actual DB credentials
 
 ### 4. Create the database
 php bin/console doctrine:database:create
