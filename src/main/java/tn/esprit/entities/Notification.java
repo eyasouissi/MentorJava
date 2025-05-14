@@ -1,41 +1,61 @@
 package tn.esprit.entities;
 
-
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
 
-
-@Entity
-@Table(name = "notifications")
 public class Notification {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-
+    private Long id;
+    private User sender;
+    private User recipient;
+    private Post post;
+    private String type;
     private String message;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private User user;
-
-    @ManyToOne
-    @JoinColumn(name = "room_id", referencedColumnName = "id")
-    private Room room;
-
+    private LocalDateTime createdAt;
     private boolean isRead;
 
-    @Column(name = "timestamp", updatable = false, insertable = false)
-    private String timestamp;
+    public Notification() {
+        this.createdAt = LocalDateTime.now();
+        this.isRead = false;
+    }
 
     // Getters and Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
+    }
+
+    public User getSender() {
+        return sender;
+    }
+
+    public void setSender(User sender) {
+        this.sender = sender;
+    }
+
+    public User getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(User recipient) {
+        this.recipient = recipient;
+    }
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 
     public String getMessage() {
@@ -46,36 +66,20 @@ public class Notification {
         this.message = message;
     }
 
-    public User getUser() {
-        return user;
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public Room getRoom() {
-        return room;
-    }
-
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 
     public boolean isRead() {
         return isRead;
     }
 
-    public void setRead(boolean isRead) {
-        this.isRead = isRead;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
+    public void setRead(boolean read) {
+        isRead = read;
     }
 }
 

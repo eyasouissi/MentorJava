@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ModifierOffre"
+            prefHeight="400.0" prefWidth="600.0"
+            style="-fx-background-color: #dcd6f7;">
+    <children>
+        <VBox alignment="TOP_CENTER" spacing="10" AnchorPane.topAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0">
+            <Label text="Edit Offer ✏️" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <GridPane hgap="10" vgap="10">
+                <columnConstraints>
+                    <ColumnConstraints halignment="RIGHT"/>
+                    <ColumnConstraints halignment="LEFT"/>
+                </columnConstraints>
+
+                <Label text="Name:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtNom" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Image:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtImage" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Price:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <TextField fx:id="txtPrix" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                <Label text="Start Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                <DatePicker fx:id="dateDebut" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+
+                <Label text="End Date:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                <DatePicker fx:id="dateFin" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+                <Label text="Description:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                <TextArea fx:id="txtDescription" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Button fx:id="btnSave" text="✔ Edit Offer"
+                    style="-fx-background-color:  #836fff; -fx-text-fill: white; -fx-font-weight: bold;"/>
+        </VBox>
+    </children>
+</AnchorPane>

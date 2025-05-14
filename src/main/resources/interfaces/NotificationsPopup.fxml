@@ -1,0 +1,6 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ListView?>
+<VBox xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="tn.esprit.controllers.NotificationsPopupController">
+    <ListView fx:id="notificationList" />
+</VBox>

@@ -57,23 +57,23 @@
         </HBox>
 
         <!-- Groups -->
-        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item">
-            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToGroupes">
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon" >
                 <Image url="@/assets/images/groups.png"/>
             </ImageView>
             <Label text="Groups" styleClass="nav-label"/>
         </HBox>
 
         <!-- events -->
-        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item">
-            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToEvents">
+            <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon" >
                 <Image url="@/assets/images/events.png"/>
             </ImageView>
             <Label text="events" styleClass="nav-label"/>
         </HBox>
 
         <!-- subscription -->
-        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item">
+        <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" onMouseClicked="#navigateToPricing">
             <ImageView fitWidth="20" fitHeight="20" styleClass="nav-icon">
                 <Image url="@/assets/images/subscription.png"/>
             </ImageView>

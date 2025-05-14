@@ -6,37 +6,96 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 public class MyDataBase {
-
-    // Database connection parameters
+    // Enhanced connection parameters
     private final String URL = "jdbc:mysql://localhost:3306/mentordb"
             + "?autoReconnect=true"
             + "&useSSL=false"
             + "&serverTimezone=UTC"
-            + "&maxReconnects=5";
+            + "&maxReconnects=10"
+            + "&initialTimeout=2"
+            + "&socketTimeout=0" // 0 = no timeout
+            + "&connectTimeout=30000"
+            + "&zeroDateTimeBehavior=convertToNull"
+            + "&allowPublicKeyRetrieval=true";
+
     private final String USER = "root";
     private final String PWD = "";
 
-    private Connection cnx;
+    private volatile Connection cnx;
     private static MyDataBase instance;
+    private boolean keepAliveRunning = true;
 
-    // Private constructor to ensure Singleton pattern
     private MyDataBase() {
         createConnection();
+        startKeepAlive();
+        addShutdownHook();
     }
 
-    // Create and establish connection
     private void createConnection() {
-        try {
-            if (cnx == null || cnx.isClosed()) {
+        int maxRetries = 5;
+        int retryDelay = 2000; // 2 seconds
+
+        for (int i = 0; i < maxRetries; i++) {
+            try {
+                if (cnx != null && !cnx.isClosed()) {
+                    cnx.close();
+                }
                 cnx = DriverManager.getConnection(URL, USER, PWD);
+                cnx.setAutoCommit(true); // Enable auto-commit
                 System.out.println("Connection established");
+                return;
+            } catch (SQLException e) {
+                System.err.println("Connection attempt " + (i + 1) + " failed: " + e.getMessage());
+                if (i < maxRetries - 1) {
+                    try {
+                        Thread.sleep(retryDelay);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                    }
+                }
             }
-        } catch (SQLException e) {
-            System.err.println("Connection failed: " + e.getMessage());
         }
+        throw new RuntimeException("Failed to establish database connection after " + maxRetries + " attempts");
     }
 
-    // Singleton pattern to get the instance of MyDataBase
+    private void startKeepAlive() {
+        Thread keepAliveThread = new Thread(() -> {
+            while (keepAliveRunning) {
+                try {
+                    Thread.sleep(300000); // Ping every 5 minutes
+                    if (cnx != null && !cnx.isClosed()) {
+                        try (PreparedStatement ps = cnx.prepareStatement("SELECT 1")) {
+                            ps.executeQuery();
+                        }
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                } catch (SQLException e) {
+                    System.err.println("Keep-alive failed, reconnecting...");
+                    createConnection();
+                }
+            }
+        });
+        keepAliveThread.setDaemon(true);
+        keepAliveThread.start();
+    }
+
+    private void addShutdownHook() {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            keepAliveRunning = false;
+            if (cnx != null) {
+                try {
+                    if (!cnx.isClosed()) {
+                        cnx.close();
+                        System.out.println("Database connection closed gracefully");
+                    }
+                } catch (SQLException e) {
+                    System.err.println("Error closing connection: " + e.getMessage());
+                }
+            }
+        }));
+    }
+
     public static synchronized MyDataBase getInstance() {
         if (instance == null) {
             instance = new MyDataBase();
@@ -44,19 +103,20 @@ public class MyDataBase {
         return instance;
     }
 
-    // Get the connection, ensure it's valid before returning
     public Connection getCnx() {
         try {
-            if (cnx == null || cnx.isClosed() || !cnx.isValid(2)) {
-                createConnection(); // Reconnect if necessary
+            if (cnx == null || cnx.isClosed() || !cnx.isValid(5)) {
+                System.out.println("Connection invalid, reconnecting...");
+                createConnection();
             }
         } catch (SQLException e) {
             System.err.println("Connection validation failed: " + e.getMessage());
+            createConnection();
         }
         return cnx;
     }
 
-    // Method to update the view count for a forum
+    // Example method to update forum view counts
     public void updateForumViews(Long forumId, int newViewCount) {
         String sql = "UPDATE forum SET views = ? WHERE id = ?";
 

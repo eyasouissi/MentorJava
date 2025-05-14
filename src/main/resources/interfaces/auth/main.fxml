@@ -1,28 +1,171 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="tn.esprit.controllers.auth.MainController"
-            style="-fx-background-color: #f5f5f5;">
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
 
-
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.control.ProgressBar?>
+<BorderPane fx:id="rootPane" style="-fx-background-color: linear-gradient(                        to bottom right,                        #ffffff 0%,                        #8c84a1 30%,                        #6f6280 50%,                        #8c84a1 70%,                        #ffffff 100%                    );" stylesheets="@/css/mainpage.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.auth.MainController">
 
     <!-- Left Sidebar -->
     <left>
-        <VBox fx:id="sidebarContainer" style="-fx-background-color: transparent;">
-            <!-- Sidebar will be loaded here programmatically -->
-        </VBox>
+        <VBox fx:id="sidebarContainer" style="-fx-background-color: transparent;" />
+
+
     </left>
 
     <!-- Main Content Area -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: white; -fx-padding: 20;">
-            <VBox alignment="CENTER" spacing="20">
-                <Text text="Welcome to Main Page!"
-                      style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #333;" />
+        <StackPane fx:id="contentArea">
+
+        <HBox alignment="CENTER" spacing="40" style="-fx-padding: 40;">
+
+            <!-- LEFT SIDE: Welcome + Motivation + Recommendations -->
+            <VBox alignment="TOP_LEFT" prefHeight="596.0" prefWidth="254.0" spacing="30" style="-fx-pref-width: 60%;">
+                <!-- Welcome Text -->
+                <!-- Welcome text with image -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <ImageView fx:id="motivationImage" fitHeight="55.0" fitWidth="53.0" preserveRatio="true" />
+                    <Text fx:id="welcomeText" styleClass="welcome-text" />
+                </HBox>
+
+                <!-- Motivation label right under -->
+                <HBox alignment="CENTER_LEFT" prefHeight="170.0" prefWidth="256.0" spacing="20">
+                    <VBox alignment="CENTER_LEFT" spacing="10">
+                        <Label fx:id="motivationLabel" styleClass="motivation-text" />
+                    </VBox>
+                </HBox>
+
+
+                <!-- Motivation Block -->
+
+
+                <!-- Recommendations Container -->
+                <VBox prefHeight="101.0" prefWidth="249.0" spacing="10" style="-fx-padding: 15; -fx-background-color: #ffffff; -fx-background-radius: 10;">
+                    <Text style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-fill: #2c3e50;" text="Topics That May Interest You!" />
+                    <FlowPane fx:id="mainRecommendationsFlowPane" hgap="10" orientation="horizontal" prefWrapLength="400" style="-fx-padding: 10;" vgap="10" />
+                </VBox>
+                <VBox fx:id="latestAnnonceContainer" prefHeight="65.0" prefWidth="242.0" style="-fx-padding: 10; -fx-alignment: center;">
+                  <children>
+                      <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4B0082;" text="Latest Announcement" />
+                  </children></VBox>
+
             </VBox>
+
+             <!-- What to Study Today -->
+             <VBox prefHeight="534.0" prefWidth="353.0" spacing="10" style="-fx-padding: 15; -fx-background-color: trasnparent; -fx-background-radius: 10;">
+
+                 <!-- Categories Slideshow -->
+                 <HBox alignment="CENTER" prefHeight="161.0" prefWidth="241.0" spacing="10">
+                     <Button fx:id="prevCatButton" styleClass="nav-button">
+                         <graphic>
+                             <Text style="-fx-font-size: 15; -fx-fill: white;" text="◀" />
+                         </graphic>
+                     </Button>
+
+                     <ScrollPane fx:id="categoriesScroll"
+                                 fitToWidth="true"
+                                 hbarPolicy="NEVER"
+                                 prefHeight="117.0"
+                                 prefWidth="175.0"
+                                 styleClass="bubbly-scroll"
+                                 vbarPolicy="NEVER">
+                         <HBox fx:id="categoriesBox" spacing="15" style="-fx-padding: 10;" />
+                     </ScrollPane>
+
+
+                     <Button fx:id="nextCatButton" styleClass="nav-button">
+                         <graphic>
+                             <Text style="-fx-font-size: 15; -fx-fill: white;" text="▶" />
+                         </graphic>
+                     </Button>
+                 </HBox>
+                 <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cec5d5;" text="What are you planning on studying today?" />
+                 <!-- Add this after the room section -->
+                 <VBox spacing="10" style="-fx-padding: 15 0 0 0;">
+                     <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cec5d5;" text="Study Schedule"/>
+
+                     <HBox alignment="CENTER" spacing="10">
+                         <Button fx:id="prevMonth" styleClass="nav-button" text="◀"/>
+                         <Label fx:id="monthYear" styleClass="calendar-title"/>
+                         <Button fx:id="nextMonth" styleClass="nav-button" text="▶"/>
+                     </HBox>
+
+                     <GridPane fx:id="calendarGrid" styleClass="calendar-grid">
+                         <columnConstraints>
+                             <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                             <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                             <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                             <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                             <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                             <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                             <ColumnConstraints hgrow="ALWAYS" minWidth="40" prefWidth="40"/>
+                         </columnConstraints>
+                     </GridPane>
+                 </VBox>
+
+                 <!-- In your main layout file, under the progress bar section -->
+                 <VBox spacing="10" style="-fx-padding: 20; -fx-alignment: center;">
+                     <Label text="Study Progress" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #4B0082;"/>
+                     <ProgressBar fx:id="progressBar" style="-fx-accent: #8c84a1; -fx-pref-width: 200px; -fx-pref-height: 20px;"/>
+                     <Label fx:id="timeLabel" style="-fx-text-fill: #6f6280; -fx-font-size: 14px;"/>
+                     <Label text="Earned Badges" style="-fx-font-size: 14px; -fx-text-fill: #4B0082;"/>
+                     <!-- Replace the existing HBox with this ScrollPane setup -->
+                     <ScrollPane styleClass="badges-scroll-pane"
+                                 hbarPolicy="ALWAYS"
+                                 vbarPolicy="NEVER"
+                                 fitToHeight="true"
+                                 prefViewportWidth="300"
+                                 prefViewportHeight="70">
+                         <HBox fx:id="badgesContainer"
+                               spacing="10"
+                               style="-fx-background-color: transparent;"
+                               minHeight="70"
+                               maxHeight="70"/>
+                     </ScrollPane>
+                 </VBox>
+             </VBox>
+            <!-- Add this after the room section in the right-side VBox -->
+            <VBox alignment="CENTER" prefHeight="185.0" prefWidth="165.0" spacing="10" style="-fx-padding: 10 0 0 0;">
+
+               <!-- RIGHT SIDE: Poster Image -->
+               <VBox alignment="CENTER" spacing="15" style="-fx-pref-width: 40%; -fx-padding: 20;">
+                   <StackPane fx:id="imageContainer">
+                       <ImageView fx:id="posterImage"
+                                  fitHeight="400"
+                                  fitWidth="300"
+                                  preserveRatio="true"
+                                  style="-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0.5, 0.0, 0.0);">
+                           <image>
+                               <Image url="@/assets/icons/poster.png" />
+                           </image>
+                       </ImageView>
+                   </StackPane>
+
+
+                   <Label style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #eae7ef;" text="Explore New Horizons!" />
+                   <Label style="-fx-font-size: 14px; -fx-text-fill: #cec5d5;" text="Discover exciting topics and expand your knowledge" />
+
+                   <!-- Add this new section -->
+                   <VBox alignment="CENTER" spacing="10">
+                       <Label style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #cec5d5;" text="Time to hit the room and lock in!" />
+                       <HBox fx:id="userRoomContainer" style="-fx-padding: 10; -fx-alignment: center;" />
+                   </VBox>
+               </VBox>
+            </VBox>
+        </HBox>
         </StackPane>
+
     </center>
+
 </BorderPane>

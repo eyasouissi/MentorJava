@@ -395,26 +395,26 @@ public class ListeEvenementController {
         HBox.setHgrow(infoBox, Priority.ALWAYS); // Pour que la boîte d'info prenne l'espace disponible
 
         // Boutons
-        Button modifierBtn = new Button("Modifier");
-        modifierBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        Button modifierBtn = new Button("Modify");
+        modifierBtn.setStyle("-fx-background-color: #7d7598; -fx-text-fill: white;");
         modifierBtn.setOnAction(e -> openEvenementForm(ev));
         modifierBtn.setPrefWidth(120);
 
-        Button supprimerBtn = new Button("Supprimer");
-        supprimerBtn.setStyle("-fx-background-color: #f44336; -fx-text-fill: white;");
+        Button supprimerBtn = new Button("Delete");
+        supprimerBtn.setStyle("-fx-background-color: #f49ca3; -fx-text-fill: white;");
         supprimerBtn.setOnAction(e -> supprimerEvenement(ev));
         supprimerBtn.setPrefWidth(120);
 
-        Button ajouterAnnonceBtn = new Button("Ajouter Annonce");
-        ajouterAnnonceBtn.setStyle("-fx-background-color: #2196F3; -fx-text-fill: white;");
+        Button ajouterAnnonceBtn = new Button("Add Announce");
+        ajouterAnnonceBtn.setStyle("-fx-background-color: #a287d6; -fx-text-fill: white;");
         ajouterAnnonceBtn.setOnAction(e -> {
             evenementSelectionne = ev;
             handleAjouterAnnonce(e);
         });
         ajouterAnnonceBtn.setPrefWidth(120);
 
-        Button voirAnnoncesBtn = new Button("Voir Annonces");
-        voirAnnoncesBtn.setStyle("-fx-background-color: #FF9800; -fx-text-fill: white;");
+        Button voirAnnoncesBtn = new Button("See Annonces");
+        voirAnnoncesBtn.setStyle("-fx-background-color: #857e98; -fx-text-fill: white;");
         voirAnnoncesBtn.setOnAction(e -> {
             evenementSelectionne = ev;
             handleVoirAnnonces(e);
@@ -521,7 +521,7 @@ public class ListeEvenementController {
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
-            showErrorAlert("Erreur", "Impossible d'ouvrir la liste des annonces");
+            showErrorAlert("Erreur", "Can't open list");
         }
     }
 

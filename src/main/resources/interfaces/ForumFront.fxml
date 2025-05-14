@@ -38,10 +38,10 @@
         <VBox spacing="20" style="-fx-padding: 0 24;">
             <HBox spacing="30" alignment="TOP_LEFT" HBox.hgrow="ALWAYS">
                 <!-- Forum List on the left -->
+                <!-- Forum List on the left -->
                 <VBox alignment="TOP_LEFT" VBox.vgrow="ALWAYS" HBox.hgrow="ALWAYS">
                     <Label text="Forums" styleClass="card-title"/>
                     <ListView fx:id="forumListView" styleClass="card" prefWidth="500" prefHeight="600" VBox.vgrow="ALWAYS"/>
-
                 </VBox>
 
                 <!-- Popular Topics and Stats on the far right -->

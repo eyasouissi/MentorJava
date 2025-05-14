@@ -1,0 +1,68 @@
+/* Todo List Widget Styles */
+
+.todo-item {
+    -fx-background-radius: 5;
+    -fx-transition: background-color 0.2s;
+}
+
+.todo-checkbox {
+    -fx-padding: 3px;
+}
+
+.todo-checkbox .mark {
+    -fx-shape: "M0,5 L2,8 L6,0";
+    -fx-scale-x: 1.2;
+    -fx-scale-y: 1.2;
+}
+
+.todo-checkbox:selected .box {
+    -fx-background-color: #3cb371;
+    -fx-border-color: #3cb371;
+}
+
+.todo-task-text {
+    -fx-font-size: 14px;
+    -fx-padding: 0 0 0 5px;
+}
+
+.todo-delete-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e74c3c;
+    -fx-padding: 0 5px;
+    -fx-cursor: hand;
+    -fx-opacity: 0.7;
+}
+
+.todo-delete-button:hover {
+    -fx-opacity: 1.0;
+}
+
+.todo-input {
+    -fx-padding: 8px;
+    -fx-background-radius: 8;
+    -fx-border-radius: 8;
+    -fx-border-color: #dddddd;
+    -fx-border-width: 1px;
+    -fx-prompt-text-fill: #aaaaaa;
+}
+
+.todo-add-button {
+    -fx-background-color: #4CAF50;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 10px;
+    -fx-cursor: hand;
+    -fx-background-radius: 20;
+    -fx-min-width: 30px;
+    -fx-min-height: 30px;
+}
+
+.todo-add-button:hover {
+    -fx-background-color: #3d9140;
+}
+
+.todo-items-container {
+    -fx-background-color: rgba(255, 255, 255, 0.5);
+    -fx-background-radius: 8;
+    -fx-padding: 5;
+} 

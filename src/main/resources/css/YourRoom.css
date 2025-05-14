@@ -1,12 +1,12 @@
 /* --- Top Navbar Styles --- */
 /* --- Top Navbar Styles --- */
 .top-nav-bar {
-    -fx-background-color: rgba(211, 211, 211, 0.6); /* Light transparent gray */
+    -fx-background-color: rgba(255, 255, 255, 0.2);/* Light transparent gray */
     -fx-background-radius: 30px; /* Bubbly edges */
     -fx-padding: 10px 40px; /* Adjusted padding for better spacing */
     -fx-spacing: 25px; /* Increased spacing between items */
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 8, 0.5, 0, 0); /* Soft shadow */
-    -fx-max-width: 800px; /* Horizontally longer navbar */
+    -fx-max-width: 700px; /* Horizontally longer navbar */
     -fx-pref-height: 70px; /* Slightly larger navbar */
     -fx-hgap: 25px; /* Horizontal gap */
     -fx-alignment: center; /* Center content */
@@ -757,7 +757,7 @@
 /* Summarize Button (SVG Icon) */
 .summarize-button {
     -fx-background-color: transparent; /* No background */
-    -fx-border-color: #4CAF50; /* Green border */
+    -fx-border-color: #7d7598; /* Green border */
     -fx-border-width: 2px; /* Border thickness */
     -fx-border-radius: 5px; /* Slightly rounded corners */
     -fx-padding: 10px; /* Padding around the icon */

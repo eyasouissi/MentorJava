@@ -14,10 +14,21 @@
     <top>
         <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-padding: 20;">
             <Label text="Annonces" fx:id="mainTitle" styleClass="main-title"/>
-            <TextField fx:id="searchField" styleClass="search-field" promptText="Rechercher..."/>
+            <TextField fx:id="searchField" styleClass="search-field" promptText="Search..."/>
             <Label fx:id="resultsCount" styleClass="results-count"/>
+
+            <!-- Espace pour pousser le bouton à droite -->
+            <Region fx:id="spacer" HBox.hgrow="ALWAYS"/>
+
+            <!-- Bouton Calendrier avec taille + marge -->
+            <Button fx:id="calendarButton"
+                    text="🗓 Calendar"
+                    onAction="#goToCalendar"
+                    styleClass="calendar-button"
+                    style="-fx-font-size: 14px; -fx-padding: 10px 20px;"/>
         </HBox>
     </top>
+
 
     <!-- Center: Contenu principal -->
     <center>
@@ -60,7 +71,7 @@
 
                     <!-- QR Code -->
                     <HBox alignment="CENTER" spacing="20" style="-fx-padding: 20 0 0 0;">
-                        <Label text="Scanner pour partager:" styleClass="qr-label"/>
+                        <Label text="Scan to share:" styleClass="qr-label"/>
                         <ImageView fx:id="eventQrCode" styleClass="qr-code" fitWidth="120" fitHeight="120"/>
                     </HBox>
                 </VBox>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AddProjectController"
+            styleClass="main-container"
+            stylesheets="@../css/styles.css">
+    
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" 
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <!-- Header with Back Button -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Button fx:id="backButton" 
+                    onAction="#onBackClick"
+                    styleClass="icon-button">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24">
+                        <Image url="@../icons/back.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Text styleClass="page-title" text="Add New Project"/>
+        </HBox>
+        
+        <!-- Project Form -->
+        <VBox styleClass="form-container" spacing="15">
+            <!-- Project Image -->
+            <VBox spacing="5" alignment="CENTER">
+                <ImageView fx:id="projectImageView" 
+                          fitHeight="150" 
+                          fitWidth="150"
+                          preserveRatio="true"/>
+                <Button fx:id="uploadImageButton"
+                        text="Upload Image"
+                        onAction="#onUploadImageClick"
+                        styleClass="secondary-button"/>
+            </VBox>
+        
+            <TextField fx:id="projectTitleField" 
+                      promptText="Project Name"
+                      styleClass="text-field"/>
+                      
+            <TextArea fx:id="projectDescriptionField" 
+                      promptText="Project Description"
+                      styleClass="text-area"
+                      wrapText="true"
+                      prefRowCount="3"/>
+            
+            <!-- Difficulty Slider -->
+            <VBox spacing="5">
+                <Label text="Difficulty Level"/>
+                <Slider fx:id="difficultySlider" 
+                       min="1" 
+                       max="5" 
+                       value="3"
+                       blockIncrement="1"
+                       majorTickUnit="1"
+                       minorTickCount="0"
+                       showTickMarks="true"
+                       showTickLabels="true"
+                       snapToTicks="true"/>
+            </VBox>
+                      
+            <!-- Due Date Picker -->
+            <VBox spacing="5">
+                <Label text="Due Date"/>
+                <DatePicker fx:id="deadlinePicker" 
+                           styleClass="date-picker"
+                           maxWidth="Infinity"/>
+            </VBox>
+            
+            <!-- PDF Upload -->
+            <VBox spacing="5">
+                <Label text="Project Documentation (PDF)"/>
+                <HBox spacing="10">
+                    <Button fx:id="uploadPdfButton"
+                            text="Upload PDF"
+                            onAction="#onUploadPdfClick"
+                            styleClass="secondary-button"/>
+                    <Label fx:id="pdfFileLabel" 
+                          text="No file selected"
+                          styleClass="file-label"/>
+                </HBox>
+            </VBox>
+            
+            <!-- Project Files -->
+            <VBox spacing="5">
+                <Label text="Project Files"/>
+                <Button text="Upload Files" 
+                        onAction="#onUploadFilesClick"
+                        styleClass="secondary-button"/>
+                <ListView fx:id="filesListView" 
+                         prefHeight="100"
+                         styleClass="files-list"/>
+            </VBox>
+            
+            <!-- Create Button -->
+            <Button text="Create Project" 
+                    onAction="#onCreateClick"
+                    styleClass="primary-button"
+                    maxWidth="Infinity"/>
+        </VBox>
+    </VBox>
+    
+</AnchorPane> 

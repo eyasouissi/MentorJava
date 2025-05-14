@@ -4,59 +4,66 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import tn.esprit.services.UserService;
 import tn.esprit.tools.HostServicesProvider;
+import tn.esprit.utils.StripeConfig;
+
+import java.io.IOException;
 
 public class LoginTest extends Application {
-    static {
-        // Fix version mismatch warning
-        System.setProperty("javafx.version", "17.0.15");
-    }
+    private static BorderPane rootPane; // Shared root container
+    private static Stage primaryStage;
 
     @Override
-    public void start(Stage primaryStage) throws Exception {
-        System.out.println("Starting application...");
+    public void start(Stage stage) throws Exception {
+        primaryStage = stage;
+        StripeConfig.initializeStripe();
 
-        // Initialize services
-        UserService userService = UserService.getInstance();
+        // Initialize root container
+        rootPane = new BorderPane();
 
-        if (!userService.isEmailServiceAvailable()) {
-            System.out.println("""
-                ⚠ Email service disabled - verification will be manual
-                To enable email:
-                1. Create .env file with SMTP credentials
-                2. Or set environment variables
-                3. For Gmail, enable 2FA and create App Password
-                """);
-        }
+        // Load login screen into center initially
+        loadLoginScreen();
 
-        HostServicesProvider.setHostServices(getHostServices());
-
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/auth/login.fxml"));
-        Parent root = loader.load();
-
-        primaryStage.setTitle("WorkAway Login");
-        Scene scene = new Scene(root);
-
-        // Set minimum size
+        primaryStage.setTitle("WorkAway");
+        primaryStage.setScene(new Scene(rootPane, 1200, 800));
         primaryStage.setMinWidth(800);
         primaryStage.setMinHeight(600);
-
-        primaryStage.setScene(scene);
         primaryStage.show();
+    }
 
-        System.out.println("✅ Application started successfully");
+    // Method to load login screen
+    public static void loadLoginScreen() {
+        try {
+            FXMLLoader loader = new FXMLLoader(LoginTest.class.getResource("/interfaces/auth/login.fxml"));
+            Parent loginView = loader.load();
+            rootPane.setCenter(loginView);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Method to load main interface after login
+    public static void loadMainInterface() {
+        try {
+            // Load sidebar
+            FXMLLoader sidebarLoader = new FXMLLoader(LoginTest.class.getResource("/interfaces/Sidebar.fxml"));
+            Parent sidebar = sidebarLoader.load();
+            rootPane.setLeft(sidebar);
+
+            // Load study room
+            FXMLLoader studyLoader = new FXMLLoader(LoginTest.class.getResource("/interfaces/rooms/StudyRoom.fxml"));
+            Parent studyRoom = studyLoader.load();
+            rootPane.setCenter(studyRoom);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
-        try {
-            System.out.println("JavaFX Runtime: " + System.getProperty("javafx.version"));
-            launch(args);
-        } catch (Exception e) {
-            System.err.println("Failed to start application:");
-            e.printStackTrace();
-            System.exit(1);
-        }
+        launch(args);
     }
 }

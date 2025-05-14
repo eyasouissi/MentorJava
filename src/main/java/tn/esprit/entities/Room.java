@@ -1,20 +1,24 @@
 package tn.esprit.entities;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
 
 public class Room {
-    private int id;
+    private Long id;
     private String name;
     private User owner;
-    private boolean isActive;
+    private boolean isActive = true;
     private String createdAt;
     private Set<User> users;
     private RoomSettings settings;
     private String backgroundImage = "/images/room.jpg"; // Default path
-    private String stateJson;
+    private RoomState state;
+    private Long userId;  // Add userId to associate rooms with specific users
 
     // List of available background images
     private static final List<String> BACKGROUND_IMAGES = new ArrayList<>();
@@ -36,14 +40,15 @@ public class Room {
     public Room() {
         // Select a random background image when a new room is created
         this.backgroundImage = getRandomBackgroundImage();
+        this.state = new RoomState();
     }
 
     // Getters and Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -103,11 +108,32 @@ public class Room {
         this.backgroundImage = backgroundImagePath;
     }
 
-    public String getStateJson() {
-        return stateJson;
+    public RoomState getState() {
+        return state;
     }
 
-    public void setStateJson(String stateJson) {
-        this.stateJson = stateJson;
+    public void setState(RoomState state) {
+        this.state = state;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public void debugPrintState() {
+        System.out.println("=== Room State Debug ===");
+        System.out.println("Room ID: " + id);
+        System.out.println("Room Name: " + name);
+        System.out.println("User ID: " + userId);
+        System.out.println("State JSON: " + getStateJson());
+    }
+
+    public String getStateJson() {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(state);
     }
 }

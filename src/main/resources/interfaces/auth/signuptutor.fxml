@@ -13,10 +13,47 @@
       style="-fx-background-color: #f5f5f5;"
       minHeight="600" minWidth="800">
 
-    <!-- Left Pane (Welcome Section) - 50% -->
-    <AnchorPane style="-fx-background-color: linear-gradient(to bottom right, #c78ad4, #b970d1);"
-                HBox.hgrow="ALWAYS">
-        <fx:include source="LeftPane.fxml"/>
+    <!-- Left Pane (Welcome Section) - 50% width -->
+    <AnchorPane style="-fx-background-color: linear-gradient(
+            to bottom right,
+            #ffffff 0%,    /* Top-left corner: white */
+            #8c84a1 30%,   /* Soft purple appears */
+            #6f6280 50%,   /* Darker center */
+            #8c84a1 70%,   /* Lightens again */
+            #ffffff 100%   /* Bottom-right corner: white */
+    );"
+                HBox.hgrow="ALWAYS" prefWidth="500">
+        <VBox alignment="CENTER" spacing="30"
+              AnchorPane.topAnchor="50" AnchorPane.bottomAnchor="50"
+              AnchorPane.leftAnchor="50" AnchorPane.rightAnchor="50">
+
+            <ImageView fitWidth="150" fitHeight="150" preserveRatio="true">
+                <Image url="@/assets/icons/mentor-logo.png"/>
+            </ImageView>
+
+            <VBox alignment="CENTER" spacing="10">
+                <Text text="Welcome to"
+                      style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: white;"/>
+                <Text text="MENTOR"
+                      style="-fx-font-size: 48px; -fx-font-weight: bold; -fx-fill: white;">
+                    <effect>
+                        <Glow level="0.8"/>
+                    </effect>
+                </Text>
+            </VBox>
+
+            <Text text="Your learning journey starts here"
+                  style="-fx-font-size: 18px; -fx-font-style: italic; -fx-fill: white;"/>
+
+            <HBox alignment="CENTER" spacing="20">
+                <Circle radius="8" fill="#EEA0FF" opacity="0.7"/>
+                <Circle radius="12" fill="#eae7ef" opacity="0.7"/>
+                <Circle radius="8" fill="#EEA0FF" opacity="0.7"/>
+            </HBox>
+
+            <Text text='"Education is the most powerful weapon which you can use to change the world."'
+                  style="-fx-font-size: 14px; -fx-text-alignment: center; -fx-fill: white;"/>
+        </VBox>
     </AnchorPane>
 
     <!-- Right Pane (Form) - 50% -->
@@ -29,7 +66,7 @@
 
                 <!-- Title -->
                 <Text text="Tutor Registration"
-                      style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #5d236a;" />
+                      style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: #8c84a1;" />
 
                 <!-- Form Fields -->
                 <VBox spacing="5" maxWidth="300">
@@ -105,7 +142,7 @@
                     <HBox spacing="10" alignment="CENTER_LEFT">
                         <Label fx:id="diplomaFileNameLabel" text="No file selected" style="-fx-text-fill: #555;"/>
                         <Button text="Upload" onAction="#handleUploadDiploma"
-                                style="-fx-background-color: #47AEFF; -fx-text-fill: white; -fx-font-weight: bold;
+                                style="-fx-background-color: #8c84a1; -fx-text-fill: white; -fx-font-weight: bold;
                                        -fx-background-radius: 20; -fx-pref-width: 100; -fx-pref-height: 35;"/>
                     </HBox>
                 </VBox>
@@ -116,7 +153,7 @@
                 <!-- Sign Up Button -->
                 <Button text="Sign Up" defaultButton="true" onAction="#handleSignUp"
                         style="-fx-pref-width: 300px; -fx-pref-height: 40px;
-                               -fx-background-color: #47AEFF; -fx-text-fill: white;
+                               -fx-background-color: #8c84a1; -fx-text-fill: white;
                                -fx-font-weight: bold; -fx-font-size: 15px;
                                -fx-background-radius: 20px; -fx-cursor: hand;" />
 

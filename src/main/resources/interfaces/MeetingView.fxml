@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="800.0" styleClass="meeting-container" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="tn.esprit.controllers.meeting.MeetingController">
+   <center>
+      <StackPane styleClass="video-container">
+         <WebView fx:id="webView" prefHeight="400.0" prefWidth="600.0" />
+         <Label fx:id="cameraOffLabel" alignment="CENTER" styleClass="camera-off-label" text="Camera is off" visible="false">
+            <font>
+               <Font size="18.0" />
+            </font>
+         </Label>
+      </StackPane>
+   </center>
+   <right>
+      <VBox prefWidth="200.0" styleClass="chat-sidebar">
+         <Label styleClass="sidebar-header" text="Group Chat">
+            <font>
+               <Font name="System Bold" size="14.0" />
+            </font>
+            <VBox.margin>
+               <Insets bottom="10.0" />
+            </VBox.margin>
+         </Label>
+         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="chat-scroll-pane" VBox.vgrow="ALWAYS">
+            <VBox fx:id="chatMessagesContainer" spacing="8.0" styleClass="chat-messages" />
+         </ScrollPane>
+         <HBox spacing="5.0" styleClass="chat-input-container">
+            <TextField fx:id="chatInput" promptText="Type a message..." HBox.hgrow="ALWAYS" />
+            <Button fx:id="sendButton" mnemonicParsing="false" onAction="#sendChatMessage" text="Send" />
+            <VBox.margin>
+               <Insets top="10.0" />
+            </VBox.margin>
+         </HBox>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+      </VBox>
+   </right>
+   <bottom>
+      <HBox alignment="CENTER" spacing="15.0" styleClass="controls-bar">
+         <Button fx:id="toggleMicButton" mnemonicParsing="false" onAction="#toggleMicrophone" styleClass="control-button" text="Mute" />
+         <Button fx:id="toggleCameraButton" mnemonicParsing="false" onAction="#toggleCamera" styleClass="control-button" text="Turn Off Camera" />
+         <Button fx:id="shareScreenButton" mnemonicParsing="false" onAction="#shareScreen" styleClass="control-button" text="Share Screen" />
+         <Button fx:id="leaveButton" mnemonicParsing="false" onAction="#leaveMeeting" styleClass="leave-button" text="Leave Meeting" />
+         <padding>
+            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+         </padding>
+      </HBox>
+   </bottom>
+   <top>
+      <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="meeting-header">
+         <Label fx:id="meetingTitleLabel" styleClass="meeting-title" text="Meeting Title">
+            <font>
+               <Font name="System Bold" size="16.0" />
+            </font>
+         </Label>
+         <Label fx:id="participantsLabel" styleClass="participants-count" text="Participants: 1">
+            <HBox.margin>
+               <Insets left="20.0" />
+            </HBox.margin>
+         </Label>
+         <HBox alignment="CENTER_RIGHT" HBox.hgrow="ALWAYS">
+            <Button fx:id="inviteButton" mnemonicParsing="false" onAction="#inviteParticipant" text="Invite" />
+         </HBox>
+         <padding>
+            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+         </padding>
+      </HBox>
+   </top>
+</BorderPane> 

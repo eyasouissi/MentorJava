@@ -69,7 +69,7 @@ public class Login {
             passwordField.setText(password);
         }
         try {
-            String initialImagePath = "/assets/icons/richard_bored.png";
+            String initialImagePath = "/assets/icons/1.png";
             InputStream imageStream = getClass().getResourceAsStream(initialImagePath);
 
             if (imageStream == null) {
@@ -197,17 +197,17 @@ public class Login {
                     text.contains("great") || text.contains("best") ||
                     text.contains("cute") || text.contains("adorable") ||
                     text.contains("cool") || text.contains("amazing")) {
-                setRichardImage("richard_happy.png");
+                setRichardImage("2.png");
                 passwordBox.setVisible(true);
             }
             else if (text.contains("ugly") || text.contains("stupid") ||
                     text.contains("boring") || text.contains("worst") ||
                     text.contains("dumb")) {
-                setRichardImage("richard_mad.png");
+                setRichardImage("3.png");
                 passwordBox.setVisible(false);
             }
             else {
-                setRichardImage("richard_bored.png");
+                setRichardImage("1.png");
                 passwordBox.setVisible(false);
             }
         } catch (Exception e) {

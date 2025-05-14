@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.frontOffre"
+            stylesheets="@/css/style.css">
+
+    <!-- Header -->
+
+    <left>
+    </left>
+
+    <!-- Body -->
+    <center>
+        <VBox spacing="25" alignment="TOP_CENTER"
+              style="-fx-background-color: linear-gradient(
+            to bottom right,
+            #ffffff 0%,    /* Top-left corner: white */
+            #8c84a1 30%,   /* Soft purple appears */
+            #6f6280 50%,   /* Darker center */
+            #8c84a1 70%,   /* Lightens again */
+            #ffffff 100%   /* Bottom-right corner: white */
+    );">
+
+            <VBox alignment="TOP_LEFT" spacing="10">
+                <!-- Title Label -->
+                <Label text="     Our Offers" styleClass="section-title"
+                       style="-fx-font-size: 26px; -fx-text-fill: #4B0082FF; -fx-font-weight: bold;" />
+
+                <!-- Subtitle with image on the left -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <!-- ImageView on the left -->
+                    <ImageView fx:id="offerIcon" fitHeight="55" fitWidth="53">
+                        <image>
+                            <Image url="@/assets/icons/offer.png" />
+                        </image>
+                    </ImageView>
+
+                    <!-- Subtitle Label -->
+                    <Label text="Choose the subscription that suits you and enjoy our exclusive services"
+                           styleClass="section-subtitle"
+                           wrapText="true"
+                           maxWidth="600"
+                           style="-fx-font-size: 14px; -fx-text-fill: #5c6bc0; -fx-font-style: italic;" />
+                </HBox>
+            </VBox>
+
+
+            <Pagination fx:id="offersPagination" maxPageIndicatorCount="5"
+                        styleClass="offers-pagination"
+                        style="-fx-page-information-visible: false;
+                       -fx-arrows-visible: true;
+                       -fx-border-radius: 10;
+                       -fx-background-radius: 10;
+                       -fx-padding: 10;
+                       -fx-background-color: transparent;" />
+        </VBox>
+
+    </center>
+
+
+
+</BorderPane>

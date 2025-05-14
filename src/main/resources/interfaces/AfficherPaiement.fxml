@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AfficherPaiement"
+            prefHeight="700.0" prefWidth="1200.0"
+            style="-fx-background-color: #f0f2f7;">
+
+    <left>
+        <fx:include fx:id="sidebar" source="/interfaces/Admin/Sidebar.fxml"/>
+    </left>
+
+    <center>
+        <VBox style="-fx-padding: 20 30;">
+            <Label text="Payment List" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1c273c; -fx-padding: 0 0 20 0;" />
+
+
+
+            <VBox style="-fx-background-color: #fff; -fx-padding: 20; -fx-border-color: #e9edf4; -fx-border-width: 1; -fx-border-radius: 5; -fx-spacing: 20; -fx-margin: 20 0 0 0;">
+
+                <!-- Statistics Button -->
+                <HBox alignment="TOP_RIGHT">
+                    <Button fx:id="btnVoirStatistiques" text="View Statistics"
+                            style="-fx-background-color: #add8e6; -fx-text-fill: #1c273c; -fx-font-size: 12px; -fx-padding: 4 10; -fx-border-radius: 4px;"
+                            onAction="#allerVersStatistiques">
+                        <graphic>
+                            <ImageView fitHeight="14" fitWidth="14"/>
+                        </graphic>
+                    </Button>
+                </HBox>
+
+                <!-- Search & Sort -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label text="Search:" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                    <TextField fx:id="searchField" promptText="Enter a username" prefWidth="250"
+                               style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px; -fx-padding: 7;" />
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Sort by:" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+                    <ComboBox fx:id="sortComboBox" promptText="Select an option" prefWidth="200"
+                              style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px;" />
+                </HBox>
+
+                <!-- Table -->
+                <TableView fx:id="tablePaiements" prefHeight="400.0" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #fff; -fx-border-color: #e9edf4; -fx-border-radius: 4px;">
+                    <columns>
+                        <TableColumn fx:id="colUser" text="User" prefWidth="220"/>
+                        <TableColumn fx:id="colOffre" text="Offer" prefWidth="250"/>
+                        <TableColumn fx:id="colDate" text="Payment Date" prefWidth="200"/>
+                        <TableColumn fx:id="colAction" text="Action" prefWidth="180"/>
+                    </columns>
+                </TableView>
+
+                <!-- Export & Back -->
+                <HBox spacing="15" alignment="CENTER_RIGHT">
+                    <Button fx:id="btnExporterPDF" text="Export to PDF"
+                            style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 20; -fx-border-radius: 4px;"
+                            onAction="#exporterPDF">
+                        <graphic><ImageView fitHeight="16" fitWidth="16"/></graphic>
+                    </Button>
+
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+
+</BorderPane>

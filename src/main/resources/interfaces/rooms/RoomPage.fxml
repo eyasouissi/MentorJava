@@ -83,7 +83,16 @@
 
 
                 <HBox alignment="CENTER_RIGHT" spacing="10">
-                    <Button onAction="#handleLeaveRoom" prefHeight="25.0" prefWidth="131.0" styleClass="leave-room-button" text="Leave Room" />
+                    <Button onAction="#handleLeaveRoom" prefHeight="25.0" prefWidth="131.0" styleClass="btns" >
+                        <graphic>
+                            <ImageView fitHeight="20.0" fitWidth="20.0">
+                                <image>
+                                    <Image url="@/icons/leave.png" />
+                                </image>
+                            </ImageView>
+                        </graphic>
+                    </Button>
+
                     <Button onAction="#handleSettingsButton" prefHeight="25.0" prefWidth="35.0" styleClass="settings-button" />
                 </HBox>
             </HBox>
@@ -96,7 +105,7 @@
             <Pane fx:id="workspacePane" prefHeight="621.0" prefWidth="1197.0" styleClass="workspace-pane">
 
                 <!-- Whiteboard Widget -->
-                <VBox fx:id="whiteboardContainer" layoutX="20" layoutY="20" styleClass="whiteboard-container" visible="false">
+                <VBox fx:id="whiteboardContainer" id="whiteboardContainer" layoutX="20" layoutY="20" styleClass="whiteboard-container" visible="false">
                     <VBox styleClass="whiteboard-box">
                         <HBox styleClass="whiteboard-controls">
                             <ColorPicker fx:id="colorPicker" styleClass="color-picker" />
@@ -114,7 +123,7 @@
                 </VBox>
 
                 <!-- Timer Widget -->
-                <VBox fx:id="timerContainer" layoutX="500" layoutY="20" styleClass="timer-container" visible="false">
+                <VBox fx:id="timerContainer" id="timerContainer" layoutX="500" layoutY="20" styleClass="timer-container" visible="false">
                     <VBox styleClass="timer-widget">
                         <HBox onMouseDragged="#handleTimerDrag" onMousePressed="#handleTimerDragStart" styleClass="timer-header">
                             <Label styleClass="timer-title" text="Study Timer" />
@@ -127,36 +136,30 @@
                             </Button>
                         </HBox>
                         <VBox styleClass="timer-controls">
-                            <HBox alignment="CENTER" spacing="10">
-                                <TextField fx:id="hoursInput" promptText="H" styleClass="timer-input" />
-                                <Label styleClass="time-separator" text=":" />
-                                <TextField fx:id="minutesInput" promptText="M" styleClass="timer-input" />
-                                <Label styleClass="time-separator" text=":" />
-                                <TextField fx:id="secondsInput" promptText="S" styleClass="timer-input" />
+                            <HBox spacing="10" alignment="CENTER">
+                                <TextField fx:id="hoursInput" promptText="H" styleClass="timer-input"/>
+                                <Label text=":" styleClass="time-separator"/>
+                                <TextField fx:id="minutesInput" promptText="M" styleClass="timer-input"/>
+                                <Label text=":" styleClass="time-separator"/>
+                                <TextField fx:id="secondsInput" promptText="S" styleClass="timer-input"/>
                             </HBox>
-                            <HBox alignment="CENTER" spacing="10">
-                                <Button onAction="#handleStartTimer" styleClass="timer-action-button" text="Start" />
-                                <Button fx:id="stopButton" onAction="#handleStopTimer" styleClass="timer-action-button" text="Pause" />
-                                <Button onAction="#handleResetTimer" styleClass="timer-action-button" text="Reset" />
+                            <HBox spacing="10" alignment="CENTER">
+                                <Button text="Start" onAction="#handleStartTimer" styleClass="timer-action-button"/>
+                                <Button fx:id="stopButton" text="Pause" styleClass="timer-action-button" onAction="#handleStopTimer"/>
+                                <Button text="Reset" onAction="#handleResetTimer" styleClass="timer-action-button"/>
                             </HBox>
-                            <HBox alignment="CENTER" spacing="10">
-                                <!-- Timer Display centered -->
-                                <Label fx:id="timerDisplay" styleClass="timer-display" text="00:00:00" />
-                            </HBox>
-                            <!-- Encouragement Label below the timerDisplay -->
-                            <HBox alignment="CENTER">
+                            <Label fx:id="timerDisplay" text="00:00:00" styleClass="timer-display"/>
                                 <Label fx:id="encouragementLabel" style="-fx-font-size: 14px; -fx-text-fill: #666;" />
-                            </HBox>
                         </VBox>
                     </VBox>
                 </VBox>
 
                 <!-- Todo List Widget -->
-                <VBox fx:id="todoContainer" layoutX="20" layoutY="400" styleClass="todo-container" visible="false">
+                <VBox fx:id="todoContainer" id="todoContainer" layoutX="20" layoutY="400" styleClass="todo-container" visible="false">
                     <VBox styleClass="todo-widget">
                         <HBox onMouseDragged="#handleTodoDrag" onMousePressed="#handleTodoDragStart" styleClass="todo-header">
                             <Label styleClass="todo-title" text="Study Tasks" />
-                            <Button onAction="#handleCloseTodo" styleClass="close-button">
+                            <Button onAction="#handleCloseTodo" alignment="CENTER_LEFT" styleClass="close-button">
                                 <graphic>
                                     <ImageView>
                                         <Image url="@/icons/close.png" />
@@ -175,7 +178,7 @@
                 </VBox>
 
                 <!-- AI Chat Widget -->
-                <VBox fx:id="aiChatContainer" layoutX="500" layoutY="400" styleClass="ai-chat-container" visible="false">
+                <VBox fx:id="aiChatContainer" id="aiChatContainer" layoutX="500" layoutY="400" styleClass="ai-chat-container" visible="false">
                     <VBox styleClass="ai-chat-widget">
                         <HBox onMouseDragged="#handleAIChatDrag" onMousePressed="#handleAIChatDragStart" styleClass="ai-chat-header">
                             <Label styleClass="ai-chat-title" text="Study Buddy AI" />
@@ -196,8 +199,9 @@
                         </HBox>
                     </VBox>
                 </VBox>
-                <!-- YouTube Player -->
-                <VBox fx:id="youtubeContainer" styleClass="youtube-container" visible="false">
+
+                <!-- YouTube Widget -->
+                <VBox fx:id="youtubeContainer" id="youtubeContainer" styleClass="youtube-container" visible="false">
                     <VBox alignment="TOP_RIGHT" styleClass="youtube-box">
                         <HBox styleClass="youtube-controls">
                             <TextField fx:id="youtubeUrlField" promptText="Enter YouTube URL" styleClass="youtube-url-field" HBox.hgrow="ALWAYS" />
@@ -213,8 +217,9 @@
                         <WebView fx:id="youtubeWebView" />
                     </VBox>
                 </VBox>
+
                 <!-- Notes Widget -->
-                <VBox fx:id="notesContainer" layoutX="20" layoutY="700" styleClass="notes-container" visible="false">
+                <VBox fx:id="notesContainer" id="notesContainer" layoutX="20" layoutY="700" styleClass="notes-container" visible="false">
                     <VBox styleClass="notes-widget">
                         <HBox onMouseDragged="#handleNotesDrag" onMousePressed="#handleNotesDragStart" styleClass="notes-header">
                             <Label styleClass="notes-title" text="Study Notes" />
@@ -232,6 +237,6 @@
         </ScrollPane>
     </center>
 
-    
+
 
 </BorderPane>

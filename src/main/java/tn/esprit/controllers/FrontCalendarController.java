@@ -1,5 +1,15 @@
 package tn.esprit.controllers;
 
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Modality;
+import javafx.util.Duration;
 import tn.esprit.entities.Evenement;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -9,6 +19,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import tn.esprit.services.EvenementService;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -106,10 +117,11 @@ public class FrontCalendarController {
         Dialog<Void> dialog = new Dialog<>();
         dialog.setTitle("Détails de l'événement");
 
-        // Set dialog icon (optional, if you have one)
-        // dialog.setGraphic(new ImageView(new Image(getClass().getResourceAsStream("/images/calendar-icon.png"))));
+        // Empêche l'ouverture dans une nouvelle fenêtre
+        dialog.initModality(Modality.WINDOW_MODAL);
+        dialog.initOwner(calendarContainer.getScene().getWindow());
 
-        // Create custom DialogPane with improved styling
+        // Créer une boîte de dialogue stylisée
         DialogPane dialogPane = dialog.getDialogPane();
         dialogPane.getStylesheets().add(
                 getClass().getResource("/css/calendar.css").toExternalForm()
@@ -118,7 +130,7 @@ public class FrontCalendarController {
         dialogPane.setPrefWidth(550);
         dialogPane.setPrefHeight(450);
 
-        // Create header with event title
+        // En-tête avec le titre de l’événement
         StackPane header = new StackPane();
         header.getStyleClass().add("event-header");
         header.setPadding(new Insets(20, 25, 20, 25));
@@ -129,12 +141,11 @@ public class FrontCalendarController {
         titleLabel.setMaxWidth(Double.MAX_VALUE);
         header.getChildren().add(titleLabel);
 
-        // Create body content
+        // Corps du dialogue
         VBox content = new VBox(20);
         content.setPadding(new Insets(25));
         content.getStyleClass().add("event-content");
 
-        // Description section
         VBox descriptionBox = new VBox(10);
         descriptionBox.getStyleClass().add("info-section");
 
@@ -149,7 +160,6 @@ public class FrontCalendarController {
 
         descriptionBox.getChildren().addAll(descHeaderLabel, descArea);
 
-        // Details section with GridPane for better alignment
         VBox detailsBox = new VBox(10);
         detailsBox.getStyleClass().add("info-section");
 
@@ -162,24 +172,17 @@ public class FrontCalendarController {
         detailsGrid.setVgap(12);
         detailsGrid.setPadding(new Insets(10));
 
-        // Add event details with icons
         addDetailRowWithIcon(detailsGrid, 0, "Date:", event.getDateDebut().toLocalDate().toString());
         addDetailRowWithIcon(detailsGrid, 1, "Heure:", event.getDateDebut().toLocalTime().toString());
         addDetailRowWithIcon(detailsGrid, 2, "Lieu:", event.getLieu());
 
-        // Add duration if you have end date in your event model
-        // addDetailRowWithIcon(detailsGrid, 3, "Durée:", calculateDuration(event));
-
         detailsBox.getChildren().addAll(detailsHeaderLabel, detailsGrid);
 
-        // Add all content sections
         content.getChildren().addAll(header, new Separator(), descriptionBox, new Separator(), detailsBox);
 
-        // Add buttons
         ButtonType closeButton = new ButtonType("Fermer", ButtonBar.ButtonData.CANCEL_CLOSE);
         dialog.getDialogPane().getButtonTypes().add(closeButton);
 
-        // Style the button
         dialog.setOnShown(e -> {
             Button closeButtonNode = (Button) dialog.getDialogPane().lookupButton(closeButton);
             closeButtonNode.getStyleClass().add("close-button");
@@ -188,6 +191,7 @@ public class FrontCalendarController {
         dialog.getDialogPane().setContent(content);
         dialog.showAndWait();
     }
+
 
     // Méthode avec icône (nouvelle version)
     private void addDetailRowWithIcon(GridPane grid, int row, String label, String value) {
@@ -246,4 +250,20 @@ public class FrontCalendarController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+    @FXML
+    private void goBackToAnnonces(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/Front/AnnonceList.fxml"));
+            Parent root = loader.load();
+
+            Scene currentScene = ((Node) event.getSource()).getScene();
+            currentScene.setRoot(root);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
 }

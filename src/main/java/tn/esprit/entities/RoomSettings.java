@@ -1,31 +1,35 @@
 package tn.esprit.entities;
 
 public class RoomSettings {
-    private int id;
+    private Long id;
     private Room room;
-    private boolean isPublic;
+    private boolean is_public;
     private int maxUsers;
     private boolean allowMediaSharing;
     private String createdAt;
 
     // Constructors
-    public RoomSettings() {}
+    public RoomSettings() {
+        this.is_public = true;
+        this.maxUsers = 10;
+        this.allowMediaSharing = true;
+    }
 
-    public RoomSettings(int id, Room room, boolean isPublic, int maxUsers, boolean allowMediaSharing, String createdAt) {
+    public RoomSettings(Long id, Room room, boolean is_public, int maxUsers, boolean allowMediaSharing, String createdAt) {
         this.id = id;
         this.room = room;
-        this.isPublic = isPublic;
+        this.is_public = is_public;
         this.maxUsers = maxUsers;
         this.allowMediaSharing = allowMediaSharing;
         this.createdAt = createdAt;
     }
 
     // Getters and Setters
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -37,12 +41,12 @@ public class RoomSettings {
         this.room = room;
     }
 
-    public boolean isPublic() {
-        return isPublic;
+    public boolean is_public() {
+        return is_public;
     }
 
-    public void setPublic(boolean isPublic) {
-        this.isPublic = isPublic;
+    public void setPublic(boolean is_public) {
+        this.is_public = is_public;
     }
 
     public int getMaxUsers() {

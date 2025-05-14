@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.offre"
+            prefHeight="700.0" prefWidth="1200.0"
+            style="-fx-background-color: #f0f2f7;">
+
+    <!-- Header Section (similar to the first template) -->
+    <left>
+        <fx:include fx:id="sidebar" source="/interfaces/Admin/Sidebar.fxml"/>
+    </left>
+
+
+    <!-- Main Content -->
+    <center>
+        <VBox style="-fx-padding: 20 30;">
+            <!-- Breadcrumb or Title -->
+            <Label text="Add an Offer" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1c273c; -fx-padding: 0 0 20 0;"/>
+
+
+
+            <!-- Main Content Card -->
+            <VBox style="-fx-background-color: #fff; -fx-padding: 20; -fx-border-color: #e9edf4; -fx-border-width: 1; -fx-border-radius: 5; -fx-spacing: 20; -fx-margin: 20 0 0 0;">
+                <!-- Form Content -->
+                <GridPane hgap="15" vgap="20">
+                    <columnConstraints>
+                        <ColumnConstraints halignment="RIGHT" minWidth="150" prefWidth="180"/>
+                        <ColumnConstraints halignment="LEFT" minWidth="350" prefWidth="400" hgrow="ALWAYS"/>
+                    </columnConstraints>
+
+                    <!-- Offer Name -->
+                    <Label text="Offer Name:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                    <TextField fx:id="nom_offre"
+                               style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px; -fx-padding: 8;"
+                               GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                    <!-- Image -->
+                    <Label text="Image:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"
+                           GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT" GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <TextField fx:id="image_offre" HBox.hgrow="ALWAYS"
+                                   style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px; -fx-padding: 8;"/>
+                        <Button fx:id="btnChoisirImage" text="Browse" onAction="#choisirImage"
+                                style="-fx-background-color: #f0f0f0; -fx-text-fill: #333; -fx-font-size: 12px; -fx-padding: 8 15; -fx-border-radius: 4px;"/>
+                    </HBox>
+
+                    <!-- Price -->
+                    <Label text="Price:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"
+                           GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                    <TextField fx:id="prix"
+                               style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px; -fx-padding: 8;"
+                               GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+
+                    <!-- Start Date -->
+                    <Label text="Start Date:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"
+                           GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+                    <DatePicker fx:id="date_debut"
+                                style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px;"
+                                GridPane.rowIndex="3" GridPane.columnIndex="1"
+                                prefWidth="400"/>
+
+                    <!-- End Date -->
+                    <Label text="End Date:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"
+                           GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+                    <DatePicker fx:id="date_fin"
+                                style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px;"
+                                GridPane.rowIndex="4" GridPane.columnIndex="1"
+                                prefWidth="400"/>
+
+                    <!-- Description -->
+                    <Label text="Description:"
+                           style="-fx-font-size: 14px; -fx-font-weight: bold;"
+                           GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+                    <TextField fx:id="description"
+                               style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px; -fx-padding: 8;"
+                               GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+                </GridPane>
+
+                <!-- Action Buttons -->
+                <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 20 0 0 0;">
+
+                    <Button fx:id="btnAjouter" text="Add Offer" onAction="#ajouterOffre"
+                            style="-fx-background-color: #8A84A0; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 20; -fx-border-radius: 4px;"/>
+                </HBox>
+            </VBox>
+
+
+        </VBox>
+    </center>
+
+</BorderPane>

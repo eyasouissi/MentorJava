@@ -1,45 +1,25 @@
 package tn.esprit.entities;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.web.multipart.MultipartFile;
 
-@Entity
-@Table(name = "comment")
 public class Comment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne
-    @JoinColumn(nullable = false)
     private Post post;
-
-    @Column(length = 2000, nullable = false)
-    @NotBlank(message = "Content cannot be empty.")
     private String content;
-
-    @Column(nullable = false)
     private LocalDateTime createdAt;
-
-    @Column(length = 255, nullable = true)
     private String photo;
-
-    @ManyToOne
-    @JoinColumn(nullable = false)
     private User user;
-
-    @OneToMany(mappedBy = "comment", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reply> replies = new ArrayList<>();
+    private File file;
+    // java.io.File used instead of MultipartFile
+    private boolean isEdited = false;
 
-    @Transient
-    private MultipartFile file;
-
+    public boolean isEdited() { return isEdited; }
+    public void setEdited(boolean edited) { isEdited = edited; }
     // Constructors
     public Comment() {
         this.createdAt = LocalDateTime.now();
@@ -52,7 +32,7 @@ public class Comment {
         this.user = user;
     }
 
-    public Comment(String content, Post post, User user, MultipartFile file) {
+    public Comment(String content, Post post, User user, File file) {
         this(content, post, user);
         this.file = file;
     }
@@ -114,11 +94,11 @@ public class Comment {
         this.replies = replies;
     }
 
-    public MultipartFile getFile() {
+    public File getFile() {
         return file;
     }
 
-    public void setFile(MultipartFile file) {
+    public void setFile(File file) {
         this.file = file;
     }
 
@@ -136,7 +116,6 @@ public class Comment {
         }
     }
 
-    // toString() method
     @Override
     public String toString() {
         return "Comment{" +
@@ -150,28 +129,22 @@ public class Comment {
                 '}';
     }
 
-    // equals() method
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof Comment)) return false;
         Comment comment = (Comment) o;
         return Objects.equals(id, comment.id) &&
                 Objects.equals(content, comment.content) &&
                 Objects.equals(createdAt, comment.createdAt);
     }
 
-    // hashCode() method
     @Override
     public int hashCode() {
         return Objects.hash(id, content, createdAt);
     }
 
-    // Business methods
     public int getReplyCount() {
         return replies.size();
     }
-
-    // File upload handling would be implemented in a service layer
-    // rather than directly in the entity in Java/Spring
 }

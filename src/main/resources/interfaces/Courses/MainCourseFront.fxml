@@ -17,17 +17,35 @@
     <center>
         <StackPane>
             <!-- Main view (courses list) -->
-            <VBox fx:id="mainView" style="-fx-background-color: #F5F0F5;">
+            <VBox fx:id="mainView" style="-fx-background-color: linear-gradient(
+            to bottom right,
+            #ffffff 0%,    /* Top-left corner: white */
+            #8c84a1 30%,   /* Soft purple appears */
+            #6f6280 50%,   /* Darker center */
+            #8c84a1 70%,   /* Lightens again */
+            #ffffff 100%   /* Bottom-right corner: white */
+    );">
                 <padding>
                     <Insets top="20" right="20" bottom="20" left="20"/>
                 </padding>
                 <spacing>20</spacing>
-
+                <!-- Motivational Message and Image -->
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <ImageView fx:id="motivationImage" fitHeight="110" fitWidth="110" preserveRatio="true">
+                        <image>
+                            <Image url="@/assets/icons/motivation.png" />
+                        </image>
+                    </ImageView>
+                    <Label fx:id="motivationLabel" text="Keep learning and growing every day!"
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #4B0082;" />
+                </HBox>
                 <!-- Header with Add button -->
                 <HBox alignment="CENTER_RIGHT">
                     <padding>
                         <Insets bottom="10"/>
                     </padding>
+
+
                     <Button fx:id="addButton" text="Add Course" onAction="#showAddCourseForm"
                             style="-fx-background-color: #D8BFD8; -fx-text-fill: #4B0082; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 8 15; -fx-background-radius: 5;"/>
                 </HBox>
@@ -53,7 +71,7 @@
                 </Label>
 
                 <!-- Categories container -->
-                <VBox style="-fx-background-color: #F5F0F5;">
+                <VBox style="-fx-background-color: transparent;">
                     <HBox alignment="CENTER" spacing="10">
                         <padding>
                             <Insets top="10" bottom="10"/>

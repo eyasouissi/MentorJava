@@ -673,4 +673,53 @@ public class CoursesService implements IServices<Courses> {
             throw new RuntimeException("Failed to get paginated courses", e);
         }
     }
-}
+    public void refreshCache() {
+        // Clear any internal caches if they exist
+        // If you're not using cache, this method can be empty
+        // but having it makes the code more future-proof
+
+        // Example implementation if you have course caching:
+        // cachedCourses.clear();
+        // cachedPremiumCourses.clear();
+
+        System.out.println("Course data cache refreshed after payment processing");
+    }
+    public List<Courses> getAllPremiumCourses() {
+        List<Courses> premiumCourses = new ArrayList<>();
+        String query = "SELECT * FROM courses WHERE is_premium = true";
+
+        try (PreparedStatement pst = cnx.prepareStatement(query);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                Courses course = new Courses();
+                course.setId(rs.getInt("id"));
+                course.setTitle(rs.getString("title"));
+                course.setDescription(rs.getString("description"));
+                course.setIsPublished(rs.getBoolean("is_published"));
+                course.setProgressPointsRequired(rs.getInt("progress_points_required"));
+                course.setCreatedAt(rs.getTimestamp("created_at").toInstant());
+                course.setIsPremium(rs.getBoolean("is_premium"));
+                course.setTutorName(rs.getString("tutor_name"));
+
+                // Pour simplifier, tu peux ignorer category et levels ici ou les charger séparément
+                premiumCourses.add(course);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return premiumCourses;
+    }
+    public void markCourseAsNonPremium(Courses course) {
+        String query = "UPDATE courses SET is_premium = false WHERE id = ?";
+
+        try (PreparedStatement pst = cnx.prepareStatement(query)) {
+            pst.setInt(1, course.getId());
+            pst.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    }
+

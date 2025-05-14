@@ -1,5 +1,6 @@
 package tn.esprit.controllers;
 
+import javafx.animation.Interpolator;
 import javafx.animation.ScaleTransition;
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
@@ -31,6 +32,7 @@ import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.converter.DefaultStringConverter;
 import tn.esprit.controllers.auth.UserSession;
+import tn.esprit.entities.Comment;
 import tn.esprit.entities.Forum;
 import tn.esprit.entities.Post;
 import tn.esprit.entities.User;
@@ -47,6 +49,7 @@ import java.net.URL;
 import java.nio.file.*;
 import java.sql.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -152,36 +155,120 @@ public class PostController implements Initializable {
 
     private void loadPosts() {
         posts.clear();
-        String sql = "SELECT p.*, u.name as user_name, u.pfp as user_pfp " +
+
+        String postSql = "SELECT p.*, u.name as user_name, u.pfp as user_pfp, " +
+                "(SELECT COUNT(*) FROM post_likes WHERE post_id = p.id) as likes, " +
+                "EXISTS(SELECT 1 FROM post_likes WHERE post_id = p.id AND user_id = ?) as has_liked " +
                 "FROM post p " +
                 "JOIN user u ON p.user_id = u.id " +
                 "WHERE forum_id = ?";
 
+        String commentSql = "SELECT c.*, u.name as commenter_name, u.pfp as commenter_pfp " +
+                "FROM comment c " +
+                "JOIN user u ON c.user_id = u.id " +
+                "WHERE c.post_id = ? " +
+                "ORDER BY c.createdAt ASC";
+
+        String likesSql = "SELECT u.id, u.name, u.pfp FROM post_likes pl " +
+                "JOIN user u ON pl.user_id = u.id " +
+                "WHERE pl.post_id = ?";
 
         try (Connection conn = MyDataBase.getInstance().getCnx();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+             PreparedStatement postStmt = conn.prepareStatement(postSql);
+             PreparedStatement commentStmt = conn.prepareStatement(commentSql);
+             PreparedStatement likesStmt = conn.prepareStatement(likesSql)) {
 
-            pstmt.setLong(1, currentForum.getId());
-            ResultSet rs = pstmt.executeQuery();
+            User currentUser = UserSession.getInstance().getCurrentUser();
+            postStmt.setLong(1, currentUser != null ? currentUser.getId() : -1);
+            postStmt.setLong(2, currentForum.getId());
 
-            while (rs.next()) {
+            ResultSet postRs = postStmt.executeQuery();
+
+            while (postRs.next()) {
                 Post post = new Post();
-                post.setId(rs.getInt("id"));
-                post.setContent(rs.getString("content"));
-                post.setCreatedAt(rs.getTimestamp("created_at").toLocalDateTime());
+                // Basic post info
+                post.setId(postRs.getInt("id"));
+                post.setContent(postRs.getString("content"));
 
-                // Retrieve current user
+                // Handle post dates
+                Timestamp postCreated = postRs.getTimestamp("created_at");
+                post.setCreatedAt(postCreated != null ?
+                        postCreated.toLocalDateTime() :
+                        LocalDateTime.now());
+
+                Timestamp postUpdated = postRs.getTimestamp("updated_at");
+                post.setUpdatedAt(postUpdated != null ?
+                        postUpdated.toLocalDateTime() :
+                        LocalDateTime.now());
+
+                post.setLikes(postRs.getInt("likes"));
+
+                // Post author
                 User postUser = new User();
-                postUser.setId(rs.getLong("user_id"));
-                postUser.setName(rs.getString("user_name"));
-                postUser.setPfp(rs.getString("user_pfp"));
+                postUser.setId(postRs.getLong("user_id"));
+                postUser.setName(postRs.getString("user_name"));
+                postUser.setPfp(postRs.getString("user_pfp"));
                 post.setUser(postUser);
+
+                // Photos
+                String photos = postRs.getString("photos");
+                if (photos != null && !photos.isEmpty()) {
+                    post.setPhotos(photos);
+                }
+
+                // Load comments
+                List<Comment> comments = new ArrayList<>();
+                commentStmt.setInt(1, post.getId());
+                try (ResultSet commentRs = commentStmt.executeQuery()) {
+                    while (commentRs.next()) {
+                        Comment comment = new Comment();
+                        comment.setId(commentRs.getLong("id"));
+                        comment.setContent(commentRs.getString("content"));
+
+                        // Handle comment date
+                        Timestamp commentCreated = commentRs.getTimestamp("createdAt");
+                        comment.setCreatedAt(commentCreated != null ?
+                                commentCreated.toLocalDateTime() :
+                                LocalDateTime.now());
+
+                        // Comment author
+                        User commentUser = new User();
+                        commentUser.setId(commentRs.getLong("user_id"));
+                        commentUser.setName(commentRs.getString("commenter_name"));
+                        commentUser.setPfp(commentRs.getString("commenter_pfp"));
+                        comment.setUser(commentUser);
+
+                        comments.add(comment);
+                    }
+                }
+                post.setComments(comments);
+
+                // Load likes
+                Set<User> likers = new HashSet<>();
+                likesStmt.setInt(1, post.getId());
+                try (ResultSet likesRs = likesStmt.executeQuery()) {
+                    while (likesRs.next()) {
+                        User liker = new User();
+                        liker.setId(likesRs.getLong("id"));
+                        liker.setName(likesRs.getString("name"));
+                        liker.setPfp(likesRs.getString("pfp"));
+                        likers.add(liker);
+                    }
+                }
+                post.setLikedByUsers(likers);
+
+                // Add current user's like status
+                if (currentUser != null && postRs.getBoolean("has_liked")) {
+                    post.getLikedByUsers().add(currentUser);
+                }
 
                 posts.add(post);
             }
+
             postsListView.setItems(posts);
         } catch (SQLException e) {
             showAlert("Database Error", "Error loading posts: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -274,7 +361,6 @@ public class PostController implements Initializable {
         card.setPadding(new Insets(10));
         card.setPrefWidth(400);
 
-        // Get user
         User user = post.getUser();
 
         // --- Header: Profile Pic + Info ---
@@ -282,65 +368,81 @@ public class PostController implements Initializable {
         postHeader.getStyleClass().add("post-header");
         postHeader.setAlignment(Pos.CENTER_LEFT);
 
-        // Create circular avatar container
-        StackPane avatarContainer = new StackPane();
-        avatarContainer.setPrefSize(50, 50);
-        Circle clip = new Circle(100);
-        avatarContainer.setClip(clip);
-
         ImageView profilePic = new ImageView();
-        profilePic.getStyleClass().add("profile-pic");
-        profilePic.setPreserveRatio(true);
+        profilePic.setFitWidth(50);
+        profilePic.setFitHeight(50);
+        profilePic.setPreserveRatio(false);
         profilePic.setSmooth(true);
-
-        // Set initial image
+        Circle clip = new Circle(25, 25, 25);
+        profilePic.setClip(clip);
         profilePic.setImage(loadDefaultImage());
-        avatarContainer.getChildren().add(profilePic);
 
         try {
-            User postUser = post.getUser(); // Get the user who is the owner of the post
-            if (postUser != null) {
-                String pfpPath = postUser.getPfp(); // Get the profile picture path of the post's user
+            if (user != null) {
+                String pfpPath = user.getPfp();
                 if (pfpPath != null && !pfpPath.isEmpty()) {
-                    String resourcePath = "/assets/uploads/pfp/" + pfpPath.substring(pfpPath.lastIndexOf("/") + 1);
-                    try (InputStream imageStream = getClass().getResourceAsStream(resourcePath)) {
-                        if (imageStream != null) {
-                            Image userImage = new Image(imageStream);
-                            profilePic.setImage(userImage);
-
-                            // Adjust image scaling to show full content
-                            if (userImage.getWidth() > userImage.getHeight()) {
-                                profilePic.setFitWidth(50);
-                            } else {
-                                profilePic.setFitHeight(50);
-                            }
-                        }
+                    File imageFile = new File(pfpPath);
+                    if (!imageFile.exists()) imageFile = new File("uploads/" + pfpPath);
+                    if (!imageFile.exists()) imageFile = new File("uploads/pfp/" + pfpPath);
+                    if (imageFile.exists()) {
+                        Image userImage = new Image(imageFile.toURI().toString());
+                        profilePic.setImage(userImage);
                     }
                 }
-
-                VBox userInfo = new VBox(5);
-                userInfo.getStyleClass().add("user-info");
-
-                // Set user name, fall back to "User" if not available
-                Label userName = new Label(postUser.getName() != null ? postUser.getName() : "User");
-                userName.getStyleClass().add("user-name");
-
-                // Display the post creation date
-                Label postDate = new Label("Posted: " + post.getCreatedAt().toLocalDate());
-                postDate.getStyleClass().add("post-date");
-
-                // Add user info and post date to the VBox
-                userInfo.getChildren().addAll(userName, postDate);
-
-                // Add avatar container and user info to post header
-                postHeader.getChildren().addAll(avatarContainer, userInfo);
             }
         } catch (Exception e) {
-            // In case of error, add default user info
-            postHeader.getChildren().addAll(avatarContainer, new Label("User"));
-            e.printStackTrace(); // Optionally log the error
+            System.err.println("Error loading profile image: " + e.getMessage());
+            profilePic.setImage(loadDefaultImage());
         }
 
+        StackPane avatarContainer = new StackPane(profilePic);
+        avatarContainer.setPrefSize(50, 50);
+
+        VBox userInfo = new VBox(5);
+        userInfo.getStyleClass().add("user-info");
+
+        Label userName = new Label(user != null && user.getName() != null ? user.getName() : "User");
+        userName.getStyleClass().add("user-name");
+
+        Label postDate = new Label("Posted: " + post.getCreatedAt().toLocalDate());
+        postDate.getStyleClass().add("post-date");
+
+        userInfo.getChildren().addAll(userName, postDate);
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        // --- Action Buttons (Edit/Delete) ---
+        HBox topRightActions = new HBox(10);
+        topRightActions.setAlignment(Pos.TOP_RIGHT);
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        boolean isCurrentUsersPost = currentUser != null && user != null && currentUser.getId().equals(user.getId());
+
+        if (isCurrentUsersPost) {
+            ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/edit.png")));
+            editIcon.setFitWidth(20);
+            editIcon.setFitHeight(20);
+            Button editBtn = new Button("", editIcon);
+            editBtn.setStyle("-fx-background-color: transparent;");
+            editBtn.getStyleClass().add("icon-button");
+            Tooltip.install(editBtn, new Tooltip("Edit"));
+            editBtn.setOnAction(e -> handleEditPost(post));
+
+            ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/delete.png")));
+            deleteIcon.setFitWidth(20);
+            deleteIcon.setFitHeight(20);
+            Button deleteBtn = new Button("", deleteIcon);
+            deleteBtn.setStyle("-fx-background-color: transparent;");
+            deleteBtn.getStyleClass().add("icon-button");
+            Tooltip.install(deleteBtn, new Tooltip("Delete"));
+            deleteBtn.setOnAction(e -> handleDeletePost(post));
+
+            topRightActions.getChildren().addAll(editBtn, deleteBtn);
+        }
+
+        HBox headerWrapper = new HBox(postHeader, spacer, topRightActions);
+        headerWrapper.setAlignment(Pos.CENTER_LEFT);
+        postHeader.getChildren().addAll(avatarContainer, userInfo);
 
         // --- Post Content ---
         TextArea postContent = new TextArea(post.getContent());
@@ -349,16 +451,16 @@ public class PostController implements Initializable {
         postContent.setEditable(false);
         postContent.setPrefRowCount(4);
 
+        card.getChildren().addAll(headerWrapper, postContent);
+
         // --- Photo Gallery ---
         if (post.getPhotos() != null && !post.getPhotos().isEmpty()) {
             List<String> photos = Arrays.asList(post.getPhotos().split(","));
-            // Gallery Container
+
             StackPane galleryContainer = new StackPane();
             galleryContainer.setAlignment(Pos.CENTER);
             galleryContainer.setPrefSize(400, 300);
-            galleryContainer.setStyle("-fx-background-color: #f0f0f0;");
 
-            // Main Image View
             ImageView currentImage = new ImageView();
             currentImage.setPreserveRatio(true);
             currentImage.setFitWidth(380);
@@ -366,7 +468,6 @@ public class PostController implements Initializable {
             currentImage.setSmooth(true);
             loadGalleryImage(photos.get(0), currentImage);
 
-            // Navigation Controls
             Button prevButton = new Button("❮");
             Button nextButton = new Button("❯");
             prevButton.setStyle("-fx-background-color: rgba(0,0,0,0.5); -fx-text-fill: white;");
@@ -379,12 +480,10 @@ public class PostController implements Initializable {
             navButtons.setOnMouseEntered(e -> navButtons.setOpacity(1));
             navButtons.setOnMouseExited(e -> navButtons.setOpacity(0.3));
 
-            // Image Counter
             Label counterLabel = new Label("1/" + photos.size());
             counterLabel.setStyle("-fx-text-fill: white; -fx-font-weight: bold; -fx-background-color: rgba(0,0,0,0.5);");
             counterLabel.setPadding(new Insets(5));
 
-            // Swipe Handling
             AtomicInteger currentIndex = new AtomicInteger(0);
             galleryContainer.setOnMousePressed(e -> {
                 double dragStartX = e.getSceneX();
@@ -402,7 +501,6 @@ public class PostController implements Initializable {
                 });
             });
 
-            // Button Actions
             prevButton.setOnAction(e -> {
                 currentIndex.set((currentIndex.get() - 1 + photos.size()) % photos.size());
                 loadGalleryImage(photos.get(currentIndex.get()), currentImage);
@@ -415,18 +513,19 @@ public class PostController implements Initializable {
                 counterLabel.setText((currentIndex.get() + 1) + "/" + photos.size());
             });
 
-            // Lightbox Click
             currentImage.setOnMouseClicked(e -> showLightbox(photos, currentIndex.get()));
-
             galleryContainer.getChildren().addAll(currentImage, counterLabel, navButtons);
             card.getChildren().add(galleryContainer);
         }
 
-        // --- Translate Button with Context Menu ---
-        Button translateBtn = new Button("Translate");
+        // --- Translate Section ---
+        ImageView translateIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/translate.png")));
+        translateIcon.setFitWidth(20);
+        translateIcon.setFitHeight(20);
+        Button translateBtn = new Button("", translateIcon);
         translateBtn.getStyleClass().add("translate-btn");
+        Tooltip.install(translateBtn, new Tooltip("Translate"));
 
-        // Language map with Map.ofEntries for more than 10 entries
         Map<String, String> languageCodes = Map.ofEntries(
                 Map.entry("English", "en"),
                 Map.entry("Arabic", "ar"),
@@ -443,84 +542,150 @@ public class PostController implements Initializable {
 
         ContextMenu translateMenu = new ContextMenu();
         List<String> languages = new ArrayList<>(languageCodes.keySet());
-
         for (String langName : languages) {
             MenuItem langItem = new MenuItem(langName);
             langItem.getStyleClass().add("lang-item");
-            String targetLang = languageCodes.get(langName);
-
-            langItem.setOnAction(e -> {
-                if (targetLang == null) {
-                    showAlert("Translation Error", "Invalid language configuration");
-                    return;
-                }
-                handleTranslationSelection(
-                        post.getContent(),
-                        targetLang,
-                        translateBtn,
-                        postContent
-                );
-            });
             translateMenu.getItems().add(langItem);
         }
 
-        // Store original content reference
         final String originalContent = post.getContent();
+        final TextArea finalPostContent = postContent;
 
-        // Set menu behavior with revert functionality
+        Button showOriginalBtn = new Button("Show Original");
+        showOriginalBtn.getStyleClass().add("show-original-btn");
+        showOriginalBtn.setVisible(false);
+
         translateBtn.setOnAction(e -> {
-            if (translateBtn.getText().startsWith("Translate")) {
+            if (!showOriginalBtn.isVisible()) {
                 translateMenu.show(translateBtn, Side.BOTTOM, 0, 0);
             } else {
-                postContent.setText(originalContent);
-                translateBtn.setText("Translate");
-                translateBtn.getStyleClass().remove("original-btn");
+                finalPostContent.setText(originalContent);
+                showOriginalBtn.setVisible(false);
+                translateBtn.getStyleClass().remove("active-translate");
             }
         });
 
-        // --- Action Buttons ---
-        ImageView editIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/edit.png")));
-        editIcon.setFitWidth(20);
-        editIcon.setFitHeight(20);
-        Button editBtn = new Button("", editIcon);
-        editBtn.setStyle("-fx-background-color: transparent;");
-        editBtn.getStyleClass().add("icon-button");
-        Tooltip.install(editBtn, new Tooltip("Edit"));
+        for (MenuItem langItem : translateMenu.getItems()) {
+            langItem.setOnAction(e -> {
+                String targetLang = languageCodes.get(langItem.getText());
+                handleTranslationSelection(originalContent, targetLang, null, finalPostContent, showOriginalBtn);
+            });
+        }
 
-        ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/delete.png")));
-        deleteIcon.setFitWidth(20);
-        deleteIcon.setFitHeight(20);
-        Button deleteBtn = new Button("", deleteIcon);
-        deleteBtn.setStyle("-fx-background-color: transparent;");
-        deleteBtn.getStyleClass().add("icon-button");
-        Tooltip.install(deleteBtn, new Tooltip("Delete"));
+        HBox translateContainer = new HBox(5, translateBtn, showOriginalBtn);
+        translateContainer.setAlignment(Pos.CENTER_LEFT);
+
+        // --- Like Button Section ---
+        ImageView likeIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/like.png")));
+        likeIcon.setFitWidth(20);
+        likeIcon.setFitHeight(20);
+
+        Button likeBtn = new Button("", likeIcon);
+        likeBtn.getStyleClass().add("like-btn");
+        Tooltip.install(likeBtn, new Tooltip("Like"));
+
+        Label likeCounter = new Label(String.valueOf(post.getLikes()));
+        likeCounter.getStyleClass().add("like-counter");
+
+        HBox likersBubbles = createLikersBubbles(post);
+
+        if (currentUser != null && post.hasLiked(currentUser)) {
+            likeBtn.getStyleClass().add("liked");
+        }
+
+        likeBtn.setOnAction(e -> handleLike(post, likeBtn, likeCounter));
+
+        HBox likeContainer = new HBox(5, likeBtn, likeCounter, likersBubbles);
+        likeContainer.setAlignment(Pos.CENTER_RIGHT);
+
+        // --- Comment Button Section ---
+        ImageView commentIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/comment.png")));
+        commentIcon.setFitWidth(20);
+        commentIcon.setFitHeight(20);
+
+        Button commentBtn = new Button("", commentIcon);
+        commentBtn.getStyleClass().add("translate-btn"); // Use same style for identical look
+        Tooltip.install(commentBtn, new Tooltip("Comment"));
 
 
-        HBox actions = new HBox(10, editBtn, deleteBtn, translateBtn);
-        actions.setAlignment(Pos.CENTER_RIGHT);
-        actions.setMaxWidth(Double.MAX_VALUE);
-        actions.setMinWidth(0);
-        actions.setSpacing(10);
+        Label commentCounter = new Label(String.valueOf(post.getComments().size()));
+        commentCounter.getStyleClass().add("comment-counter");
 
-        editBtn.setOnAction(e -> handleEditPost(post));
-        deleteBtn.setOnAction(e -> handleDeletePost(post));
+        HBox commentContainer = new HBox(5, commentBtn, commentCounter);
+        commentContainer.setAlignment(Pos.CENTER_RIGHT);
 
-        HBox actionWrapper = new HBox(actions);
-        actionWrapper.setAlignment(Pos.BOTTOM_RIGHT);
-        actionWrapper.setPadding(new Insets(10, 0, 0, 0));
+        // --- Bottom Controls ---
+        HBox bottomControls = new HBox(10);
+        bottomControls.setAlignment(Pos.CENTER_LEFT);
+        bottomControls.setPadding(new Insets(10, 0, 0, 0));
 
-        Region spacer = new Region();
-        VBox.setVgrow(spacer, Priority.ALWAYS);
+        Region bottomSpacer = new Region();
+        HBox.setHgrow(bottomSpacer, Priority.ALWAYS);
 
-        card.getChildren().addAll(
-                postHeader,
-                postContent,
-                spacer,
-                actionWrapper
+        bottomControls.getChildren().addAll(likeContainer, commentContainer, translateContainer, bottomSpacer);
+
+        VBox.setVgrow(postContent, Priority.ALWAYS);
+        card.getChildren().add(bottomControls);
+
+        // --- Comments Section ---
+        VBox commentsSection = new VBox(10);
+        commentsSection.setVisible(false);
+        commentsSection.managedProperty().bind(commentsSection.visibleProperty());
+
+        commentBtn.setOnAction(e -> commentsSection.setVisible(!commentsSection.isVisible()));
+
+        // Comment Input
+        HBox commentInput = new HBox(10);
+        commentInput.setAlignment(Pos.CENTER_LEFT);
+        commentInput.setPadding(new Insets(10, 40, 10, 40)); // adds space on the sides
+        commentInput.setMaxWidth(Double.MAX_VALUE); // let the whole HBox grow if possible
+
+// Current User Avatar
+        ImageView currentUserPfp = new ImageView(loadCurrentUserPfp());
+        currentUserPfp.setFitWidth(30);
+        currentUserPfp.setFitHeight(30);
+        currentUserPfp.setClip(new Circle(15, 15, 15));
+
+// Comment Field
+        TextArea commentField = new TextArea();
+        commentField.setPromptText("Write a comment...");
+        commentField.setPrefRowCount(1);
+        commentField.setWrapText(true);
+        commentField.setMaxWidth(Double.MAX_VALUE); // allow to grow horizontally
+        HBox.setHgrow(commentField, Priority.ALWAYS); // make it stretch in HBox
+
+// Send Button
+        Button sendBtn = new Button("", new ImageView(new Image(getClass().getResourceAsStream("/icons/send.png"))));
+        sendBtn.getStyleClass().add("send-btn");
+
+// Add all elements
+
+
+        commentInput.getChildren().addAll(currentUserPfp, commentField, sendBtn);
+        commentsSection.getChildren().add(commentInput);
+
+        // Existing Comments
+        VBox commentsList = new VBox(5);
+        post.getComments().forEach(comment ->
+                commentsList.getChildren().add(createCommentCard(comment, post))
         );
+
+        commentsSection.getChildren().add(commentsList);
+        card.getChildren().add(commentsSection);
+
+        // Send Button Handler
+        sendBtn.setOnAction(e -> {
+            String content = commentField.getText().trim();
+            if (!content.isEmpty()) {
+                createComment(post, content);
+                commentField.clear();
+            }
+        });
 
         return card;
     }
+
+
     private Node createGalleryContainer(List<String> photos) {
         FlowPane gallery = new FlowPane();
         gallery.setPadding(new Insets(10));
@@ -638,28 +803,27 @@ public class PostController implements Initializable {
         );
     }
     private void handleTranslationSelection(String originalText, String targetLang,
-                                            Button translateBtn, TextArea postContent) {
+                                            HBox translateControls,
+                                            TextArea postContent,
+                                            Button showOriginalBtn) {
         postContent.setText("Translating...");
-        translateBtn.setDisable(true);
 
         new Thread(() -> {
             try {
-                if (!isValidLanguageCode(targetLang)) {
-                    throw new IllegalArgumentException("Invalid language code: " + targetLang);
-                }
-
                 String translated = TranslateController.translateText(originalText, targetLang);
 
                 Platform.runLater(() -> {
                     postContent.setText(translated);
-                    translateBtn.setText("Original (" + targetLang + ")");
-                    translateBtn.getStyleClass().add("original-btn");
-                    translateBtn.setDisable(false);
+                    showOriginalBtn.setVisible(true);
+                    translateControls.lookup(".show-original-btn")
+                            .setStyle("-fx-text-fill: #007bff; -fx-underline: true;");
+                    translateControls.lookup(".translate-btn")
+                            .getStyleClass().add("active-translate");
                 });
             } catch (Exception ex) {
                 Platform.runLater(() -> {
                     postContent.setText(originalText);
-                    translateBtn.setDisable(false);
+                    showOriginalBtn.setVisible(false);
                     showTranslationError(ex.getMessage());
                 });
             }
@@ -1119,78 +1283,197 @@ public class PostController implements Initializable {
     }
 
     private void handleEditPost(Post post) {
-        // Create a dialog for the user to input new content
-        TextInputDialog dialog = new TextInputDialog(post.getContent());
-        dialog.setTitle("Edit Post");
-        dialog.setHeaderText("Edit your post content");
+        // Create custom dialog stage
+        Stage dialog = new Stage();
+        dialog.initModality(Modality.APPLICATION_MODAL);
+        dialog.initStyle(StageStyle.UTILITY);
+        dialog.setTitle("Edit Post ✏️");
 
-        // Show dialog and get result
-        Optional<String> result = dialog.showAndWait();
+        // Create main container
+        VBox container = new VBox(15);
+        container.getStyleClass().add("edit-dialog");
 
-        result.ifPresent(newContent -> {
-            // If content is empty, return early and show an error message
-            if (newContent.trim().isEmpty()) {
+        // Create text area with current content
+        TextArea editArea = new TextArea(post.getContent());
+        editArea.setWrapText(true);
+        editArea.setPrefRowCount(4);
+        editArea.getStyleClass().add("edit-textarea");
+
+        // Create button container
+        HBox buttonContainer = new HBox(12);
+        buttonContainer.getStyleClass().add("button-container");
+        buttonContainer.setAlignment(Pos.CENTER_RIGHT);
+
+        // Create buttons with emojis
+        Button saveButton = new Button(" Save");
+        saveButton.getStyleClass().add("save-btn");
+        Button cancelButton = new Button(" Cancel");
+        cancelButton.getStyleClass().add("cancel-btn");
+
+        // Add emoji graphics
+        cancelButton.setGraphic(new Text("❌"));
+
+        // Add button actions
+        saveButton.setOnAction(e -> {
+            String newContent = editArea.getText().trim();
+            if (newContent.isEmpty()) {
                 showAlert("Error", "Content cannot be empty!");
                 return;
             }
+            updatePostInDatabase(post, newContent, dialog);
+        });
 
-            // SQL to update the post content in the database
-            String sql = "UPDATE post SET content=?, updated_at=? WHERE id=?";
-            try (Connection conn = MyDataBase.getInstance().getCnx();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        cancelButton.setOnAction(e -> dialog.close());
 
-                pstmt.setString(1, newContent);  // Set new content
-                pstmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));  // Set updated timestamp
-                pstmt.setInt(3, post.getId());  // Set the post id for the correct record
+        buttonContainer.getChildren().addAll(cancelButton, saveButton);
+        container.getChildren().addAll(editArea, buttonContainer);
 
-                // Execute the update query
-                int rowsAffected = pstmt.executeUpdate();
+        // Create scene with CSS
+        Scene scene = new Scene(container, 400, 300);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/css/edit-dialog.css").toExternalForm());
+        } catch (NullPointerException e) {
+            System.err.println("CSS file not found, using inline fallback");
+            // Fallback styling matching the lavender theme
+            container.setStyle("-fx-background-color: #f8f5fa; "
+                    + "-fx-border-color: #8c84a1; "
+                    + "-fx-border-radius: 15px; "
+                    + "-fx-padding: 20;");
 
-                if (rowsAffected > 0) {
-                    // Successfully updated, so refresh the posts and show a success alert
-                    loadPosts();
-                    showSuccessAlert("Success", "Post updated!");
-                } else {
-                    // If no rows are affected, show an error (shouldn't happen in normal case)
-                    showAlert("Error", "Post update failed, please try again.");
-                }
+            editArea.setStyle("-fx-border-color: #8c84a1; "
+                    + "-fx-background-color: white; "
+                    + "-fx-font-family: 'Comic Sans MS';");
+        }
 
-            } catch (SQLException e) {
-                // Show database error if there's an issue with the update
-                showAlert("Error", "Update failed: " + e.getMessage());
+        dialog.setScene(scene);
+
+        // Add cute scaling animation
+        saveButton.hoverProperty().addListener((obs, oldVal, isHovering) -> {
+            if (isHovering) {
+                saveButton.setScaleX(1.05);
+                saveButton.setScaleY(1.05);
+            } else {
+                saveButton.setScaleX(1.0);
+                saveButton.setScaleY(1.0);
             }
         });
-    }
 
+        dialog.showAndWait();
+    }
+    private void updatePostInDatabase(Post post, String newContent, Stage dialog) {
+        String sql = "UPDATE post SET content=?, updated_at=? WHERE id=?";
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, newContent);
+            pstmt.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+            pstmt.setInt(3, post.getId());
+
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                loadPosts();
+                dialog.close();
+                showSuccessAlert("Success", "Post updated successfully!");
+            } else {
+                showAlert("Error", "Post update failed. Please try again.");
+            }
+        } catch (SQLException ex) {
+            showAlert("Database Error", "Update failed: " + ex.getMessage());
+        }
+    }
 
     private void handleDeletePost(Post post) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirm Delete");
         confirm.setHeaderText("Delete this post?");
+        confirm.setContentText("All comments and likes will be automatically deleted.");
         Optional<ButtonType> result = confirm.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
-            String sql = "DELETE FROM post WHERE id=?";
             try (Connection conn = MyDataBase.getInstance().getCnx();
-                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                 PreparedStatement pstmt = conn.prepareStatement(
+                         "DELETE FROM post WHERE id = ?")) {
 
                 pstmt.setInt(1, post.getId());
-                pstmt.executeUpdate();
-                posts.remove(post);
-                showSuccessAlert("Success", "Post deleted!");
+                int affectedRows = pstmt.executeUpdate();
 
+                if (affectedRows > 0) {
+                    Platform.runLater(() -> {
+                        posts.remove(post);
+                        showSuccessAlert("Success", "Post deleted successfully!");
+                    });
+                }
             } catch (SQLException e) {
-                showAlert("Error", "Delete failed: " + e.getMessage());
+                Platform.runLater(() ->
+                        showAlert("Error", "Delete failed: " + e.getMessage())
+                );
             }
         }
     }
 
-    private void showSuccessAlert(String title, String message) {
-        new Alert(Alert.AlertType.INFORMATION, message).showAndWait();
+    private void showCustomAlert(String alertType, String title, String message) {
+        Stage alertStage = new Stage();
+        alertStage.initModality(Modality.APPLICATION_MODAL);
+        alertStage.initStyle(StageStyle.UTILITY);
+        alertStage.setTitle(title);
+
+        VBox container = new VBox(15);
+        container.getStyleClass().addAll("alert-dialog", alertType);
+        container.setPadding(new Insets(20));
+
+        // Header with icon
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        Text icon = new Text();
+        icon.setStyle("-fx-font-size: 24;");
+        switch(alertType) {
+            case "success" -> icon.setText("✔️");
+            case "error" -> icon.setText("❌");
+            default -> icon.setText("ℹ️");
+        }
+
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("alert-title");
+        header.getChildren().addAll(icon, titleLabel);
+
+        // Content
+        Label content = new Label(message);
+        content.getStyleClass().add("alert-content");
+        content.setWrapText(true);
+
+        // OK Button
+        Button okButton = new Button("OK");
+        okButton.getStyleClass().add("alert-btn");
+        okButton.setOnAction(e -> alertStage.close());
+
+        container.getChildren().addAll(header, content, okButton);
+
+        Scene scene = new Scene(container, 350, 200);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/css/edit-dialog.css").toExternalForm());
+        } catch (NullPointerException e) {
+            // Fallback inline styling
+            container.setStyle("-fx-background-color: #f8f5fa; "
+                    + "-fx-border-color: #8c84a1; "
+                    + "-fx-border-radius: 15px; "
+                    + "-fx-padding: 20;");
+            titleLabel.setStyle("-fx-text-fill: #4a4458; -fx-font-size: 16; -fx-font-weight: bold;");
+            content.setStyle("-fx-text-fill: #4a4458;");
+            okButton.setStyle("-fx-background-color: #8c84a1; -fx-text-fill: white; -fx-padding: 8 20;");
+        }
+
+        alertStage.setScene(scene);
+        alertStage.showAndWait();
     }
 
+    // Update your existing alert methods
     private void showAlert(String title, String message) {
-        new Alert(Alert.AlertType.ERROR, message).showAndWait();
+        showCustomAlert("error", title, message);
+    }
+
+    private void showSuccessAlert(String title, String message) {
+        showCustomAlert("success", title, message);
     }
 
     private String sanitizeFilename(String originalName) {
@@ -1276,4 +1559,421 @@ public class PostController implements Initializable {
             showAlert("Navigation Error", "Could not return to forums: " + e.getMessage());
         }
     }
+
+    //likes
+
+    private void animateLikeButton(Node node) {
+        ScaleTransition st = new ScaleTransition(Duration.millis(200), node);
+        st.setFromX(1);
+        st.setFromY(1);
+        st.setToX(1.2);
+        st.setToY(1.2);
+        st.setAutoReverse(true);
+        st.setCycleCount(2);
+        st.play();
+    }
+
+    private void animateCounter(Label label) {
+        TranslateTransition tt = new TranslateTransition(Duration.millis(100), label);
+        tt.setFromY(0);
+        tt.setToY(-5);
+        tt.setAutoReverse(true);
+        tt.setCycleCount(4);
+        tt.play();
+    }
+
+    private void handleLike(Post post, Button likeBtn, Label counter) {
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            showAlert("Authentication Required", "You must be logged in to like posts");
+            return;
+        }
+
+        boolean wasLiked = post.hasLiked(currentUser);
+        post.toggleLike(currentUser);
+
+        // Update database
+        new Thread(() -> {
+            try (Connection conn = MyDataBase.getInstance().getCnx()) {
+                if (wasLiked) {
+                    // Remove like
+                    try (PreparedStatement pstmt = conn.prepareStatement(
+                            "DELETE FROM post_likes WHERE user_id = ? AND post_id = ?")) {
+                        pstmt.setInt(1, currentUser.getId().intValue());
+                        pstmt.setInt(2, post.getId());
+                        pstmt.executeUpdate();
+                    }
+                } else {
+                    // Add like
+                    try (PreparedStatement pstmt = conn.prepareStatement(
+                            "INSERT INTO post_likes (user_id, post_id) VALUES (?, ?)")) {
+                        pstmt.setInt(1, currentUser.getId().intValue());
+                        pstmt.setInt(2, post.getId());
+                        pstmt.executeUpdate();
+                    }
+                }
+
+                // Update post likes count
+                try (PreparedStatement pstmt = conn.prepareStatement(
+                        "UPDATE post SET likes = ? WHERE id = ?")) {
+                    pstmt.setInt(1, post.getLikes());
+                    pstmt.setInt(2, post.getId());
+                    pstmt.executeUpdate();
+                }
+
+            } catch (SQLException ex) {
+                Platform.runLater(() ->
+                        showAlert("Database Error", "Could not update like: " + ex.getMessage()));
+            }
+        }).start();
+
+        // Update UI
+        Platform.runLater(() -> {
+            animateLikeButton(likeBtn);
+            animateCounter(counter);
+
+            if (post.hasLiked(currentUser)) {
+                likeBtn.getStyleClass().add("liked");
+            } else {
+                likeBtn.getStyleClass().remove("liked");
+            }
+
+            counter.setText(String.valueOf(post.getLikes()));
+        });
+    }
+
+
+    //comments
+    private Node createCommentCard(Comment comment, Post parentPost) {
+        VBox commentCard = new VBox(5);
+        commentCard.setStyle("-fx-padding: 10; -fx-background-color: #f4f4f4; -fx-background-radius: 8;");
+        commentCard.setMinWidth(300); // Optional: set a minimum width to make sure the comment card is not too small
+
+        // StackPane to hold comment card and the delete button on top-right
+        StackPane stackPane = new StackPane();
+        stackPane.setStyle("-fx-background-color: transparent;");
+
+        // Header section (Profile picture, Username, and Date)
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        ImageView pfp = new ImageView(loadProfileImage(comment.getUser().getPfp()));
+        pfp.setFitWidth(40);
+        pfp.setFitHeight(40);
+        pfp.setClip(new Circle(20, 20, 20)); // Makes image round
+
+        Label username = new Label(comment.getUser().getName());
+        username.setStyle("-fx-font-weight: bold;");
+
+        // Create VBox for username and date
+        VBox usernameDateBox = new VBox();
+        usernameDateBox.setSpacing(2);  // Space between username and date
+        usernameDateBox.getChildren().add(username);
+
+        // Format date to be shown under username
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDate = comment.getCreatedAt() != null
+                ? comment.getCreatedAt().format(formatter)
+                : "Unknown date";
+        if (comment.isEdited()) {
+            formattedDate += " (edited)";
+        }
+        Label dateLabel = new Label(formattedDate);
+        dateLabel.setStyle("-fx-font-size: 10; -fx-text-fill: gray;");
+
+        usernameDateBox.getChildren().add(dateLabel);  // Add date under the username
+
+        header.getChildren().addAll(pfp, usernameDateBox);  // Add profile pic and username/date VBox to header
+
+        // Comment content (TextArea)
+        TextArea contentArea = new TextArea(comment.getContent());
+        contentArea.setWrapText(true);
+        contentArea.setEditable(false);
+        contentArea.setStyle("-fx-background-color: transparent; -fx-border-color: transparent;");
+        contentArea.setMaxHeight(60);  // Make the content area shorter (limit height)
+
+        // Delete Button (small PNG image) - Same as post delete button
+        ImageView deleteIcon = new ImageView(new Image(getClass().getResourceAsStream("/icons/delete.png")));
+        deleteIcon.setFitWidth(20);
+        deleteIcon.setFitHeight(20);
+
+        Button deleteButton = new Button("", deleteIcon);
+        deleteButton.setStyle("-fx-background-color: transparent;");
+        deleteButton.getStyleClass().add("icon-button");
+        Tooltip.install(deleteButton, new Tooltip("Delete"));
+
+        // Show delete button only for current user's comments
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        boolean isCurrentUserComment = currentUser != null
+                && currentUser.getId().equals(comment.getUser().getId());
+        deleteButton.setVisible(isCurrentUserComment);
+
+        deleteButton.setOnAction(e -> {
+            CommentController controller = new CommentController();
+            controller.setCommentData(comment, parentPost, () -> refreshCommentsSection(parentPost));
+            controller.handleDeleteComment();
+        });
+
+        // Add header and content to comment card
+        VBox contentBox = new VBox(header, contentArea);
+        contentBox.setSpacing(5);
+
+        // Add delete button in the top-right of the card using StackPane
+        stackPane.getChildren().addAll(commentCard, deleteButton);
+
+        // Position delete button in the top-right corner of the comment card
+        StackPane.setAlignment(deleteButton, Pos.TOP_RIGHT);
+
+        // Add content to the comment card
+        commentCard.getChildren().add(contentBox);
+
+        return stackPane;
+    }
+
+
+
+
+
+    private void createComment(Post post, String content) {
+        Comment comment = new Comment();
+        comment.setContent(content);
+        comment.setUser(UserSession.getInstance().getCurrentUser());
+        comment.setPost(post);
+        comment.setCreatedAt(LocalDateTime.now());
+
+        // Ensure SQL query includes the created_at field
+        String sql = "INSERT INTO comment (content, user_id, post_id, createdAt) VALUES (?, ?, ?, ?)";
+
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Set the parameters for the SQL query
+            pstmt.setString(1, comment.getContent());
+            pstmt.setInt(2, comment.getUser().getId().intValue());
+            pstmt.setInt(3, post.getId());
+            pstmt.setTimestamp(4, Timestamp.valueOf(comment.getCreatedAt())); // Set created_at here
+
+            // Execute the update and handle the result
+            pstmt.executeUpdate();
+
+            // Get the generated key (the comment ID)
+            try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                if (rs.next()) {
+                    comment.setId(rs.getLong(1));  // Set the generated ID for the comment
+                }
+            }
+
+            // Add the comment to the post's comment list and refresh the UI
+            post.getComments().add(comment);
+            refreshCommentsSection(post);
+
+        } catch (SQLException e) {
+            showAlert("Error", "Failed to post comment: " + e.getMessage());
+        }
+    }
+
+
+    private void refreshCommentsSection(Post post) {
+        VBox commentsSection = (VBox) postsListView.lookup("#commentsSection_" + post.getId());
+        if (commentsSection != null) {
+            commentsSection.getChildren().clear();
+            post.getComments().forEach(comment ->
+                    commentsSection.getChildren().add(createCommentCard(comment, post))
+            );
+        }
+    }
+
+// Add these methods in the PostController class
+
+    private Image loadCurrentUserPfp() {
+        User currentUser = UserSession.getInstance().getCurrentUser();
+        if (currentUser != null && currentUser.getPfp() != null) {
+            return loadProfileImage(currentUser.getPfp());
+        }
+        return loadDefaultImage();
+    }
+
+    private Image loadProfileImage(String pfpPath) {
+        try {
+            if (pfpPath != null && !pfpPath.isEmpty()) {
+                File imageFile = new File(pfpPath);
+                if (!imageFile.exists()) imageFile = new File("uploads/" + pfpPath);
+                if (!imageFile.exists()) imageFile = new File("uploads/pfp/" + pfpPath);
+                if (imageFile.exists()) {
+                    return new Image(imageFile.toURI().toString());
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading profile image: " + e.getMessage());
+        }
+        return loadDefaultImage();
+    }
+
+
+
+    private HBox createLikersBubbles(Post post) {
+        HBox bubbles = new HBox(-6); // light overlap
+        bubbles.setAlignment(Pos.CENTER_LEFT);
+        bubbles.setStyle("-fx-padding: 0 0 0 5;");
+
+        List<User> likers = new ArrayList<>(post.getLikedByUsers());
+        int totalLikers = likers.size();
+        int showCount = Math.min(3, totalLikers);
+
+        // Create profile bubbles
+        for (int i = 0; i < showCount; i++) {
+            ImageView bubble = createProfileBubble(likers.get(i));
+            bubbles.getChildren().add(bubble);
+        }
+
+        // Only show the +X label if there are 4 or more likes
+        if (totalLikers >= 4) {
+            Label moreLabel = createMoreLabel(totalLikers - 3, post.getLikedByUsers());
+            bubbles.getChildren().add(moreLabel);
+        }
+
+        // Bind the full popup to the bubbles as well
+        createLikersPopup(bubbles, post.getLikedByUsers());
+
+        return bubbles;
+    }
+
+    private Label createMoreLabel(int count, Set<User> likers) {
+        Label label = new Label("+" + count);
+        label.getStyleClass().add("more-likers-label");
+
+        // Create popup content once (not on every hover)
+        ContextMenu popup = new ContextMenu();
+        popup.getStyleClass().add("likers-popup");
+
+        // Populate popup content
+        if (!likers.isEmpty()) {
+            for (User user : likers) {
+                MenuItem item = new MenuItem();
+                HBox itemContent = createLikerItem(user); // Fixed size in createLikerItem
+                item.setGraphic(itemContent);
+                item.getStyleClass().add("liker-item");
+                popup.getItems().add(item);
+            }
+        } else {
+            MenuItem emptyItem = new MenuItem("No likes yet");
+            emptyItem.setDisable(true);
+            popup.getItems().add(emptyItem);
+        }
+
+        // Hover handling with smooth transitions
+        final PauseTransition hoverDelay = new PauseTransition(Duration.millis(200));
+        label.setOnMouseEntered(e -> {
+            hoverDelay.setOnFinished(ev -> {
+                if (!popup.isShowing()) {
+                    popup.show(label, Side.BOTTOM, 0, 5);
+                }
+            });
+            hoverDelay.play();
+        });
+
+        label.setOnMouseExited(e -> {
+            hoverDelay.stop();
+            popup.hide();
+        });
+
+        // Click handling to keep popup visible
+        label.setOnMousePressed(e -> {
+            if (popup.isShowing()) {
+                popup.hide();
+            } else {
+                popup.show(label, Side.BOTTOM, 0, 5);
+            }
+        });
+
+        return label;
+    }
+    private ImageView createProfileBubble(User user) {
+        ImageView bubble = new ImageView();
+        bubble.setFitWidth(26);
+        bubble.setFitHeight(26);
+        bubble.setPreserveRatio(true);
+        bubble.setSmooth(true);
+
+        // Circular clip with CSS-based animation
+        Circle clip = new Circle(13, 13, 13);
+        bubble.setClip(clip);
+        bubble.getStyleClass().add("profile-bubble"); // Add CSS class
+
+        try {
+            String pfpPath = user.getPfp();
+            Image image;
+            if (pfpPath != null && !pfpPath.isEmpty()) {
+                Path imagePath = Paths.get("uploads", pfpPath);
+                if (!Files.exists(imagePath)) {
+                    imagePath = Paths.get("uploads/pfp", pfpPath);
+                }
+                image = new Image(imagePath.toUri().toString());
+            } else {
+                image = loadDefaultImage();
+            }
+            bubble.setImage(image);
+        } catch (Exception e) {
+            System.err.println("Error loading profile image: " + e.getMessage());
+            bubble.setImage(loadDefaultImage());
+        }
+
+        return bubble;
+    }
+
+    private void createLikersPopup(Node anchor, Set<User> likers) {
+        ContextMenu popup = new ContextMenu();
+        popup.getStyleClass().add("likers-popup");
+
+        // Use CSS for styling instead of inline styles
+        popup.setStyle(null);
+
+        if (!likers.isEmpty()) {
+            for (User user : likers) {
+                MenuItem item = new MenuItem();
+                HBox itemContent = createLikerItem(user);
+                item.setGraphic(itemContent);
+                item.getStyleClass().add("liker-item");
+                popup.getItems().add(item);
+            }
+        } else {
+            MenuItem emptyItem = new MenuItem("No likes yet");
+            emptyItem.setDisable(true);
+            popup.getItems().add(emptyItem);
+        }
+
+        // Add hover delay to prevent flickering
+        final PauseTransition hoverDelay = new PauseTransition(Duration.millis(300));
+        anchor.setOnMouseEntered(e -> {
+            hoverDelay.setOnFinished(ev -> {
+                if (!popup.isShowing()) {
+                    popup.show(anchor, Side.BOTTOM, 0, 5);
+                }
+            });
+            hoverDelay.play();
+        });
+
+        anchor.setOnMouseExited(e -> {
+            hoverDelay.stop();
+            popup.hide();
+        });
+    }
+
+    private HBox createLikerItem(User user) {
+        HBox item = new HBox(8); // Reduced spacing
+        item.setAlignment(Pos.CENTER_LEFT);
+        item.getStyleClass().add("liker-item-container");
+
+        ImageView pfp = createProfileBubble(user);
+        pfp.setFitWidth(20);  // Smaller size for list items
+        pfp.setFitHeight(20);
+
+        Label name = new Label(user.getName());
+        name.getStyleClass().add("liker-name");
+
+        item.getChildren().addAll(pfp, name);
+        return item;
+    }
+
+
 }

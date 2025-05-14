@@ -3,10 +3,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.geometry.Insets?>
 
 <BorderPane xmlns="http://javafx.com/javafx/11.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="tn.esprit.controllers.Admin.AdminDashboardController"
+            stylesheets="@/css/dashboard.css"
             style="-fx-background-color: #f5f5f5;">
 
     <!-- Left Sidebar -->
@@ -18,10 +21,126 @@
 
     <!-- Main Content Area -->
     <center>
-        <StackPane fx:id="contentArea" style="-fx-background-color: white; -fx-padding: 20;">
-            <!-- Default content will be loaded here -->
-            <Label text="Welcome to Admin Dashboard"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold;"/>
-        </StackPane>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-padding: 0;">
+            <VBox spacing="20" style="-fx-padding: 25;">
+                <!-- Welcome Header -->
+                <HBox spacing="15" style="-fx-padding: 0 0 20 0;">
+                    <VBox>
+                        <Text fx:id="welcomeText" text="Welcome, Admin!" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-fill: -text-dark;"/>
+                        <Text text="Here's an overview of your platform's activities" style="-fx-font-size: 16px; -fx-fill: -text-light;"/>
+                    </VBox>
+                </HBox>
+                
+                <!-- Summary Cards Row -->
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <!-- Users Card -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS" prefWidth="200">
+                        <Label text="Users" styleClass="card-title"/>
+                        <Text fx:id="userCountText" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-fill: -primary-color;"/>
+                        <Text fx:id="newUsersText" text="New this week: 0" style="-fx-font-size: 14px; -fx-fill: -text-light;"/>
+                    </VBox>
+                    
+                    <!-- Events Card -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS" prefWidth="200">
+                        <Label text="Events" styleClass="card-title"/>
+                        <Text fx:id="eventCountText" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-fill: -accent-color;"/>
+                        <Text fx:id="upcomingEventsText" text="Upcoming: 0" style="-fx-font-size: 14px; -fx-fill: -text-light;"/>
+                    </VBox>
+                    
+                    <!-- Posts Card -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS" prefWidth="200">
+                        <Label text="Forum Posts" styleClass="card-title"/>
+                        <Text fx:id="postCountText" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-fill: -success-color;"/>
+                        <Text fx:id="todayPostsText" text="Today: 0" style="-fx-font-size: 14px; -fx-fill: -text-light;"/>
+                    </VBox>
+                    
+                    <!-- Payments Card -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS" prefWidth="200">
+                        <Label text="Payments" styleClass="card-title"/>
+                        <Text fx:id="paymentCountText" text="0" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-fill: -warning-color;"/>
+                        <Text fx:id="monthRevenueText" text="This month: $0" style="-fx-font-size: 14px; -fx-fill: -text-light;"/>
+                    </VBox>
+                </HBox>
+                
+                <!-- Event and Annonce Stats -->
+                <HBox spacing="15">
+                    <!-- Events By Month Chart -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                        <Label text="Events by Month" styleClass="card-title"/>
+                        <BarChart fx:id="eventsByMonthChart" legendVisible="false" animated="true" 
+                                  prefHeight="250" VBox.vgrow="ALWAYS">
+                            <xAxis>
+                                <CategoryAxis label="Month"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Number of Events"/>
+                            </yAxis>
+                        </BarChart>
+                    </VBox>
+                    
+                    <!-- Annonces Stats -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                        <Label text="Annonces by Event Type" styleClass="card-title"/>
+                        <PieChart fx:id="annoncesByTypeChart" labelsVisible="true" legendVisible="true"
+                                  prefHeight="250" VBox.vgrow="ALWAYS"/>
+                    </VBox>
+                </HBox>
+                
+                <!-- Forum and Group Stats -->
+                <HBox spacing="15">
+                    <!-- Forum Activity -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                        <Label text="Forum Activity" styleClass="card-title"/>
+                        <LineChart fx:id="forumActivityChart" animated="true" 
+                                  prefHeight="250" VBox.vgrow="ALWAYS">
+                            <xAxis>
+                                <CategoryAxis label="Date"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Posts"/>
+                            </yAxis>
+                        </LineChart>
+                    </VBox>
+                    
+                    <!-- Group Stats -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                        <Label text="Top Groups by Projects" styleClass="card-title"/>
+                        <BarChart fx:id="groupsByProjectsChart" legendVisible="false" animated="true" 
+                                  prefHeight="250" VBox.vgrow="ALWAYS">
+                            <xAxis>
+                                <CategoryAxis label="Group"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Number of Projects"/>
+                            </yAxis>
+                        </BarChart>
+                    </VBox>
+                </HBox>
+                
+                <!-- Revenue and User Activity Stats -->
+                <HBox spacing="15">
+                    <!-- Payment Distribution -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                        <Label text="Payment Distribution by Offer" styleClass="card-title"/>
+                        <PieChart fx:id="paymentDistributionChart" labelsVisible="true" legendVisible="true"
+                                  prefHeight="250" VBox.vgrow="ALWAYS"/>
+                    </VBox>
+                    
+                    <!-- Monthly Revenue -->
+                    <VBox styleClass="chart-container" HBox.hgrow="ALWAYS">
+                        <Label text="Monthly Revenue" styleClass="card-title"/>
+                        <LineChart fx:id="monthlyRevenueChart" animated="true" 
+                                  prefHeight="250" VBox.vgrow="ALWAYS">
+                            <xAxis>
+                                <CategoryAxis label="Month"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Revenue (USD)"/>
+                            </yAxis>
+                        </LineChart>
+                    </VBox>
+                </HBox>
+            </VBox>
+        </ScrollPane>
     </center>
 </BorderPane>

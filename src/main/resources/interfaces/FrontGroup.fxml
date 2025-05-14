@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.FrontGroupController"
+            styleClass="main-container"
+            stylesheets="@../css/styles.css"
+            style="-fx-background-color: linear-gradient(                        to bottom right,                        #ffffff 0%,                        #8c84a1 30%,                        #6f6280 50%,                        #8c84a1 70%,                        #ffffff 100%                    );">
+    
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" 
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <!-- Header Section with Background -->
+        <HBox alignment="CENTER_LEFT" spacing="20" >
+            <Text styleClass="page-title" text="Study Groups"/>
+
+
+
+            <HBox HBox.hgrow="ALWAYS" />
+            
+            <!-- Search Field -->
+            <HBox spacing="10" alignment="CENTER_RIGHT">
+                <TextField fx:id="searchField" 
+                          promptText="Search groups..." 
+                          styleClass="text-field"
+                          onKeyReleased="#onSearchKeyReleased"/>
+                <Button fx:id="searchBtn" 
+                        styleClass="secondary-button"
+                        onAction="#onSearchClick">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <Image url="@../icons/search.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <!-- Create Group Button (Visible only for tutors) -->
+                <Button fx:id="createGroupBtn"
+                        text="Create New Group"
+                        styleClass="primary-button"
+                        onAction="#onCreateGroupClick">  <!-- No visibility attribute -->
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <Image url="@../icons/add.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </HBox>
+        
+        <!-- Filter Options -->
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <Label text="Filter by:" styleClass="section-subtitle"/>
+            <ComboBox fx:id="subjectFilter" 
+                      promptText="Subject" 
+                      styleClass="combo-box"
+                      onAction="#onFilterChange"/>
+                      
+            <ComboBox fx:id="sortBy" 
+                      promptText="Sort By" 
+                      styleClass="combo-box"
+                      onAction="#onSortChange"/>
+        </HBox>
+        
+        <!-- Groups Container -->
+        <StackPane VBox.vgrow="ALWAYS">
+            <!-- Loading indicator -->
+            <ProgressIndicator fx:id="loadingIndicator" 
+                              visible="false" 
+                              maxHeight="100" maxWidth="100"/>
+                              
+            <!-- Empty state -->
+            <VBox fx:id="emptyState" 
+                  alignment="CENTER" 
+                  spacing="20" 
+                  visible="false">
+                <ImageView fitHeight="80" fitWidth="80">
+                    <Image url="@../icons/empty-state.png"/>
+                </ImageView>
+                <Text styleClass="section-subtitle" text="No groups found"/>
+                <Button text="Create your first group" 
+                        styleClass="secondary-button"
+                        onAction="#onCreateGroupClick"
+                        fx:id="emptyStateCreateBtn"
+                        visible="false"/>
+            </VBox>
+            
+            <!-- Groups list -->
+            <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane">
+                <FlowPane fx:id="groupsContainer" 
+                          hgap="20" vgap="20" 
+                          styleClass="groups-container"/>
+            </ScrollPane>
+        </StackPane>
+    </VBox>
+    
+</AnchorPane> 

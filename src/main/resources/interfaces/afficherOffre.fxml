@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AfficherOffre"
+            prefHeight="700.0" prefWidth="1200.0"
+            style="-fx-background-color: #f0f2f7;">
+
+
+    <center>
+        <VBox style="-fx-padding: 20 30;">
+            <Label text="Offers List" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1c273c; -fx-padding: 0 0 20 0;"/>
+
+
+
+            <VBox style="-fx-background-color: #fff; -fx-padding: 20; -fx-border-color: #e9edf4; -fx-border-width: 1; -fx-border-radius: 5; -fx-spacing: 20; -fx-margin: 20 0 0 0;">
+                <HBox spacing="15" alignment="CENTER_LEFT">
+                    <Label text="Search:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <TextField fx:id="searchField" promptText="Enter offer name" prefWidth="250"
+                               style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px; -fx-padding: 7;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Sort by:" style="-fx-font-size: 14px; -fx-font-weight: bold;"/>
+                    <ComboBox fx:id="sortComboBox" promptText="Select option" prefWidth="200"
+                              style="-fx-background-color: #f9f9f9; -fx-border-color: #e0e5ec; -fx-border-radius: 4px;"/>
+                </HBox>
+
+                <TableView fx:id="tableOffres" prefHeight="400.0" VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: #fff; -fx-border-color: #e9edf4; -fx-border-radius: 4px;">
+                    <columns>
+                        <TableColumn fx:id="colNom" text="Offer Name" prefWidth="150"/>
+                        <TableColumn fx:id="colImage" text="Image" prefWidth="150"/>
+                        <TableColumn fx:id="colPrix" text="Price" prefWidth="100"/>
+                        <TableColumn fx:id="colDateDebut" text="Start Date" prefWidth="120"/>
+                        <TableColumn fx:id="colDateFin" text="End Date" prefWidth="120"/>
+                        <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
+                        <TableColumn fx:id="colAction" text="Action" prefWidth="180"/>
+                    </columns>
+                </TableView>
+
+                <HBox spacing="15" alignment="CENTER_RIGHT">
+
+                    <Button text="Add Offer" fx:id="btnAjouter"
+                            style="-fx-background-color: #857e98; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 20; -fx-border-radius: 4px;"
+                            onAction="#allerVersAjout"/>
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+
+
+</BorderPane>

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import java.net.URL?>
+
+<HBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.ProjectItemController"
+      spacing="15"
+      styleClass="project-item">
+    
+    <!-- Project Image -->
+    <ImageView fx:id="projectImageView" 
+               fitHeight="100" 
+               fitWidth="150"
+               styleClass="project-image"/>
+    
+    <!-- Project Info -->
+    <VBox spacing="5" HBox.hgrow="ALWAYS">
+        <Label fx:id="titleLabel" 
+               styleClass="project-title"/>
+               
+        <Label fx:id="descriptionLabel" 
+               styleClass="project-description"
+               wrapText="true"/>
+               
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <Label fx:id="deadlineLabel" 
+                   styleClass="project-date"/>
+                   
+            <Label fx:id="difficultyLabel" 
+                   styleClass="project-difficulty"/>
+        </HBox>
+    </VBox>
+    
+    <!-- Buttons -->
+    <VBox spacing="5" alignment="CENTER_RIGHT">
+        <Button fx:id="viewPdfButton" 
+                text="View PDF" 
+                onAction="#onViewPdfClick"
+                styleClass="secondary-button"/>
+                
+        <Button fx:id="editButton" 
+                text="Edit" 
+                onAction="#onEditClick"
+                styleClass="secondary-button"
+                visible="false"/>
+                
+        <Button fx:id="deleteButton" 
+                text="Delete" 
+                onAction="#onDeleteClick"
+                styleClass="delete-button"
+                visible="false"/>
+    </VBox>
+    
+    <padding>
+        <Insets top="10" right="10" bottom="10" left="10"/>
+    </padding>
+    
+    <stylesheets>
+        <URL value="@../../css/styles.css"/>
+    </stylesheets>
+</HBox> 

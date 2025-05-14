@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ProcessPayment"
+            stylesheets="@/css/styles.css"
+            prefWidth="600" prefHeight="500"
+            style="-fx-background-color: #f3e8ff;">
+
+    <top>
+        <HBox spacing="20" alignment="CENTER_LEFT" styleClass="header-bar" style="-fx-padding: 10;">
+            <Label text="💳 Paiement" styleClass="header-title" />
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Retour" onAction="#goBack" styleClass="header-button"/>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 30;">
+
+
+            <HBox alignment="CENTER" spacing="10">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Numéro de carte" />
+                    <TextField fx:id="cardNumberField" promptText="4242 4242 4242 4242"
+                               styleClass="payment-field"/>
+                    <Label text="Pour les tests, utilisez: 4242 4242 4242 4242"
+                           style="-fx-font-size: 11px; -fx-text-fill: #666;"/>
+                </VBox>
+            </HBox>
+
+            <HBox alignment="CENTER" spacing="10">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Nom sur la carte" />
+                    <TextField fx:id="cardNameField" promptText="Jean Dupont"
+                               styleClass="payment-field"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <VBox spacing="5" HBox.hgrow="ALWAYS">
+                    <Label text="Date d'expiration" />
+                    <HBox spacing="5">
+                        <ComboBox fx:id="expiryMonthCombo" promptText="MM"
+                                  styleClass="expiry-field" prefWidth="100" />
+                        <ComboBox fx:id="expiryYearCombo" promptText="AA"
+                                  styleClass="expiry-field" prefWidth="100" />
+                    </HBox>
+                </VBox>
+
+                <VBox spacing="5" HBox.hgrow="NEVER">
+                    <Label text="CVC" />
+                    <PasswordField fx:id="cvcField" promptText="123"
+                                   styleClass="cvc-field" prefWidth="100"/>
+                </VBox>
+            </HBox>
+
+            <Region prefHeight="20" />
+
+            <HBox alignment="CENTER">
+                <VBox alignment="CENTER" spacing="10">
+                    <Label fx:id="totalLabel" text="Total à payer: 0.00 €"
+                           styleClass="total-label"/>
+                    <Button text="Payer maintenant" onAction="#processPayment"
+                            styleClass="payment-button" prefWidth="200"/>
+                </VBox>
+            </HBox>
+
+            <Label fx:id="paymentStatusLabel" styleClass="status-label"/>
+
+            <ProgressIndicator fx:id="progressIndicator" visible="false" />
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox alignment="CENTER" spacing="5" styleClass="footer-bar" style="-fx-padding: 10;">
+            <Label text="🔒 Transaction sécurisée via Stripe" />
+            <Label text="Mode test: Aucune carte réelle ne sera débitée"
+                   style="-fx-font-size: 11px;"/>
+        </VBox>
+    </bottom>
+</BorderPane>

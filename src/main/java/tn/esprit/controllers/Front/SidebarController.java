@@ -1,6 +1,7 @@
 package tn.esprit.controllers.Front;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.RotateTransition;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
@@ -15,18 +16,25 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import tn.esprit.controllers.NotificationsPopupController;
 import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.controllers.user.ProfileController;
 import tn.esprit.controllers.user.admin.AdminProfileController;
+import tn.esprit.entities.Notif;
 import tn.esprit.entities.User;
+import tn.esprit.services.MockNotificationService;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.Instant;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 public class SidebarController {
     @FXML private ImageView sidebarProfileImage;
@@ -34,22 +42,26 @@ public class SidebarController {
 
     private User currentUser;
     private static final Map<String, String> FXML_PATHS = new HashMap<>();
+    @FXML
     private StackPane contentArea;
     private UserSession sessionService = UserSession.getInstance();
 
     private Timeline imageCheckTimeline;
     private String lastProfileImagePath;
+    @FXML private ImageView bellIcon;
+    @FXML private Label notificationCounter;
 
     static {
         FXML_PATHS.put("Home", "/interfaces/auth/main.fxml");
         FXML_PATHS.put("Courses", "/interfaces/Courses/MainCourseFront.fxml");
         FXML_PATHS.put("Forum", "/interfaces/ForumFront.fxml");
-        FXML_PATHS.put("Groups", "/group/GroupsView.fxml");
-        FXML_PATHS.put("Events", "/interfaces/front/AnnonceList.fxml");
+        //FXML_PATHS.put("Groups", "/group/GroupsView.fxml");
+        FXML_PATHS.put("Groups", "/interfaces/FrontGroup.fxml");
+        FXML_PATHS.put("Events", "/interfaces/Front/AnnonceList.fxml");
         FXML_PATHS.put("Profile", "/interfaces/user/profile.fxml");
         FXML_PATHS.put("AdminProfile", "/interfaces/user/admin/adminprofile.fxml");
         FXML_PATHS.put("StudyRoom", "/interfaces/rooms/StudyRoom.fxml");
-        FXML_PATHS.put("Subscription", "");
+        FXML_PATHS.put("Subscription", "/interfaces/frontOffre.fxml");
 
 
     }
@@ -104,6 +116,15 @@ public class SidebarController {
 
     public void initialize() {
         this.currentUser = sessionService.getCurrentUser();
+        //setupMockNotifications();
+
+        // Corrected listener with proper type conversion
+        MockNotificationService.unreadCountProperty().addListener((obs, oldVal, newVal) -> {
+            notificationCounter.setText(String.valueOf(newVal.intValue()));
+            if (newVal.intValue() > oldVal.intValue()) {
+                animateBell();
+            }
+        });
         if (currentUser == null) {
             // Vérifier si la redirection vers la page de login a déjà eu lieu.
             if (!isLoginPageDisplayed()) {
@@ -163,12 +184,16 @@ public class SidebarController {
         try {
             String fxmlPath = FXML_PATHS.get(viewName);
             if (fxmlPath != null && contentArea != null) {
-                Parent content = FXMLLoader.load(getClass().getResource(fxmlPath));
+                // Load the FXML content
+                FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+                Parent content = loader.load();
+
+                // Clear previous content and add new content
                 contentArea.getChildren().clear();
                 contentArea.getChildren().add(content);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            showAlert("Navigation Error", "Could not load view: " + e.getMessage());
         }
     }
 
@@ -268,4 +293,53 @@ public class SidebarController {
             alert.showAndWait();
         });
     }
+
+
+    private void animateBell() {
+        RotateTransition rt = new RotateTransition(Duration.millis(70), bellIcon);
+        rt.setByAngle(15);
+        rt.setCycleCount(4);
+        rt.setAutoReverse(true);
+        rt.play();
+    }
+
+
+    @FXML
+    private void showNotifications() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/NotificationsPopup.fxml"));
+            Parent popup = loader.load();
+
+            NotificationsPopupController controller = loader.getController();
+            // Pass the ObservableList directly from MockNotificationService
+            controller.initData(MockNotificationService.getNotifications());
+
+            Stage popupStage = new Stage();
+            popupStage.initModality(Modality.APPLICATION_MODAL);
+            popupStage.setScene(new Scene(popup));
+            popupStage.showAndWait();
+
+            MockNotificationService.markAllAsRead();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+/*
+    private void setupMockNotifications() {
+        Timeline timeline = new Timeline(new KeyFrame(Duration.seconds(5), e -> {
+            Notif mockNotif = new Notif();
+            mockNotif.setUser(currentUser);  // Set actual user
+            mockNotif.setTriggeredBy(currentUser);
+            mockNotif.setType(new Random().nextBoolean() ? "liked" : "commented");
+            mockNotif.setCreatedAt(Instant.now());
+
+            MockNotificationService.addNotification(mockNotif);
+        }));
+        timeline.setCycleCount(Timeline.INDEFINITE);
+        timeline.play();
+    }
+*/
 }

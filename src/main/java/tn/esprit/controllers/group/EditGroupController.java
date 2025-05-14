@@ -32,38 +32,64 @@ public class EditGroupController {
     public void setGroupData(GroupStudent group) {
         this.currentGroup = group;
 
+        // Log debugging information
+        System.out.println("Setting group data: ID=" + group.getId() + ", Name=" + group.getName());
+
         idLabel.setText(String.valueOf(group.getId()));
         nameField.setText(group.getName());
         descriptionField.setText(group.getDescription());
-        creationDateLabel.setText(group.getCreationDate().toString());
+        creationDateLabel.setText(group.getCreationDate() != null ? group.getCreationDate().toString() : "N/A");
         meetingDatePicker.setValue(group.getMeetingDate());
         imagePath = group.getImage();
-        imagePathField.setText(imagePath);
+        imagePathField.setText(imagePath != null ? imagePath : "");
         pdfPath = group.getPdfFile();
-        pdfPathField.setText(pdfPath);
+        pdfPathField.setText(pdfPath != null ? pdfPath : "");
 
-        // Display the image in the Circle if an image is available
+        // Display the image in the ImageView if an image is available
         if (imagePath != null && !imagePath.isEmpty()) {
-            Image image = new Image("file:" + imagePath);
-            imageCircle.setImage(image);
+            try {
+                File imageFile = new File(imagePath);
+                if (imageFile.exists()) {
+                    Image image = new Image("file:" + imagePath);
+                    imageCircle.setImage(image);
+                    System.out.println("Image loaded successfully from: " + imagePath);
+                } else {
+                    System.out.println("Image file does not exist: " + imagePath);
+                    // Set a placeholder image
+                    imageCircle.setImage(null);
+                }
+            } catch (Exception e) {
+                System.err.println("Error loading image: " + e.getMessage());
+                // Set a placeholder image or leave it blank
+                imageCircle.setImage(null);
+            }
+        } else {
+            System.out.println("No image path provided");
+            imageCircle.setImage(null);
         }
     }
 
     @FXML
     private void handleBrowseImage(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
-        fileChooser.setTitle("Choisir une image");
+        fileChooser.setTitle("Select Image");
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Images", "*.png", "*.jpg", "*.jpeg")
         );
         File selectedFile = fileChooser.showOpenDialog(imagePathField.getScene().getWindow());
         if (selectedFile != null) {
-            imagePath = selectedFile.getAbsolutePath();
-            imagePathField.setText(imagePath);
-            
-            // Display the image in the Circle
-            Image image = new Image("file:" + imagePath);
-            imageCircle.setImage(image);
+            try {
+                imagePath = selectedFile.getAbsolutePath();
+                imagePathField.setText(imagePath);
+                
+                // Display the image in the ImageView
+                Image image = new Image("file:" + imagePath);
+                imageCircle.setImage(image);
+                System.out.println("New image selected: " + imagePath);
+            } catch (Exception e) {
+                System.err.println("Error loading selected image: " + e.getMessage());
+                showAlert(Alert.AlertType.ERROR, "Error", "Could not load the selected image: " + e.getMessage());
+            }
         }
     }
 
@@ -83,32 +109,53 @@ public class EditGroupController {
 
     @FXML
     private void handleUpdate(ActionEvent event) {
-        String name = nameField.getText();
-        String description = descriptionField.getText();
-        LocalDate meetingDate = meetingDatePicker.getValue();
-
-        if (name.isEmpty() || description.isEmpty()) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Les champs marqués d'un * sont obligatoires");
-            return;
-        }
-
-        if (meetingDate != null && meetingDate.isBefore(LocalDate.now())) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "La date de réunion doit être dans le futur");
-            return;
-        }
-
-        currentGroup.setName(name);
-        currentGroup.setDescription(description);
-        currentGroup.setMeetingDate(meetingDate);
-        currentGroup.setImage(imagePath);
-        currentGroup.setPdfFile(pdfPath);
-
         try {
+            // Get values from fields
+            String name = nameField.getText().trim();
+            String description = descriptionField.getText().trim();
+            LocalDate meetingDate = meetingDatePicker.getValue();
+
+            // Validate required fields
+            if (name.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Group name is required");
+                nameField.requestFocus();
+                return;
+            }
+
+            if (description.isEmpty()) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Description is required");
+                descriptionField.requestFocus();
+                return;
+            }
+
+            // Validate meeting date if provided
+            if (meetingDate != null && meetingDate.isBefore(LocalDate.now())) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Meeting date must be in the future");
+                meetingDatePicker.requestFocus();
+                return;
+            }
+
+            // Update the group object with new values
+            currentGroup.setName(name);
+            currentGroup.setDescription(description);
+            currentGroup.setMeetingDate(meetingDate);
+            currentGroup.setImage(imagePath);
+            currentGroup.setPdfFile(pdfPath);
+
+            System.out.println("Updating group: " + currentGroup.getId() + " - " + currentGroup.getName());
+            System.out.println("Image path: " + imagePath);
+
+            // Save changes to database
             GroupService.getInstance().modifier(currentGroup);
-            showAlert(Alert.AlertType.INFORMATION, "Succès", "Groupe mis à jour avec succès !");
+            
+            // Show success message
+            showAlert(Alert.AlertType.INFORMATION, "Success", "Group updated successfully!");
+            
+            // Close the dialog
             closeWindow();
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Erreur lors de la mise à jour : " + e.getMessage());
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to update group: " + e.getMessage());
         }
     }
 

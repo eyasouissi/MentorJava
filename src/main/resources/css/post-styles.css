@@ -11,7 +11,16 @@
 
 
 }
+/* Circular avatar styling */
+.profile-pic {
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 1);
+}
 
+.avatar-container {
+    -fx-border-color: white;
+    -fx-border-width: 2px;
+    -fx-border-radius: 50%;
+}
 .create-post-container {
     -fx-background-color: white; /* Background color */
     -fx-background-radius: 12px; /* Rounded corners */
@@ -120,12 +129,12 @@
 }
 
 .posts-list {
-    -fx-background-color: transparent;
+    -fx-background-color: transparent
 }
 
 /* Post Card Container */
 .post-card {
-    -fx-background-color: white;
+    -fx-background-color: f5f7fa;
     -fx-padding: 15px;
     -fx-border-radius: 12px;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 8, 0, 0, 2);
@@ -169,11 +178,97 @@
 }
 
 /* Post content */
+/* Post Content Styling */
 .post-content {
     -fx-font-size: 15px;
     -fx-text-fill: #333;
     -fx-wrap-text: true;
     -fx-padding: 5 0 0 0;
+    -fx-background-color: transparent; /* No background */
+    -fx-border-width: 0; /* Remove borders */
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean font */
+    -fx-line-spacing: 1.5; /* Add spacing between lines */
+    -fx-text-alignment: justify; /* Justify the text */
+    -fx-min-height: 50px;
+    -fx-pref-width: 100%;
+}
+
+/* TextArea Specific Custom Styling */
+.text-area {
+    -fx-font-size: 15px;
+    -fx-text-fill: #333;
+    -fx-wrap-text: true;
+    -fx-background-color: transparent; /* No background */
+    -fx-border-width: 0; /* No border */
+    -fx-padding: 0 10px; /* Padding for internal content */
+    -fx-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Clean font */
+    -fx-line-spacing: 1.5; /* Line spacing */
+    -fx-text-alignment: justify; /* Justify text inside the text area */
+    -fx-min-height: 50px; /* Minimum height */
+    -fx-pref-width: 100%; /* Full width */
+}
+
+/* Focused State for TextArea */
+.text-area:focused {
+    -fx-background-color: rgba(0, 0, 0, 0.1); /* Slight background color on focus */
+    -fx-border-color: rgba(0, 0, 0, 0.2); /* Border color on focus */
+    -fx-border-radius: 5px; /* Rounded corners */
+}
+
+/* Disabled TextArea State */
+.text-area:disabled {
+    -fx-background-color: transparent; /* No background */
+    -fx-text-fill: #666; /* Lighter text color when disabled */
+    -fx-border-color: transparent; /* No border */
+}
+/* Scrollbar styling for the postsListView */
+.posts-list .scroll-bar {
+    -fx-background-color: transparent; /* Transparent background for the scrollbar */
+}
+
+/* Scrollbar thumb (the draggable part) */
+.posts-list .scroll-bar .thumb {
+    -fx-background-color: #8c84a1;  /* Light pink thumb */
+    -fx-background-radius: 10px; /* Rounded corners */
+    -fx-min-height: 50px; /* Height of the thumb */
+    -fx-max-height: 50px;
+}
+
+/* Track (the part the thumb moves within) */
+.posts-list .scroll-bar .track {
+    -fx-background-color: #F2F2F2; /* Soft light gray track */
+    -fx-background-radius: 10px;
+    -fx-padding: 5px;
+}
+
+/* Thumb hover effect */
+.posts-list .scroll-bar:hover .thumb {
+    -fx-background-color: #857e98; /* Darker pink on hover */
+}
+
+/* Make the vertical scrollbar narrower */
+.posts-list .scroll-bar:vertical {
+    -fx-pref-width: 10px;
+}
+
+/* Like button styles */
+.like-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 2px;
+}
+
+.like-btn:hover {
+    -fx-opacity: 0.8;
+}
+
+.liked {
+    -fx-effect: dropshadow(gaussian, #e74c3c, 10, 0.5, 0, 0);
+}
+
+.like-counter {
+    -fx-font-size: 14px;
+    -fx-text-fill: #666;
+    -fx-padding: 0 5px;
 }
 
 /* Actions HBox */
@@ -279,25 +374,27 @@
 
 /* Translate Button */
 .translate-btn {
-    -fx-background-color: #4a90e2;
-    -fx-text-fill: white;
-    -fx-padding: 5 10;
-    -fx-background-radius: 4;
-    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-padding: 2px;
 }
 
 .translate-btn:hover {
-    -fx-background-color: #357abd;
+    -fx-opacity: 0.8;
 }
 
-/* Original State */
-.original-btn {
-    -fx-background-color: #666;
-    -fx-text-fill: white;
+.active-translate {
+    -fx-effect: dropshadow(gaussian, rgba(0,123,255,0.5), 10, 0.5, 0, 0);
 }
 
-.original-btn:hover {
-    -fx-background-color: #555;
+.show-original-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #007bff;
+    -fx-underline: true;
+    -fx-padding: 0 0 0 5px;
+}
+
+.show-original-btn:hover {
+    -fx-opacity: 0.8;
 }
 
 /* Language Menu Items */
@@ -325,6 +422,39 @@
 
 .photo-thumbnail:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 8, 0, 0, 2);
+}
+.photo-gallery {
+    -fx-spacing: 10px;
+    -fx-padding: 10px 0;
+}
+
+.gallery-container {
+    -fx-background-color: #f5f5f5;
+    -fx-border-color: #ddd;
+    -fx-border-radius: 8px;
+    -fx-padding: 10px;
+    -fx-alignment: center;
+    -fx-max-height: 300px;
+}
+
+.gallery-button {
+    -fx-background-color: rgba(0,0,0,0.5);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 5 10;
+    -fx-cursor: hand;
+    -fx-font-size: 16px;
+}
+
+.gallery-counter {
+    -fx-background-color: rgba(0,0,0,0.6);
+    -fx-text-fill: white;
+    -fx-padding: 5 10;
+    -fx-font-size: 12px;
+    -fx-alignment: center;
+    -fx-translate-y: -120px;
+    -fx-translate-x: 140px;
+    -fx-font-weight: bold;
 }
 
 .remove-photo-btn {
@@ -442,4 +572,151 @@
 .icon-button:hover {
     -fx-background-color: #eeeeee;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 5, 0.1, 0, 1);
+}
+
+/* post-styles.css */
+/* Comment Card Container */
+.comment-card {
+    -fx-background-color: #ffffff;
+    -fx-padding: 10px;
+    -fx-border-radius: 8px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.03), 4, 0, 0, 1);
+    -fx-spacing: 8px;
+    -fx-font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    -fx-pref-width: 100%;
+    -fx-max-width: 500px;
+}
+
+/* Comment Header (User Info) */
+.comment-header {
+    -fx-spacing: 8px;
+    -fx-alignment: center-left;
+}
+
+/* Smaller profile picture for comments */
+.comment-avatar {
+    -fx-border-color: #ffffff;
+    -fx-border-width: 1px;
+    -fx-border-radius: 50%;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+    -fx-pref-width: 32px;
+    -fx-pref-height: 32px;
+}
+
+/* Comment user info */
+.comment-user-name {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333;
+}
+
+.comment-date {
+    -fx-font-size: 11px;
+    -fx-text-fill: #999;
+}
+
+/* Comment content */
+.comment-content {
+    -fx-font-size: 13px;
+    -fx-text-fill: #444;
+    -fx-wrap-text: true;
+    -fx-padding: 4 0 0 0;
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-line-spacing: 1.2;
+    -fx-text-alignment: left;
+    -fx-min-height: 30px;
+}
+
+
+.send-btn {
+    -fx-background-color: transparent;
+    -fx-padding: 5px;
+}
+
+.send-btn:hover {
+    -fx-opacity: 0.8;
+}
+
+/* Likers popup styling */
+.likers-popup {
+    -fx-background-color: white;
+    -fx-border-color: #ccc;
+    -fx-border-width: 1;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 5;
+}
+
+.likers-popup .menu-item {
+    -fx-padding: 5 10;
+}
+
+.likers-popup .menu-item:hover {
+    -fx-background-color: #f5f5f5;
+}
+
+/* Add depth to bubbles */
+.bubble {
+    -fx-cursor: hand;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+}
+
+/* Animation timing */
+.transition {
+    -fx-transition-duration: 200ms;
+}
+
+/* Profile bubble with CSS transitions */
+.profile-bubble {
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 2, 0, 0, 1);
+    -fx-border-color: white;
+    -fx-border-width: 1;
+    -fx-border-radius: 13;
+    -fx-scale-x: 1;
+    -fx-scale-y: 1;
+    -fx-transition: all 0.2s ease;
+}
+
+.profile-bubble:hover {
+    -fx-scale-x: 1.15;
+    -fx-scale-y: 1.15;
+}
+
+/* Liker list items */
+.liker-item-container {
+    -fx-padding: 5px;
+    -fx-background-color: transparent;
+}
+
+.liker-name {
+    -fx-font-size: 13px;
+    -fx-text-fill: #333;
+}
+
+/* More label styling */
+.more-likers-label {
+    -fx-background-color: #e0e0e0;
+    -fx-padding: 2 6;
+    -fx-background-radius: 10;
+    -fx-font-size: 12;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 2, 0, 0, 1);
+    -fx-transition: all 0.2s ease;
+}
+
+.more-likers-label:hover {
+    -fx-background-color: #d0d0d0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 3, 0, 0, 1);
+}
+
+/* Popup styling */
+.likers-popup {
+    -fx-padding: 5;
+    -fx-background-color: white;
+    -fx-border-color: #ddd;
+    -fx-background-radius: 5;
+    -fx-border-radius: 5;
 }

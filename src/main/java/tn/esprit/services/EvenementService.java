@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.HashMap;
 
 public class EvenementService {
 
@@ -317,5 +318,67 @@ public class EvenementService {
             }
         }
         return stats;
+    }
+
+    public int getEventCount() {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM evenement";
+        
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting events: " + e.getMessage());
+        }
+        
+        return count;
+    }
+
+    public int getUpcomingEventCount() {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM evenement WHERE date_debut > NOW()";
+        
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting upcoming events: " + e.getMessage());
+        }
+        
+        return count;
+    }
+
+    public Map<YearMonth, Integer> getEventCountByMonth() {
+        Map<YearMonth, Integer> result = new HashMap<>();
+        String query = "SELECT YEAR(date_debut) as year, MONTH(date_debut) as month, COUNT(*) as count " +
+                       "FROM evenement " +
+                       "GROUP BY YEAR(date_debut), MONTH(date_debut) " +
+                       "ORDER BY year, month";
+        
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                int year = rs.getInt("year");
+                int month = rs.getInt("month");
+                int count = rs.getInt("count");
+                
+                YearMonth yearMonth = YearMonth.of(year, month);
+                result.put(yearMonth, count);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting event counts by month: " + e.getMessage());
+        }
+        
+        return result;
     }
 }

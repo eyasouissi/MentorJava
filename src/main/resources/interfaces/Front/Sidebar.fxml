@@ -24,6 +24,7 @@
 <VBox styleClass="navigation-header" spacing="5" style="-fx-padding: 10 20 5 20;">
 <Label text="MENTOR" styleClass="sidebar-title"/>
 <Label text="Discover" styleClass="sidebar-section"/>
+
 </VBox>
 
         <!-- Navigation Menu -->
@@ -83,6 +84,16 @@
         </ImageView>
         <Label text="Premium" styleClass="nav-label"/>
     </HBox>
+    <!-- Add this near the profile section -->
+    <HBox spacing="15" alignment="CENTER_LEFT" styleClass="nav-item" >
+        <!-- Add this near the profile section -->
+        <StackPane fx:id="notificationBell" styleClass="notification-bell" onMouseClicked="#showNotifications">
+            <ImageView fx:id="bellIcon" fitWidth="24" fitHeight="24">
+                <Image url="@/assets/images/bell.png"/>
+            </ImageView>
+            <Label fx:id="notificationCounter" styleClass="notification-counter" text="0"/>
+        </StackPane>
+    </HBox>
 
 </VBox>
 
@@ -92,6 +103,7 @@
     <VBox styleClass="sidebar-header" spacing="5" style="-fx-padding: 20 20 10 20;">
         <HBox alignment="CENTER_LEFT" spacing="10" styleClass="nav-item" onMouseClicked="#goToProfile">
             <!-- Profile Image with Circular Clip and Border -->
+
             <StackPane>
                 <ImageView fx:id="sidebarProfileImage" fitWidth="48" fitHeight="48" preserveRatio="true">
                     <image>

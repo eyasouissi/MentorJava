@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.geometry.Side;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,10 +17,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -30,6 +28,8 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 import kong.unirest.json.JSONArray;
 import kong.unirest.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
+import tn.esprit.controllers.Courses.AIController;
 import tn.esprit.entities.Room;
 import tn.esprit.entities.User;
 import tn.esprit.services.ChatGPTService;
@@ -40,10 +40,13 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.security.cert.PolicyNode;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
+
+import tn.esprit.entities.RoomState;
+import javafx.collections.ListChangeListener;
+import tn.esprit.services.RoomService;
+import tn.esprit.controllers.TodoListWidget;
+import tn.esprit.controllers.TodoListWidget.TodoItem;
 
 public class RoomPageController {
     @FXML private ImageView backgroundImage;
@@ -102,7 +105,7 @@ public class RoomPageController {
     @FXML
     private Button stopButton;
     @FXML private VBox todoContainer;
-    @FXML private VBox todoList;
+    private TodoListWidget todoListWidget;
     @FXML private TextField todoInput;
     private DraggableResizableController todoDragController;
     @FXML private Button notesButton;
@@ -110,51 +113,216 @@ public class RoomPageController {
     private DraggableResizableController notesDragController;
     private int photoCount = 0;
     @FXML private Pane workspacePane;
+    private Room currentRoom;
+    private RoomState roomState;
+    private RoomService roomService = new RoomService();
+    private AIController aiController = new AIController();
 
+    private MediaPlayer timerPlayer; // keep a reference
+    private int playCount = 0;
+    private final int MAX_PLAYS = 3;
+    private MediaPlayer backgroundPlayer;
+    private boolean isMusicPlaying = false;
+    private List<Double> currentStrokePoints;
+    private String currentStrokeColor;
 
+    private boolean isRestoringState = false;
 
+    private MediaPlayer clickSoundPlayer;
+    private MediaPlayer closeWidgetSoundPlayer;
 
     @FXML
     private void initialize() {
-        // Trigger send on Enter key
-       // messageInput.setOnAction(event -> handleSendMessage());
-        // Ensure emojiPicker is initialized
-        if (emojiPicker == null) {
-            emojiPicker = new VBox();  // Example initialization
+        // Add explicit ID assignments and ensure workspace pane exists
+        if (workspacePane == null) {
+            System.err.println("Error: workspacePane is null!");
+            return;
         }
+
+        setupBackgroundMusic();
+
+        // Initialize all containers first
+        initializeContainer(whiteboardContainer, "whiteboardContainer");
+        initializeContainer(timerContainer, "timerContainer");
+        initializeContainer(todoContainer, "todoContainer");
+        initializeContainer(notesContainer, "notesContainer");
+        initializeContainer(youtubeContainer, "youtubeContainer");
+
         // Initialize whiteboard
-        gc = whiteboardCanvas.getGraphicsContext2D();
-        gc.setLineWidth(2);
-        colorPicker.setValue(Color.BLACK);
-        setupWhiteboard();
+        if (whiteboardCanvas != null) {
+            gc = whiteboardCanvas.getGraphicsContext2D();
+            gc.setLineWidth(2);
+            colorPicker.setValue(Color.BLACK);
+            setupWhiteboard();
+        }
 
+        // Initialize drag controllers and add to workspace
+        initializeDraggableWidget(youtubeContainer, youtubeDragController = new DraggableResizableController());
+        initializeDraggableWidget(timerContainer, timerDragController = new DraggableResizableController());
+        initializeDraggableWidget(todoContainer, todoDragController = new DraggableResizableController());
+        initializeDraggableWidget(notesContainer, notesDragController = new DraggableResizableController());
 
-        // Initialize YouTube drag controller
-        youtubeDragController = new DraggableResizableController();
-        youtubeDragController.initialize(youtubeContainer);
+        // Add notes widget if not already present
+        if (notesContainer != null && notesContainer.getChildren().isEmpty()) {
+            notesContainer.getChildren().clear(); // Clear existing if any
+            
+            // Create a button-only widget that adds sticky notes
+            Button addNoteBtn = new Button("Add Note");
+            addNoteBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 14px;");
+            addNoteBtn.setPrefWidth(120);
+            addNoteBtn.setOnAction(e -> handleNotesButton());
+            
+            notesContainer.getChildren().add(addNoteBtn);
+            notesContainer.setAlignment(Pos.CENTER);
+            notesContainer.setPadding(new Insets(10));
+            
+            // Ensure proper styling
+            notesContainer.getStyleClass().add("notes-widget-container");
+            notesContainer.setStyle("-fx-background-color: rgba(255,255,255,0.9); -fx-border-color: #dddddd; -fx-border-radius: 5; -fx-background-radius: 5;");
+            notesContainer.setPrefSize(150, 80);
+        }
 
-        //timer
-        timerDragController = new DraggableResizableController();
-        timerDragController.initialize(timerContainer);
+        // Initialize emoji picker
+        if (emojiPicker == null) {
+            emojiPicker = new VBox();
+        }
 
-        //to do list
-        todoDragController = new DraggableResizableController();
-        todoDragController.initialize(todoContainer);
+        // Create the TodoListWidget
+        if (todoContainer != null) {
+            todoListWidget = new TodoListWidget();
+            todoListWidget.setOnStateChanged(state -> updateState());
+            todoListWidget.setOnCloseSound(() -> playCloseWidgetSound());
+            todoContainer.getChildren().clear();
+            todoContainer.getChildren().add(todoListWidget);
+            todoContainer.setAlignment(Pos.CENTER);
+            
+            // Set ID for better debugging
+            todoListWidget.setId("todoListWidget");
+        }
 
-        //NOTES
-        notesDragController = new DraggableResizableController();
-        notesDragController.initialize(notesContainer);
-        notesContainer.getChildren().add(new NotesWidget());
+        // Load CSS when scene is available
+        backgroundImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                Platform.runLater(() -> {
+                    try {
+                        String cssPath = getClass().getResource("/css/todo-list.css").toExternalForm();
+                        if (cssPath != null && !newScene.getStylesheets().contains(cssPath)) {
+                            newScene.getStylesheets().add(cssPath);
+                        }
+                    } catch (Exception e) {
+                        System.err.println("Could not load todo-list.css: " + e.getMessage());
+                    }
+                });
+            }
+        });
 
+        // Debug print
+        System.out.println("=== Initialization Complete ===");
+        workspacePane.getChildren().forEach(node ->
+                System.out.println("Initialized widget: " + node.getId() + " | Visible: " + node.isVisible())
+        );
+
+        setupSounds();
     }
 
-    public void initData(Room room, User passedUser) {
-        if (passedUser == null) {
+    private void initializeContainer(VBox container, String id) {
+        if (container != null) {
+            container.setId(id);
+            container.setManaged(false); // Set as unmanaged
+
+            container.visibleProperty().addListener((obs, oldVal, newVal) -> {
+                if (!isRestoringState) {
+                    updateState();
+                }
+            });
+        }
+    }
+
+    private void initializeDraggableWidget(VBox container, DraggableResizableController controller) {
+        if (container != null && controller != null) {
+            controller.initialize(container);
+            if (!workspacePane.getChildren().contains(container)) {
+                workspacePane.getChildren().add(container);
+                System.out.println("Added " + container.getId() + " to workspace");
+            }
+            
+            // Add movement tracking
+            container.setOnMouseReleased(event -> {
+                System.out.println("Widget moved: " + container.getId() + 
+                    " to X:" + container.getLayoutX() + 
+                    " Y:" + container.getLayoutY());
+                updateState();
+            });
+        }
+    }
+
+    private void animateAndRemoveWidget(VBox container) {
+        // Create pop animation
+        ScaleTransition scaleOut = new ScaleTransition(Duration.millis(200), container);
+        scaleOut.setFromX(1.0);
+        scaleOut.setFromY(1.0);
+        scaleOut.setToX(1.2);
+        scaleOut.setToY(1.2);
+
+        ScaleTransition scaleIn = new ScaleTransition(Duration.millis(200), container);
+        scaleIn.setFromX(1.2);
+        scaleIn.setFromY(1.2);
+        scaleIn.setToX(0.0);
+        scaleIn.setToY(0.0);
+
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(400), container);
+        fadeOut.setFromValue(1.0);
+        fadeOut.setToValue(0.0);
+
+        // Chain animations
+        SequentialTransition sequence = new SequentialTransition(
+                scaleOut,
+                new ParallelTransition(scaleIn, fadeOut)
+        );
+
+        sequence.setOnFinished(e -> {
+            container.setVisible(false);
+            updateState();
+        });
+
+        sequence.play();
+    }
+
+    public void initData(Room room, User user) {
+        this.currentRoom = room;
+        System.out.println("Initializing room: " + room.getId());
+
+        // Debug print the initial state
+        if (room.getState() != null) {
+            System.out.println("Initial room state: " + room.getStateJson());
+        } else {
+            System.out.println("No initial state found");
+        }
+
+        if (user == null) {
             this.currentUser = new User();
             currentUser.setId(1L);
             currentUser.setName("TestUser");
         } else {
-            this.currentUser = passedUser;
+            this.currentUser = user;
+        }
+
+        // Load saved state
+        this.roomState = room.getState();
+        if (this.roomState == null) {
+            System.out.println("Creating new room state");
+            this.roomState = new RoomState();
+            currentRoom.setState(this.roomState);
+        } else {
+            System.out.println("Loaded existing room state with " +
+                    roomState.getWidgetPositions().size() + " widget positions");
+
+            // Debug print all saved widget states
+            roomState.getWidgetPositions().forEach((widgetId, pos) -> {
+                System.out.println("Loaded state for " + widgetId +
+                        " | Visible: " + pos.isVisible() +
+                        " | Position: (" + pos.getX() + ", " + pos.getY() + ")");
+            });
         }
 
         roomNameLabel.setText(room.getName());
@@ -166,34 +334,448 @@ public class RoomPageController {
             backgroundImage.setImage(new Image(getClass().getResourceAsStream("/images/room2.jpg")));
         }
 
+        // Wait for scene to be ready before restoring state
         backgroundImage.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 backgroundImage.fitWidthProperty().bind(newScene.widthProperty());
                 backgroundImage.fitHeightProperty().bind(newScene.heightProperty());
-            }
 
-            // Add mouse click event listener to the scene to detect clicks outside the chat box
-            newScene.setOnMouseClicked(event -> {
-                // If the chat container is visible and click is outside the chatScrollPane, hide it
-                if (chatVisible && !chatScrollPane.getBoundsInParent().contains(event.getSceneX(), event.getSceneY())) {
-                    hideChatContainer();
-                }
-            });
+                // Ensure all widgets are initialized before restoring state
+                Platform.runLater(() -> {
+                    System.out.println("Scene is ready, initializing widgets...");
+                    ensureWidgetsInWorkspace();
+
+                    // Add a small delay to ensure all widgets are properly laid out
+                    PauseTransition delay = new PauseTransition(Duration.millis(100));
+                    delay.setOnFinished(e -> {
+                        System.out.println("Restoring room state...");
+                        applySavedState();
+                    });
+                    delay.play();
+                });
+            }
         });
+
+        // Set up state tracking after initialization
+        setupStateTracking();
     }
 
+    private void setupStateTracking() {
+        // Track all existing nodes
+        workspacePane.getChildren().addListener((ListChangeListener<Node>) c -> {
+            while (c.next()) {
+                for (Node node : c.getAddedSubList()) {
+                    trackNodeMovement(node);
+                }
+            }
+        });
 
+        // Track initial nodes
+        workspacePane.getChildren().forEach(this::trackNodeMovement);
+    }
+
+    private void trackNodeMovement(Node node) {
+        if (node == null || node.getId() == null) {
+            return;
+        }
+
+        // Track position changes
+        node.layoutXProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Position changed for " + node.getId() + ": X = " + newVal);
+            updateState();
+        });
+
+        node.layoutYProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Position changed for " + node.getId() + ": Y = " + newVal);
+            updateState();
+        });
+
+        // Track visibility changes
+        node.visibleProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Visibility changed for " + node.getId() + ": " + newVal);
+            updateState();
+        });
+
+        // Track parent changes (in case widget is removed/added)
+        node.parentProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Parent changed for " + node.getId());
+            if (newVal == null && oldVal != null) {
+                // Only attempt to re-add the node if it's not already in the workspace
+                if (!workspacePane.getChildren().contains(node)) {
+                    System.out.println("Re-adding widget to workspace: " + node.getId());
+                    try {
+                        workspacePane.getChildren().add(node);
+                    } catch (IllegalArgumentException e) {
+                        System.err.println("Cannot add " + node.getId() + " to workspace: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Widget " + node.getId() + " is already in workspace, skipping add");
+                }
+            }
+            updateState();
+        });
+
+        // Initial state capture
+        updateState();
+    }
+
+    private void updateState() {
+        if (roomState == null || currentRoom == null) {
+            System.err.println("Cannot update state: roomState or currentRoom is null");
+            return;
+        }
+
+        System.out.println("=== Saving Room State ===");
+
+        // Save widget positions and visibility
+        workspacePane.getChildren().forEach(node -> {
+            if (node.getId() == null) {
+                System.out.println("Node without ID: " + node);
+                return;
+            }
+
+            // Get current widget state
+            RoomState.WidgetPosition currentPos = roomState.getWidgetPositions().get(node.getId());
+
+            // Create new position state
+            RoomState.WidgetPosition pos = new RoomState.WidgetPosition();
+            // Update position setting to include translation
+            pos.setX(node.getLayoutX() + node.getTranslateX());
+            pos.setY(node.getLayoutY() + node.getTranslateY());
+            pos.setVisible(node.isVisible());
+            
+            // If it's a sticky note, store additional info
+            if (node instanceof StickyNote) {
+                pos.setType("StickyNote");
+            }
+
+            // Only update state if there's an actual change
+            if (currentPos == null ||
+                    currentPos.getX() != pos.getX() ||
+                    currentPos.getY() != pos.getY() ||
+                    currentPos.isVisible() != pos.isVisible()) {
+
+                System.out.println("Saving updated state for " + node.getId() +
+                        "\n  Position: (" + pos.getX() + ", " + pos.getY() + ")" +
+                        "\n  Visibility: " + pos.isVisible() +
+                        (currentPos != null ?
+                                "\n  Previous visibility: " + currentPos.isVisible() :
+                                "\n  No previous state"));
+
+            roomState.getWidgetPositions().put(node.getId(), pos);
+
+                // Save state immediately when visibility changes
+                if (currentPos == null || currentPos.isVisible() != pos.isVisible()) {
+                    try {
+                        System.out.println("Saving state immediately due to visibility change");
+        currentRoom.setState(roomState);
+                        roomService.saveImmediately(currentRoom);
+                    } catch (Exception e) {
+                        System.err.println("Error saving immediate state update: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
+        
+        // Check for removed widgets (especially important for sticky notes)
+        List<String> widgetsToRemove = new ArrayList<>();
+        roomState.getWidgetPositions().forEach((widgetId, pos) -> {
+            boolean found = false;
+            for (Node node : workspacePane.getChildren()) {
+                if (widgetId.equals(node.getId())) {
+                    found = true;
+                    break;
+                }
+            }
+            
+            if (!found && (widgetId.startsWith("stickyNote_") || 
+                (pos.getType() != null && pos.getType().equals("StickyNote")))) {
+                widgetsToRemove.add(widgetId);
+            }
+        });
+        
+        // Remove widgets that no longer exist
+        widgetsToRemove.forEach(widgetId -> {
+            System.out.println("Removing state for deleted widget: " + widgetId);
+            roomState.getWidgetPositions().remove(widgetId);
+        });
+
+        // Save todo items
+        roomState.getTodoItems().clear();
+        if (todoListWidget != null) {
+            List<TodoListWidget.TodoItem> items = todoListWidget.getTodoItems();
+            for (TodoListWidget.TodoItem item : items) {
+                RoomState.TodoItem stateItem = new RoomState.TodoItem();
+                stateItem.setText(item.getText());
+                stateItem.setCompleted(item.isCompleted());
+                roomState.getTodoItems().add(stateItem);
+            }
+        }
+
+        // Update current room state and save
+        try {
+            currentRoom.setState(roomState);
+            roomService.saveImmediately(currentRoom);
+            System.out.println("Room state saved successfully");
+            System.out.println("Saved state JSON: " + currentRoom.getStateJson());
+        } catch (Exception e) {
+            System.err.println("Error saving room state: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void applySavedState() {
+        if (roomState == null) {
+            System.out.println("No room state to restore");
+            return;
+        }
+
+        try {
+            isRestoringState = true;
+            System.out.println("=== Starting State Restoration ===");
+            System.out.println("Room state widget positions: " + roomState.getWidgetPositions().size());
+
+            // Ensure all widgets are in workspace first
+            ensureWidgetsInWorkspace();
+            
+            // Handle sticky notes first (create them if they don't exist)
+            List<String> processedStickyNotes = new ArrayList<>();
+            roomState.getWidgetPositions().forEach((widgetId, pos) -> {
+                if (widgetId.startsWith("stickyNote_") || 
+                     (pos.getType() != null && pos.getType().equals("StickyNote"))) {
+                    boolean found = false;
+                    for (Node node : workspacePane.getChildren()) {
+                        if (widgetId.equals(node.getId())) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    
+                    if (!found && pos.isVisible()) {
+                        // Create a new sticky note
+                        StickyNote note = new StickyNote(new NotesAIController());
+                        note.setId(widgetId);
+                        note.setLayoutX(pos.getX());
+                        note.setLayoutY(pos.getY());
+                        note.setVisible(true);
+                        // Set close sound callback
+                        note.setOnCloseSound(() -> playCloseWidgetSound());
+                        workspacePane.getChildren().add(note);
+                        System.out.println("Restored sticky note from state: " + widgetId);
+                    }
+                    
+                    processedStickyNotes.add(widgetId);
+                }
+            });
+
+            // Create a map of all widgets for easier access
+            Map<String, Node> widgetMap = new HashMap<>();
+            workspacePane.getChildren().forEach(node -> {
+                if (node.getId() != null) {
+                    widgetMap.put(node.getId(), node);
+                }
+            });
+
+            // Single pass restoration with proper ordering
+            roomState.getWidgetPositions().forEach((widgetId, pos) -> {
+                // Skip sticky notes as we've already processed them
+                if (processedStickyNotes.contains(widgetId)) {
+                    return;
+                }
+                
+                Node widget = widgetMap.get(widgetId);
+                if (widget != null) {
+                    // First update position
+                    widget.setLayoutX(pos.getX());
+                    widget.setLayoutY(pos.getY());
+                    widget.setTranslateX(0);
+                    widget.setTranslateY(0);
+
+                    // Ensure widget is properly set up
+                    widget.setManaged(true);
+                    widget.setMouseTransparent(false);
+
+                    // Force visibility state immediately
+                    widget.setVisible(pos.isVisible());
+
+                    // If visible, ensure proper z-order
+                    if (pos.isVisible()) {
+                        widget.toFront();
+                    }
+
+                    System.out.println("Restored widget: " + widgetId +
+                            " | Position: (" + pos.getX() + ", " + pos.getY() + ")" +
+                            " | Visibility: " + pos.isVisible());
+                } else {
+                    System.err.println("Widget not found: " + widgetId);
+                }
+            });
+
+            // Force a layout pass
+            workspacePane.layout();
+            
+            // Restore Todo items
+            restoreTodoItems();
+
+            // Verify final state after a short delay
+            PauseTransition verificationDelay = new PauseTransition(Duration.millis(100));
+            verificationDelay.setOnFinished(e -> {
+                System.out.println("=== Verifying Final State ===");
+                widgetMap.forEach((id, widget) -> {
+                    RoomState.WidgetPosition savedPos = roomState.getWidgetPositions().get(id);
+                    if (savedPos != null) {
+                        boolean visibilityMatch = savedPos.isVisible() == widget.isVisible();
+                        System.out.println("Widget " + id + " final state:" +
+                                "\n  Expected visibility: " + savedPos.isVisible() +
+                                "\n  Actual visibility: " + widget.isVisible() +
+                                "\n  Visibility matches: " + visibilityMatch);
+
+                        if (!visibilityMatch) {
+                            System.out.println("  Forcing visibility correction for " + id);
+                            widget.setVisible(savedPos.isVisible());
+                        }
+                    }
+                });
+            });
+            verificationDelay.play();
+        } finally {
+            isRestoringState = false;
+        }
+    }
+
+    private void ensureWidgetsInWorkspace() {
+        System.out.println("Ensuring widgets are in workspace...");
+
+        // List of all widget containers that should be in the workspace
+        Node[] widgets = {
+                whiteboardContainer,
+                timerContainer,
+                todoContainer,
+                notesContainer,
+                youtubeContainer,
+                aiChatContainer
+        };
+
+        for (Node widget : widgets) {
+            if (widget != null) {
+                if (!workspacePane.getChildren().contains(widget)) {
+                    System.out.println("Adding missing widget to workspace: " + widget.getId());
+                    workspacePane.getChildren().add(widget);
+                }
+                // Ensure the widget is properly set up
+                widget.setManaged(true);
+                widget.setMouseTransparent(false);
+                widget.setCache(true); // Enable caching for better performance
+            } else {
+                System.err.println("Warning: widget is null!");
+            }
+        }
+
+        System.out.println("Workspace now contains " + workspacePane.getChildren().size() + " widgets");
+    }
+
+    private void restoreTodoItems() {
+        System.out.println("Restoring " + roomState.getTodoItems().size() + " todo items");
+        
+        if (todoListWidget != null) {
+            todoListWidget.clearTasks();
+            
+            if (roomState.getTodoItems().isEmpty()) {
+                // Add a default welcome task if list is empty
+                todoListWidget.addTaskItem("Welcome! Add your tasks here 📝", false);
+            } else {
+                roomState.getTodoItems().forEach(item -> {
+                    todoListWidget.addTaskItem(item.getText(), item.isCompleted());
+                });
+            }
+        }
+    }
 
     @FXML
     private void handleLeaveRoom() {
-        System.out.println("Leave Room button clicked");
+        System.out.println("=== Saving Final Room State ===");
+
+        // Force a final state update before leaving
+        updateState();
+
+        // Save state immediately
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/interfaces/rooms/StudyRoom.fxml"));
-            Stage stage = (Stage) backgroundImage.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
+            roomService.saveImmediately(currentRoom);
+            System.out.println("Room state saved successfully before leaving");
+        } catch (Exception e) {
+            System.err.println("Error saving room state before leaving: " + e.getMessage());
+        }
+
+        // Clean up resources
+        cleanupResources();
+
+        try {
+            // 1. Get reference to the main container
+            BorderPane rootPane = (BorderPane) backgroundImage.getScene().getRoot();
+            Node sidebar = rootPane.getLeft();
+
+            // Detach sidebar from old root to avoid parenting issues
+            rootPane.setLeft(null);
+
+            // 2. Load StudyRoom content
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/rooms/StudyRoom.fxml"));
+            Parent studyRoomContent = loader.load();
+
+            // 3. Create new container with preserved sidebar
+            BorderPane newRoot = new BorderPane();
+            newRoot.setLeft(sidebar); // Reattach sidebar
+            newRoot.setCenter(studyRoomContent);
+
+            // 4. Update the scene root
+            Scene currentScene = backgroundImage.getScene();
+            currentScene.setRoot(newRoot);
+
+            // 5. Update the sidebar controller's reference
+            if (sidebar instanceof VBox) {
+                Object controller = ((VBox) sidebar).getProperties().get("controller");
+                if (controller instanceof SidebarController) {
+                    ((SidebarController) controller).setMainContainer(newRoot);
+                }
+            }
+
         } catch (IOException e) {
+            System.err.println("Error loading study room scene: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    // Method to clean up resources when leaving the room
+    private void cleanupResources() {
+        // Clear sticky notes from workspace
+        List<Node> nodesToRemove = new ArrayList<>();
+        for (Node node : workspacePane.getChildren()) {
+            if (node instanceof StickyNote) {
+                nodesToRemove.add(node);
+            }
+        }
+        
+        // Remove in a separate loop to avoid ConcurrentModificationException
+        for (Node node : nodesToRemove) {
+            try {
+                workspacePane.getChildren().remove(node);
+            } catch (Exception e) {
+                System.err.println("Error removing sticky note: " + e.getMessage());
+            }
+        }
+        
+        // Stop any running timers
+        if (timer != null) {
+            timer.stop();
+        }
+        
+        // Stop any playing sounds
+        if (timerPlayer != null) {
+            timerPlayer.stop();
+        }
+        
+        if (backgroundPlayer != null) {
+            backgroundPlayer.stop();
         }
     }
 
@@ -315,8 +897,6 @@ public class RoomPageController {
         alert.showAndWait();
     }
 
-
-
     // Modified message adder
     private void addMessageToChat(String sender, String text, boolean isAI) {
         VBox messageBubble = new VBox();
@@ -434,7 +1014,6 @@ public class RoomPageController {
         translateTransition.play();  // Start the transition
     }
 
-
     // Add the selected emoji to the message input field
     public void addEmojiToTextField(String emoji) {
         messageInput.appendText(emoji);  // Add the emoji to the text field
@@ -458,14 +1037,20 @@ public class RoomPageController {
 
     @FXML
     private void handleWhiteboardButton() {
-        whiteboardContainer.setVisible(true);
-        whiteboardCanvas.setWidth(600);
-        whiteboardCanvas.setHeight(400);
+        playClickSound();
+        boolean newVisibility = !whiteboardContainer.isVisible();
+        whiteboardContainer.setVisible(newVisibility);
+        if (newVisibility) {
+            whiteboardContainer.toFront();
+        }
+        updateState();
     }
 
     @FXML
     private void handleCloseWhiteboard() {
+        playCloseWidgetSound();
         whiteboardContainer.setVisible(false);
+        updateState();
     }
 
     @FXML
@@ -475,6 +1060,11 @@ public class RoomPageController {
 
     @FXML
     private void handleMousePressed(MouseEvent event) {
+        currentStrokePoints = new ArrayList<>();
+        currentStrokeColor = colorPicker.getValue().toString();
+        currentStrokePoints.add(event.getX());
+        currentStrokePoints.add(event.getY());
+
         isDrawing = true;
         lastX = event.getX();
         lastY = event.getY();
@@ -482,6 +1072,8 @@ public class RoomPageController {
 
     @FXML
     private void handleMouseDragged(MouseEvent event) {
+        currentStrokePoints.add(event.getX());
+        currentStrokePoints.add(event.getY());
         if (isDrawing) {
             double currentX = event.getX();
             double currentY = event.getY();
@@ -495,14 +1087,24 @@ public class RoomPageController {
 
     @FXML
     private void handleMouseReleased(MouseEvent event) {
+        RoomState.WhiteboardStroke stroke = new RoomState.WhiteboardStroke();
+        stroke.setColor(currentStrokeColor);
+        stroke.getPoints().addAll(currentStrokePoints);
+        roomState.getWhiteboardData().add(stroke);
+        updateState();
         isDrawing = false;
     }
 
     //YOUTUBE PLAYER
     @FXML
     private void handleYoutubeButton() {
-        youtubeContainer.setVisible(true);
-        youtubeContainer.toFront();
+        playClickSound();
+        boolean newVisibility = !youtubeContainer.isVisible();
+        youtubeContainer.setVisible(newVisibility);
+        if (newVisibility) {
+            youtubeContainer.toFront();
+        }
+        updateState();
     }
 
     @FXML
@@ -521,8 +1123,10 @@ public class RoomPageController {
 
     @FXML
     private void handleCloseYoutube() {
+        playCloseWidgetSound();
         youtubeWebView.getEngine().load(null);
         youtubeContainer.setVisible(false);
+        updateState();
     }
 
     private String extractYouTubeId(String url) {
@@ -537,10 +1141,13 @@ public class RoomPageController {
 
     @FXML
     private void handleAIChatButton() {
-        aiChatContainer.setVisible(!aiChatContainer.isVisible());
-        if (aiChatContainer.isVisible()) {
+        playClickSound();
+        boolean newVisibility = !aiChatContainer.isVisible();
+        aiChatContainer.setVisible(newVisibility);
+        if (newVisibility) {
             aiChatContainer.toFront();
         }
+        updateState();
     }
 
     @FXML
@@ -593,20 +1200,26 @@ public class RoomPageController {
 
     @FXML
     private void handleCloseAIChat() {
+        playCloseWidgetSound();
         aiChatContainer.setVisible(false);
+        updateState();
     }
 
     @FXML
     private void handleTimerButton() {
-        timerContainer.setVisible(!timerContainer.isVisible());
-        if (timerContainer.isVisible()) {
+        playClickSound();
+        boolean newVisibility = !timerContainer.isVisible();
+        timerContainer.setVisible(newVisibility);
+        if (newVisibility) {
             timerContainer.toFront();
         }
+        updateState();
     }
 
     @FXML
     private void handleStartTimer() {
         try {
+
             int hours = parseIntOrDefault(hoursInput.getText(), 0);
             int minutes = parseIntOrDefault(minutesInput.getText(), 0);
             int seconds = parseIntOrDefault(secondsInput.getText(), 0);
@@ -632,10 +1245,12 @@ public class RoomPageController {
             // ✨ Set encouragement message
             setEncouragementMessage(hours, minutes);
 
+
         } catch (NumberFormatException e) {
             showAlert("Invalid Input", "Please enter numbers only");
             encouragementLabel.setText(""); // Clear the message
         }
+
     }
     private void setEncouragementMessage(int hours, int minutes) {
         List<String> messages = new ArrayList<>();
@@ -725,18 +1340,37 @@ public class RoomPageController {
     }
     private void playTimerSound() {
         try {
-            String soundPath = getClass().getResource("/sounds/Ripple.mp3").toExternalForm();
+            URL resource = getClass().getResource("/sounds/Ripple.wav");
+            if (resource == null) {
+                throw new IllegalArgumentException("Audio file not found!");
+            }
+
+            String soundPath = resource.toExternalForm();
             Media sound = new Media(soundPath);
-            MediaPlayer mediaPlayer = new MediaPlayer(sound);
+            timerPlayer = new MediaPlayer(sound);
 
-            mediaPlayer.setCycleCount(3); // 🔁 Loop 3 times
+            // Reset play count
+            playCount = 0;
 
-            mediaPlayer.play();
+            timerPlayer.setOnEndOfMedia(() -> {
+                playCount++;
+                if (playCount < MAX_PLAYS) {
+                    // Pause for 500 milliseconds before replaying
+                    PauseTransition pause = new PauseTransition(Duration.millis(500));
+                    pause.setOnFinished(e -> {
+                        timerPlayer.seek(Duration.ZERO);
+                        timerPlayer.play();
+                    });
+                    pause.play();
+                }
+            });
+
+            timerPlayer.play();
+
         } catch (Exception e) {
             System.out.println("Error playing timer sound: " + e.getMessage());
         }
     }
-
 
 
 
@@ -809,7 +1443,7 @@ public class RoomPageController {
                     "Time to shine again! 🌟",
                     "Focus mode: ON! 🎯",
                     "Charging back into action! ⚡",
-                    "You’re unstoppable! 🔥",
+                    "You're unstoppable! 🔥",
                     "Brains reloaded, go go go! 🧠💨",
                     "No one hustles like you! 🏃‍♂️💨",
                     "Welcome back, warrior! 🛡️📚"
@@ -824,8 +1458,10 @@ public class RoomPageController {
 
     @FXML
     private void handleCloseTimer() {
+        playCloseWidgetSound();
         handleStopTimer();
         timerContainer.setVisible(false);
+        updateState();
     }
 
 
@@ -843,49 +1479,49 @@ public class RoomPageController {
     //TO DO LIST
     @FXML
     private void handleTodoButton() {
-        todoContainer.setVisible(!todoContainer.isVisible());
-        if (todoContainer.isVisible()) {
+        playClickSound();
+        boolean newVisibility = !todoContainer.isVisible();
+        todoContainer.setVisible(newVisibility);
+        if (newVisibility) {
             todoContainer.toFront();
+            
+            // Make sure the TodoListWidget is visible too
+            if (todoListWidget != null) {
+                todoListWidget.restore();
+            }
         }
+        updateState();
     }
 
     @FXML
     private void handleAddTodo() {
-        String text = todoInput.getText().trim();
-        if (!text.isEmpty()) {
-            addTodoItem(text);
-            todoInput.clear();
+        if (todoListWidget != null && todoInput != null) {
+            String text = todoInput.getText().trim();
+            if (!text.isEmpty()) {
+                todoListWidget.addTaskItem(text, false);
+                todoInput.clear();
+                updateState();
+            }
         }
-    }
-
-    private void addTodoItem(String text) {
-        HBox itemBox = new HBox();
-        itemBox.getStyleClass().add("todo-item");
-
-        CheckBox checkBox = new CheckBox();
-        checkBox.getStyleClass().add("todo-checkbox");
-
-        Label textLabel = new Label(text);
-        textLabel.getStyleClass().add("todo-text");
-
-        Button removeBtn = new Button("✕");
-        removeBtn.getStyleClass().add("todo-remove-btn");
-
-        // Handle checkbox changes
-        checkBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
-            textLabel.setStyle(newVal ? "-fx-strikethrough: true; -fx-text-fill: #95a5a6;" : "");
-        });
-
-        // Handle remove button
-        removeBtn.setOnAction(e -> todoList.getChildren().remove(itemBox));
-
-        itemBox.getChildren().addAll(checkBox, textLabel, removeBtn);
-        todoList.getChildren().add(itemBox);
     }
 
     @FXML
     private void handleCloseTodo() {
-        todoContainer.setVisible(false);
+        playCloseWidgetSound();
+        try {
+            if (todoListWidget != null) {
+                todoListWidget.animateAndClose();
+            } else {
+                // Fallback if widget is null
+                todoContainer.setVisible(false);
+                updateState();
+            }
+        } catch (Exception e) {
+            System.err.println("Error closing Todo list: " + e.getMessage());
+            // Fallback in case of errors
+            todoContainer.setVisible(false);
+            updateState();
+        }
     }
 
     @FXML
@@ -901,9 +1537,33 @@ public class RoomPageController {
     //notes
     @FXML
     private void handleNotesButton() {
-        notesContainer.setVisible(!notesContainer.isVisible());
-        if (notesContainer.isVisible()) {
-            notesContainer.toFront();
+        playClickSound();
+        try {
+            // Create a new sticky note and add it directly to workspace
+            StickyNote note = new StickyNote(new NotesAIController());
+            
+            // Position with slight randomization
+            Random random = new Random();
+            double posX = 100 + random.nextInt(200);
+            double posY = 100 + random.nextInt(150);
+            note.setLayoutX(posX);
+            note.setLayoutY(posY);
+            
+            // Give unique ID for state management
+            note.setId("stickyNote_" + System.currentTimeMillis());
+            
+            // Set close sound callback
+            note.setOnCloseSound(() -> playCloseWidgetSound());
+            
+            // Add to workspace and bring to front
+            workspacePane.getChildren().add(note);
+            note.toFront();
+            
+            // Save state
+            updateState();
+        } catch (Exception e) {
+            System.err.println("Error creating sticky note: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -920,6 +1580,7 @@ public class RoomPageController {
     @FXML
     private void handleCloseNotes() {
         notesContainer.setVisible(false);
+        updateState();
     }
 //add photos
 
@@ -1010,4 +1671,107 @@ public class RoomPageController {
 
         sequence.play();
     }
+
+    public void forceStateRestoration() {
+        Platform.runLater(() -> {
+            applySavedState();
+            workspacePane.requestLayout();
+
+            // Debug: Print all nodes in workspace
+            System.out.println("=== Workspace Children ===");
+            workspacePane.getChildren().forEach(node ->
+                    System.out.println(node.getId() + " | Visible: " + node.isVisible())
+            );
+        });
+    }
+
+    private void setupBackgroundMusic() {
+        try {
+            URL resource = getClass().getResource("/sounds/DoubleKnock.wav");
+            if (resource == null) {
+                throw new IllegalArgumentException("Background music file not found!");
+            }
+
+            String soundPath = resource.toExternalForm();
+            Media sound = new Media(soundPath);
+            backgroundPlayer = new MediaPlayer(sound);
+
+            backgroundPlayer.setCycleCount(1);         // Play once
+            backgroundPlayer.setVolume(0.9);           // 90% volume
+
+            backgroundPlayer.setOnEndOfMedia(() -> {
+                System.out.println("Background music finished playing.");
+                isMusicPlaying = false;
+            });
+
+            backgroundPlayer.play();
+            isMusicPlaying = true;
+
+        } catch (Exception e) {
+            System.out.println("Error loading background music: " + e.getMessage());
+        }
+    }
+
+    private void setupSounds() {
+        try {
+            // Initialize click sound
+            URL clickResource = getClass().getResource("/sounds/click.wav");
+            if (clickResource == null) {
+                // Try alternative sound if click.wav doesn't exist
+                clickResource = getClass().getResource("/sounds/DoubleKnock.wav");
+            }
+            
+            if (clickResource != null) {
+                Media clickSound = new Media(clickResource.toExternalForm());
+                clickSoundPlayer = new MediaPlayer(clickSound);
+                clickSoundPlayer.setVolume(0.5); // 50% volume
+            } else {
+                System.err.println("Click sound file not found");
+            }
+            
+            // Initialize close widget sound
+            URL closeResource = getClass().getResource("/sounds/ZipZap.wav");
+            if (closeResource == null) {
+                // Try alternative sound if close.wav doesn't exist
+                closeResource = getClass().getResource("/sounds/ZipZap.wav");
+            }
+            
+            if (closeResource != null) {
+                Media closeSound = new Media(closeResource.toExternalForm());
+                closeWidgetSoundPlayer = new MediaPlayer(closeSound);
+                closeWidgetSoundPlayer.setVolume(0.6); // 60% volume
+            } else {
+                System.err.println("Close widget sound file not found");
+            }
+        } catch (Exception e) {
+            System.err.println("Error setting up sound effects: " + e.getMessage());
+        }
+    }
+    
+    // Add this method to play button click sound
+    private void playClickSound() {
+        try {
+            if (clickSoundPlayer != null) {
+                clickSoundPlayer.stop();
+                clickSoundPlayer.seek(Duration.ZERO);
+                clickSoundPlayer.play();
+            }
+        } catch (Exception e) {
+            System.err.println("Error playing click sound: " + e.getMessage());
+        }
+    }
+    
+    // Add this method to play widget close sound
+    private void playCloseWidgetSound() {
+        try {
+            if (closeWidgetSoundPlayer != null) {
+                closeWidgetSoundPlayer.stop();
+                closeWidgetSoundPlayer.seek(Duration.ZERO);
+                closeWidgetSoundPlayer.play();
+            }
+        } catch (Exception e) {
+            System.err.println("Error playing close widget sound: " + e.getMessage());
+        }
+    }
+
 }

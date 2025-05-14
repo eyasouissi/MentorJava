@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/11.0.1"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.group.AffichageController"
+            prefWidth="1100" prefHeight="750"
+            style="-fx-background-color: #f0f4f8;">
+
+    <top>
+        <HBox spacing="10" alignment="CENTER_LEFT"
+              style="-fx-background-color: #1a73e8; -fx-padding: 20;">
+            <Label text="📋 Groupes disponibles"
+                   style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;" />
+            <Pane HBox.hgrow="ALWAYS" />
+            <Button fx:id="toggleViewButton" text="🔁 Basculer Vue"
+                    style="-fx-background-color: white; -fx-text-fill: #1a73e8; -fx-font-weight: bold;" />
+        </HBox>
+    </top>
+
+    <center>
+        <StackPane fx:id="viewContainer" padding="20">
+            <ListView fx:id="groupListView" visible="true"
+                      style="-fx-background-color: white; -fx-border-color: #d1d1d1;" />
+            <FlowPane fx:id="kanbanPane" visible="false" hgap="20" vgap="20"
+                      style="-fx-padding: 20;" />
+        </StackPane>
+    </center>
+</BorderPane>

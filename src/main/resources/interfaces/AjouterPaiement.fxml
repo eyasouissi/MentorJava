@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.AjouterPaiement"
+            stylesheets="@/css/styles.css"
+            prefWidth="800" prefHeight="600"
+            style="-fx-background-color: linear-gradient(                        to bottom right,                        #ffffff 0%,                        #8c84a1 30%,                        #6f6280 50%,                        #8c84a1 70%,                        #ffffff 100%                    );">
+
+    <!-- Sidebar -->
+    <left>
+        <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
+    </left>
+
+    <!-- Main Content -->
+    <center>
+        <StackPane>
+
+
+            <!-- Main Content -->
+            <ScrollPane fitToWidth="true" fitToHeight="true" style="-fx-background: transparent; -fx-background-color: transparent;">
+                <VBox alignment="TOP_CENTER" spacing="15" style="-fx-padding: 20;">
+                    <!-- Header -->
+                    <HBox alignment="CENTER" style="-fx-padding: 15 0 30 0;">
+                        <Label text="Complete Your Subscription" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    </HBox>
+
+                    <!-- Card Container -->
+                    <VBox styleClass="payment-card" style="-fx-background-color: white; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4); -fx-padding: 25;">
+                        <!-- Card Header -->
+                        <HBox alignment="CENTER" style="-fx-padding: 0 0 20 0;">
+                            <StackPane>
+                                <Circle radius="40" fill="#f8f5ff"/>
+
+                            </StackPane>
+                        </HBox>
+
+                        <!-- Offer Information -->
+                        <VBox alignment="CENTER" spacing="10" style="-fx-padding: 0 0 20 0;">
+                            <Label text="Subscription Details" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #857e98;"/>
+
+                            <HBox alignment="CENTER" spacing="10" style="-fx-background-color: #f8f5ff; -fx-background-radius: 10; -fx-padding: 15;">
+                                <VBox HBox.hgrow="ALWAYS" alignment="CENTER_LEFT" spacing="5">
+                                    <Label fx:id="offreLabel" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #857e98;"/>
+                                    <Label fx:id="prixLabel" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #7d7598;"/>
+                                </VBox>
+
+                                <VBox alignment="CENTER_RIGHT">
+                                    <Label text="PREMIUM" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: white; -fx-background-color: #ba9cf4; -fx-padding: 5 10; -fx-background-radius: 5;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- User Information -->
+                        <VBox spacing="15" style="-fx-padding: 0 0 20 0;">
+                            <Label text="User Information" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #a287d6;"/>
+
+                            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #f8f5ff; -fx-background-radius: 10; -fx-padding: 15;">
+                                <StackPane>
+                                    <Circle radius="20" fill="#e6d8ff"/>
+                                    <Label text="👤" style="-fx-font-size: 16px;"/>
+                                </StackPane>
+
+                                <VBox spacing="2">
+                                    <Label text="Account Name" style="-fx-font-size: 12px; -fx-text-fill: #777777;"/>
+                                    <Label fx:id="userLabel" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #a287d6;"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Payment Date -->
+                        <VBox spacing="15" style="-fx-padding: 0 0 20 0;">
+                            <Label text="Payment Date" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #a287d6;"/>
+
+                            <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-background-color: #f8f5ff; -fx-background-radius: 10; -fx-padding: 15;">
+                                <StackPane>
+                                    <Circle radius="20" fill="#e6d8ff"/>
+                                    <Label text="📅" style="-fx-font-size: 16px;"/>
+                                </StackPane>
+
+                                <DatePicker fx:id="datePaiementPicker" promptText="Select payment date"
+                                            style="-fx-background-color: transparent;" prefWidth="300" styleClass="custom-date-picker"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Payment Method -->
+                        <VBox spacing="15" style="-fx-padding: 0 0 20 0;">
+                            <Label text="Payment Method" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #a287d6;"/>
+
+                            <HBox spacing="15">
+                                <StackPane styleClass="payment-method-card" style="-fx-background-color: #f8f5ff; -fx-background-radius: 10; -fx-padding: 15; -fx-border-color: #7d7598; -fx-border-width: 2; -fx-border-radius: 10;">
+                                    <VBox alignment="CENTER" spacing="5">
+                                        <Label text="💳" style="-fx-font-size: 20px;"/>
+                                        <Label text="Credit Card" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #a287d6;"/>
+                                    </VBox>
+                                    <HBox.margin>
+                                        <Insets right="10"/>
+                                    </HBox.margin>
+                                </StackPane>
+
+                                <StackPane styleClass="payment-method-card" style="-fx-background-color: #f8f5ff; -fx-background-radius: 10; -fx-padding: 15; -fx-opacity: 0.6;">
+                                    <VBox alignment="CENTER" spacing="5">
+                                        <Label text="🏦" style="-fx-font-size: 20px;"/>
+                                        <Label text="Bank Transfer" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #777777;"/>
+                                    </VBox>
+                                </StackPane>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Summary -->
+                        <VBox spacing="10" style="-fx-padding: 0 0 20 0;">
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Subscription Fee" style="-fx-font-size: 14px; -fx-text-fill: #777777;" HBox.hgrow="ALWAYS"/>
+
+                            </HBox>
+
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Tax (5%)" style="-fx-font-size: 14px; -fx-text-fill: #777777;" HBox.hgrow="ALWAYS"/>
+
+                            </HBox>
+
+                            <Separator style="-fx-background-color: #e0e0e0;"/>
+
+                            <HBox alignment="CENTER_LEFT" spacing="10">
+                                <Label text="Total" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #857e98;" HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Payment Button -->
+                        <VBox alignment="CENTER" spacing="10">
+                            <Button fx:id="confirmerButton" text="Complete Payment"
+                                    onAction="#ajouterPaiement"
+                                    style="-fx-background-color: #7d7598; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 12 20; -fx-background-radius: 8;"/>
+
+                            <Label fx:id="statusLabel" style="-fx-font-weight: bold; -fx-text-fill: #7d7598;"/>
+
+                            <Label text="By clicking 'Complete Payment', you agree to our Terms of Service"
+                                   style="-fx-font-size: 12px; -fx-text-fill: #888888; -fx-padding: 10 0 0 0;"/>
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </ScrollPane>
+        </StackPane>
+    </center>
+</BorderPane>

@@ -5,7 +5,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.layout.HBox;
 import java.io.IOException;
+import tn.esprit.controllers.auth.UserSession;
+import tn.esprit.entities.User;
 
 public class SidebarController {
     private BorderPane mainContainer;
@@ -15,6 +18,7 @@ public class SidebarController {
     @FXML private VBox groupesDropdown;
     @FXML private VBox eventsDropdown;
     @FXML private VBox pricingDropdown;
+    private User currentUser;
 
     public void setMainContainer(BorderPane mainContainer) {
         this.mainContainer = mainContainer;
@@ -23,6 +27,7 @@ public class SidebarController {
     @FXML
     public void initialize() {
         hideAllDropdowns();
+        currentUser = UserSession.getInstance().getCurrentUser();
     }
 
     private void hideAllDropdowns() {
@@ -88,6 +93,7 @@ public class SidebarController {
 
     @FXML
     public void logout() {
+        UserSession.getInstance().clearSession();
         loadContent("/interfaces/Auth/LoginView.fxml");
     }
 }

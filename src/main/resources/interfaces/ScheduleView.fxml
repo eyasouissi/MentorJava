@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.ScheduleViewController"
+            styleClass="main-container"
+            stylesheets="@../css/styles.css">
+    
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" 
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <!-- Header with Back Button -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Button fx:id="backButton" 
+                    onAction="#onBackClick"
+                    styleClass="icon-button">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24">
+                        <Image url="@../icons/back.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Label fx:id="groupNameLabel" styleClass="page-title" text="Group Schedule"/>
+        </HBox>
+        
+        <!-- Calendar Section -->
+        <VBox styleClass="form-container" spacing="20">
+            <Label text="Schedule a Meeting" styleClass="section-title"/>
+            
+            <HBox spacing="15" alignment="CENTER_LEFT">
+                <DatePicker fx:id="meetingDatePicker" 
+                           promptText="Select Meeting Date"
+                           styleClass="date-picker"/>
+                           
+                <Button fx:id="saveMeetingButton" 
+                        text="Save Meeting" 
+                        onAction="#onSaveMeetingClick"
+                        styleClass="primary-button"/>
+            </HBox>
+            
+            <!-- Upcoming Meetings -->
+            <VBox spacing="10">
+                <Label text="Upcoming Meetings" styleClass="section-subtitle"/>
+                <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane">
+                    <VBox fx:id="upcomingMeetingsContainer" spacing="10"/>
+                </ScrollPane>
+            </VBox>
+            
+            <!-- Calendar Tips -->
+            <VBox styleClass="tips-container" spacing="10">
+                <Label text="Tips for Effective Meetings" styleClass="section-subtitle"/>
+                <Label text="• Schedule meetings at least 24 hours in advance" wrapText="true"/>
+                <Label text="• Keep meetings focused with a clear agenda" wrapText="true"/>
+                <Label text="• Choose a time that works for most members" wrapText="true"/>
+                <Label text="• Consider using video conferencing tools for remote meetings" wrapText="true"/>
+                <Label text="• End each meeting with clear action items" wrapText="true"/>
+            </VBox>
+        </VBox>
+    </VBox>
+    
+</AnchorPane>

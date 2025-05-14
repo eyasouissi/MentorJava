@@ -349,4 +349,111 @@
 .close-button:pressed {
     -fx-background-color: linear-gradient(to bottom, #6A3093, #4A1063);
     -fx-effect: dropshadow(gaussian, rgba(106, 48, 147, 0.2), 3, 0, 0, 1);
+}/* Overlay et panneau de détails */
+.overlay-pane {
+    -fx-background-color: rgba(0, 0, 0, 0.3);
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0;
+}
+
+.event-detail-pane {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 0);
+    -fx-padding: 20px;
+    -fx-spacing: 15px;
+    -fx-pref-width: 400px;
+    -fx-max-width: 400px;
+    -fx-alignment: TOP_LEFT;
+    -fx-translate-x: 420px;
+}
+
+.close-pane-button {
+    -fx-background-color: transparent;
+    -fx-font-size: 24px;
+    -fx-text-fill: #6A3093;
+    -fx-cursor: hand;
+    -fx-padding: 0 0 10px 0;
+}
+
+.close-pane-button:hover {
+    -fx-text-fill: #8A4EBF;
+}
+
+.event-scroll-pane {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+    -fx-fit-to-width: true;
+}
+
+.event-scroll-pane .viewport {
+    -fx-background-color: transparent;
+}
+
+.event-detail-content {
+    -fx-padding: 0 10px 10px 10px;
+}
+
+/* Animation */
+.slide-in {
+    -fx-translate-x: 0;
+}
+
+.slide-out {
+    -fx-translate-x: 420px;
+}
+
+/* Styles pour le contenu des détails */
+.event-detail-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #6A3093;
+    -fx-wrap-text: true;
+}
+
+.event-detail-section {
+    -fx-spacing: 8px;
+}
+
+.event-detail-section-header {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #7D619C;
+}
+
+.event-detail-description {
+    -fx-font-size: 14px;
+    -fx-text-fill: #4A2D6B;
+    -fx-wrap-text: true;
+    -fx-padding: 10px;
+    -fx-background-color: #F8F4FF;
+    -fx-background-radius: 8px;
+}
+
+.event-detail-grid {
+    -fx-hgap: 10px;
+    -fx-vgap: 8px;
+    -fx-padding: 10px;
+}
+
+.event-detail-label {
+    -fx-font-weight: bold;
+    -fx-text-fill: #7D619C;
+    -fx-font-size: 14px;
+}
+
+.event-detail-value {
+    -fx-text-fill: #4A2D6B;
+    -fx-font-size: 14px;
+    -fx-wrap-text: true;
+}
+.calendar-back-button {
+    -fx-background-color: #6a4a8a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 6px;
+    -fx-cursor: hand;
+}
+
+.calendar-back-button:hover {
+    -fx-background-color: #7a5aa3;
 }

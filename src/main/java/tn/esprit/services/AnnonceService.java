@@ -9,9 +9,13 @@ import java.nio.file.*;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class AnnonceService {
+    private static final List<Consumer<Annonce>> listeners = new ArrayList<>();
 
     private Connection connection;
     private static final String IMAGE_DIRECTORY = "images/";  // Dossier de stockage des images
@@ -177,5 +181,78 @@ public class AnnonceService {
             }
         }
         return annonce;
+    }
+
+    public Annonce getLatestAnnonce() throws SQLException {
+        String query = "SELECT * FROM annonce ORDER BY dateA DESC LIMIT 1";
+
+        try (Connection connection = MyDataBase.getInstance().getCnx();
+             PreparedStatement pstmt = connection.prepareStatement(query);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            if (rs.next()) {
+                return mapResultSetToAnnonce(rs); // Use your existing mapping logic
+            }
+            return null;
+        }
+    }
+    public void addAnnonceCreatedListener(Consumer<Annonce> listener) {
+        listeners.add(listener);
+    }
+
+    private void notifyAnnonceCreated(Annonce annonce) {
+        listeners.forEach(listener -> listener.accept(annonce));
+    }
+
+    public void createAnnonce(Annonce annonce) throws SQLException {
+        // Your existing create logic
+        notifyAnnonceCreated(annonce); // Call this after successful creation
+    }
+
+    private Annonce mapResultSetToAnnonce(ResultSet rs) throws SQLException {
+        Annonce annonce = new Annonce(
+                rs.getString("titre_a"),
+                rs.getString("description_a"),
+                rs.getTimestamp("date_a").toLocalDateTime(),
+                rs.getString("imageUrl"),
+                rs.getInt("evenement_id")
+        );
+        annonce.setId(rs.getInt("id"));
+
+        // Add any additional fields from your database table
+        if (rs.getTimestamp("dateA") != null) {
+            annonce.setDateA(rs.getTimestamp("dateA").toLocalDateTime());
+        }
+
+        return annonce;
+    }
+
+    public Map<String, Integer> getAnnonceCountByEventType() {
+        Map<String, Integer> result = new HashMap<>();
+        String query = "SELECT e.type, COUNT(a.id) as count " +
+                       "FROM annonce a " +
+                       "JOIN evenement e ON a.evenement_id = e.id " +
+                       "GROUP BY e.type";
+        
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                String type = rs.getString("type");
+                int count = rs.getInt("count");
+                
+                // If type is null, use "Other" as the category
+                if (type == null || type.isEmpty()) {
+                    type = "Other";
+                }
+                
+                result.put(type, count);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting annonce counts by event type: " + e.getMessage());
+        }
+        
+        return result;
     }
 }

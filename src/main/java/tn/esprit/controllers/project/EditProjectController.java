@@ -40,6 +40,7 @@ public class EditProjectController {
     
     private Project selectedProject;
     private String filePath;
+    private tn.esprit.controllers.GroupDetailsController parentController;
 
     @FXML
     public void initialize() {
@@ -137,6 +138,10 @@ public class EditProjectController {
         }
     }
 
+    public void setParentController(tn.esprit.controllers.GroupDetailsController controller) {
+        this.parentController = controller;
+    }
+
     @FXML
     private void handleBrowseFile(ActionEvent event) {
         FileChooser fileChooser = new FileChooser();
@@ -175,6 +180,11 @@ public class EditProjectController {
             // Sauvegarde
             ProjectService.getInstance().updateProject(selectedProject);
             showAlert(Alert.AlertType.INFORMATION, "Projet mis à jour avec succès!");
+            
+            // Refresh parent controller if available
+            if (parentController != null) {
+                parentController.refreshProjects();
+            }
             
             // Fermeture de la fenêtre
             ((Stage) updateButton.getScene().getWindow()).close();

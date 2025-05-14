@@ -15,7 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
@@ -44,7 +44,6 @@ public class SidebarController {
 
     private User currentUser;
     private static final Map<String, String> FXML_PATHS = new HashMap<>();
-    private StackPane contentArea;
     private UserSession sessionService = UserSession.getInstance();
 
     private Timeline imageCheckTimeline;
@@ -52,23 +51,16 @@ public class SidebarController {
     private Button lastActiveButton;
 
     static {
-        FXML_PATHS.put("Courses", "/interfaces/Courses/CoursesView.fxml");
+        FXML_PATHS.put("Courses", "/interfaces/Category/CategoryView.fxml");
         FXML_PATHS.put("Category", "/interfaces/Category/CategoryView.fxml");
         FXML_PATHS.put("Forum", "/interfaces/Forum.fxml");
-        FXML_PATHS.put("Groupes", "/project/ProjectsView.fxml");
-        FXML_PATHS.put("Projects", "/group/GroupsView.fxmll");
+        FXML_PATHS.put("Groupes", "/group/GroupsView.fxml");
         FXML_PATHS.put("Events", "/interfaces/ListeEvenement.fxml");
         FXML_PATHS.put("Announcements", "/interfaces/listeAnnonces.fxml");
-        FXML_PATHS.put("Pricing", "/FXML/Admin/PricingView.fxml");
-        FXML_PATHS.put("Subscription", "/FXML/Admin/SubscriptionView.fxml");
+        FXML_PATHS.put("Pricing", "/interfaces/afficherOffre.fxml");
+        FXML_PATHS.put("Subscription", "/interfaces/AfficherPaiement.fxml");
         FXML_PATHS.put("Dashboard", "/interfaces/Admin/AdminDashboard.fxml");
         FXML_PATHS.put("users", "/interfaces/user/admin/user_crud.fxml");
-
-    }
-
-    public void setContentArea(StackPane contentArea) {
-        System.out.println("[DEBUG] Setting content area reference");
-        this.contentArea = contentArea;
     }
 
     public void setCurrentUser(User user) {
@@ -210,8 +202,6 @@ public class SidebarController {
     @FXML
     public void navigateToUsers() { loadView("users"); }
 
-
-
     private void loadView(String viewName) {
         System.out.println("[DEBUG] Attempting to load view: " + viewName);
         if (!checkSessionBeforeAction()) return;
@@ -224,19 +214,26 @@ public class SidebarController {
             }
 
             System.out.println("[DEBUG] Loading FXML from: " + fxmlPath);
-            Parent content = FXMLLoader.load(getClass().getResource(fxmlPath));
+            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
 
-            if (contentArea != null) {
-                contentArea.getChildren().clear();
-                contentArea.getChildren().add(content);
-                System.out.println("[DEBUG] View loaded successfully");
+            Scene currentScene = sidebarProfileImage.getScene();
+            if (currentScene != null) {
+                // Get the root BorderPane of the main scene
+                BorderPane rootBorderPane = (BorderPane) currentScene.getRoot();
+                // Replace the center content
+                rootBorderPane.setCenter(root);
+                System.out.println("[DEBUG] View loaded successfully into center");
             } else {
-                System.err.println("[ERROR] Content area is null!");
+                System.err.println("[ERROR] Could not get scene reference");
             }
         } catch (IOException e) {
             System.err.println("[ERROR] Failed to load view: " + e.getMessage());
             e.printStackTrace();
             showAlert("Navigation Error", "Failed to load " + viewName + " view");
+        } catch (ClassCastException e) {
+            System.err.println("[ERROR] Scene root is not a BorderPane: " + e.getMessage());
+            e.printStackTrace();
+            showAlert("Layout Error", "Main layout is not set up correctly");
         }
     }
 
@@ -290,16 +287,12 @@ public class SidebarController {
                 ctrl.setUserData(currentUser);
             }
 
-            // Handle content display
-            if (contentArea != null) {
-                contentArea.getChildren().clear();
-                contentArea.getChildren().add(root);
-            } else {
-                Stage stage = new Stage();
-                stage.setScene(new Scene(root));
-                stage.setTitle(currentUser.getName() + "'s Profile");
-                stage.show();
-            }
+            // Display in a new stage
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle(currentUser.getName() + "'s Profile");
+            stage.show();
+            
         } catch (IOException e) {
             System.err.println("[ERROR] Failed to load profile: " + e.getMessage());
             e.printStackTrace();
@@ -308,13 +301,13 @@ public class SidebarController {
             // Fallback to default profile view if admin profile fails
             if (e.getMessage().contains("adminprofile")) {
                 System.out.println("[DEBUG] Trying fallback to regular profile view");
-                goToProfileFallback();
+                goToProfileFallback(event);
             }
         }
     }
 
     // Fallback method for when admin profile fails
-    private void goToProfileFallback() {
+    private void goToProfileFallback(MouseEvent event) {
         try {
             String fallbackPath = "/interfaces/user/Profile.fxml";
             System.out.println("[DEBUG] Loading fallback profile: " + fallbackPath);
@@ -325,10 +318,9 @@ public class SidebarController {
             ProfileController ctrl = loader.getController();
             ctrl.setUserData(currentUser);
 
-            if (contentArea != null) {
-                contentArea.getChildren().clear();
-                contentArea.getChildren().add(root);
-            }
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
         } catch (IOException e) {
             System.err.println("[ERROR] Fallback profile load failed: " + e.getMessage());
             showAlert("Error", "Could not load any profile view");
@@ -347,7 +339,7 @@ public class SidebarController {
     }
 
     private boolean isLoginPageDisplayed() {
-        Stage currentStage = (Stage) (contentArea != null ? contentArea.getScene().getWindow() : null);
+        Stage currentStage = (Stage) (sidebarProfileImage != null ? sidebarProfileImage.getScene().getWindow() : null);
         return currentStage != null && currentStage.getTitle().equals("Login");
     }
 
@@ -355,11 +347,16 @@ public class SidebarController {
         Platform.runLater(() -> {
             try {
                 System.out.println("[DEBUG] Redirecting to login");
-                Parent root = FXMLLoader.load(getClass().getResource("/FXML/Auth/Login.fxml"));
-                Stage stage = (Stage) (contentArea != null ? contentArea.getScene().getWindow() : new Stage());
+                Parent root = FXMLLoader.load(getClass().getResource("/interfaces/auth/login.fxml"));
+                Stage stage = new Stage();
                 stage.setScene(new Scene(root));
                 stage.setTitle("Login");
                 stage.show();
+                
+                // Close current window if it exists
+                if (sidebarProfileImage != null && sidebarProfileImage.getScene() != null) {
+                    ((Stage) sidebarProfileImage.getScene().getWindow()).close();
+                }
             } catch (IOException e) {
                 System.err.println("[ERROR] Failed to redirect to login: " + e.getMessage());
                 e.printStackTrace();
@@ -384,4 +381,6 @@ public class SidebarController {
             alert.showAndWait();
         });
     }
+
+
 }

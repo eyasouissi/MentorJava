@@ -12,7 +12,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.entities.Room;
 import tn.esprit.entities.User;
@@ -135,7 +138,7 @@ public class StudyRoomController {
         HBox footer = new HBox(10);
         footer.setAlignment(Pos.CENTER);
 
-        Label typeLabel = new Label(room.getSettings().isPublic() ? "Public" : "Private");
+        Label typeLabel = new Label(room.getSettings().is_public() ? "Public" : "Private");
         typeLabel.getStyleClass().add("room-type-indicator");
         typeLabel.setStyle("-fx-text-fill: white;");
 
@@ -201,6 +204,7 @@ public class StudyRoomController {
             RoomPageController controller = loader.getController();
             controller.initData(room, currentUser);
 
+
             Stage currentStage = (Stage) tilePane.getScene().getWindow();
             currentStage.setScene(new Scene(root));
             currentStage.show();
@@ -212,56 +216,147 @@ public class StudyRoomController {
 
     @FXML
     private void handleCreateRoom() {
+        Stage dialogStage = new Stage();
+        dialogStage.initModality(Modality.APPLICATION_MODAL);
+        dialogStage.initStyle(StageStyle.UTILITY);
+        dialogStage.setTitle("Create Study Room");
 
-        Dialog<Boolean> dialog = new Dialog<>();
-        dialog.setTitle("Create Study Room");
-        dialog.setHeaderText("Enter room details:");
+        VBox container = new VBox(15);
+        container.getStyleClass().addAll("alert-dialog", "info"); // You can define 'info' in CSS
+        container.setPadding(new Insets(20));
 
-        VBox content = new VBox(10);
+        // Header
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        Text icon = new Text("➕");
+        icon.setStyle("-fx-font-size: 24;");
+
+        Label titleLabel = new Label("Create Study Room");
+        titleLabel.getStyleClass().add("alert-title");
+        header.getChildren().addAll(icon, titleLabel);
+
+        // Input fields
+        Label nameLabel = new Label("Room Name:");
+        nameLabel.getStyleClass().add("alert-content");
+
         TextField nameField = new TextField();
         nameField.setPromptText("Room name");
+
         CheckBox publicCheckbox = new CheckBox("Public room");
         publicCheckbox.setSelected(true);
-        content.getChildren().addAll(new Label("Room Name:"), nameField, publicCheckbox);
-        dialog.getDialogPane().setContent(content);
 
-        ButtonType createButton = new ButtonType("Create", ButtonBar.ButtonData.OK_DONE);
-        dialog.getDialogPane().getButtonTypes().addAll(createButton, ButtonType.CANCEL);
+        // Buttons
+        HBox buttonBox = new HBox(10);
+        buttonBox.setAlignment(Pos.CENTER_RIGHT);
+        Button createButton = new Button("Create");
+        createButton.getStyleClass().add("alert-btn");
 
-        dialog.setResultConverter(buttonType -> {
-            if (buttonType == createButton) {
-                String roomName = nameField.getText().trim();
-                boolean isPublic = publicCheckbox.isSelected();
+        Button cancelButton = new Button("Cancel");
+        cancelButton.getStyleClass().add("alert-btn");
+        cancelButton.setOnAction(e -> dialogStage.close());
 
-                if (roomName.isEmpty()) {
-                    statusLabel.setText("Room name cannot be empty!");
-                    return null;
-                }
+        buttonBox.getChildren().addAll(cancelButton, createButton);
 
-                if (!UserSession.getInstance().isLoggedIn()) {
-                    statusLabel.setText("You must be logged in to create a room!");
-                    return null;
-                }
-                User currentUser = UserSession.getInstance().getCurrentUser();
+        container.getChildren().addAll(header, nameLabel, nameField, publicCheckbox, buttonBox);
 
+        Scene scene = new Scene(container, 400, 250);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/css/edit-dialog.css").toExternalForm());
+        } catch (NullPointerException e) {
+            // fallback styling
+            container.setStyle("-fx-background-color: #f8f5fa;");
+            createButton.setStyle("-fx-background-color: #8c84a1; -fx-text-fill: white;");
+            cancelButton.setStyle("-fx-background-color: #8c84a1; -fx-text-fill: white;");
+        }
 
+        createButton.setOnAction(e -> {
+            String roomName = nameField.getText().trim();
+            boolean isPublic = publicCheckbox.isSelected();
 
-                Room createdRoom = roomService.createRoom(roomName, currentUser, isPublic);
-
-                if (createdRoom != null) {
-                    allRooms.add(createdRoom);
-                    displayCurrentPage();
-                    statusLabel.setText("Room created successfully!");
-                    return true;
-                }
-                statusLabel.setText("Failed to create room!");
+            if (roomName.isEmpty()) {
+                showCustomAlert("error", "Validation Error", "Room name cannot be empty!");
+                return;
             }
-            return null;
+
+            if (!UserSession.getInstance().isLoggedIn()) {
+                showCustomAlert("error", "Authentication Error", "You must be logged in to create a room!");
+                return;
+            }
+
+            User currentUser = UserSession.getInstance().getCurrentUser();
+            Room createdRoom = roomService.createRoom(roomName, currentUser, isPublic);
+
+            if (createdRoom != null) {
+                allRooms.add(createdRoom);
+                displayCurrentPage();
+                showCustomAlert("success", "Room Created", "Room created successfully!");
+                dialogStage.close();
+            } else {
+                showCustomAlert("error", "Creation Failed", "Failed to create room!");
+            }
         });
 
-        dialog.showAndWait().ifPresent(success -> {
-            if (success) dialog.close();
-        });
+        dialogStage.setScene(scene);
+        dialogStage.showAndWait();
+    }
+
+
+
+    private void showCustomAlert(String alertType, String title, String message) {
+        Stage alertStage = new Stage();
+        alertStage.initModality(Modality.APPLICATION_MODAL);
+        alertStage.initStyle(StageStyle.UTILITY);
+        alertStage.setTitle(title);
+
+        VBox container = new VBox(15);
+        container.getStyleClass().addAll("alert-dialog", alertType);
+        container.setPadding(new Insets(20));
+
+        // Header with icon
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        Text icon = new Text();
+        icon.setStyle("-fx-font-size: 24;");
+        switch(alertType) {
+            case "success" -> icon.setText("✔️");
+            case "error" -> icon.setText("❌");
+            default -> icon.setText("ℹ️");
+        }
+
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("alert-title");
+        header.getChildren().addAll(icon, titleLabel);
+
+        // Content
+        Label content = new Label(message);
+        content.getStyleClass().add("alert-content");
+        content.setWrapText(true);
+
+        // OK Button
+        Button okButton = new Button("OK");
+        okButton.getStyleClass().add("alert-btn");
+        okButton.setOnAction(e -> alertStage.close());
+
+        container.getChildren().addAll(header, content, okButton);
+
+        Scene scene = new Scene(container, 350, 200);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/css/edit-dialog.css").toExternalForm());
+        } catch (NullPointerException e) {
+            // Fallback inline styling
+            container.setStyle("-fx-background-color: #f8f5fa; "
+                    + "-fx-border-color: #8c84a1; "
+                    + "-fx-border-radius: 15px; "
+                    + "-fx-padding: 20;");
+            titleLabel.setStyle("-fx-text-fill: #4a4458; -fx-font-size: 16; -fx-font-weight: bold;");
+            content.setStyle("-fx-text-fill: #4a4458;");
+            okButton.setStyle("-fx-background-color: #8c84a1; -fx-text-fill: white; -fx-padding: 8 20;");
+        }
+
+        alertStage.setScene(scene);
+        alertStage.showAndWait();
     }
 
 }

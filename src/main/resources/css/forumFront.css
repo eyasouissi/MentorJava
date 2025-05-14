@@ -5,6 +5,42 @@
     -fx-spacing: 20px;
     -fx-font-family: "Poppins";
 }
+/* Container around each forum item */
+.forum-container {
+    -fx-background-color: #FFFFFF;
+    -fx-padding: 10px;
+    -fx-spacing: 10px;
+    -fx-border-color: #E0E0E0;
+    -fx-border-width: 0 0 1px 0; /* Optional: subtle divider between items */
+}
+
+/* ListView background */
+.list-view {
+    -fx-background-color: #FFFFFF;
+    -fx-control-inner-background: #FFFFFF;
+    -fx-border-color: transparent;
+}
+
+/* ListCell appearance */
+.list-cell {
+    -fx-background-color: #FFFFFF; /* Ensure cell matches list background */
+    -fx-padding: 10px;
+    -fx-border-color: transparent;
+}
+
+/* Selected and hovered cell background (optional: remove highlight) */
+.list-cell:filled:selected, .list-cell:filled:hover {
+    -fx-background-color: #F9F9F9;
+}
+
+
+.forum-container {
+    -fx-background-color: transparent;
+}
+
+.web-view {
+    -fx-background-color: transparent;
+}
 
 /* Title styles */
 .title {
@@ -32,7 +68,7 @@
 
 /* Card styles */
 .card {
-    -fx-background-color: #ffffff;
+    -fx-background-color: transparent;
     -fx-background-radius: 8px;
     -fx-border-color: #EDEDF1;
     -fx-border-radius: 8px;

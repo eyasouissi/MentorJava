@@ -231,3 +231,18 @@
     -fx-font-size: 16px;
     -fx-text-fill: #8a6dae;
 }
+.calendar-button {
+    -fx-background-color: #6a4a8a;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8px;
+    -fx-cursor: hand;
+}
+
+.calendar-button:hover {
+    -fx-background-color: #7a5aa3;
+}
+
+.calendar-button:pressed {
+    -fx-background-color: #553470;
+}

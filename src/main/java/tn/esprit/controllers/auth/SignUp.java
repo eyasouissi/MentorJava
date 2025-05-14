@@ -13,6 +13,7 @@ import tn.esprit.services.UserService;
 import tn.esprit.services.EmailService;
 import tn.esprit.services.VerificationServer;
 import tn.esprit.services.VerificationService;
+import tn.esprit.utils.PasswordUtils;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -194,7 +195,8 @@ public class SignUp {
         User newUser = new User();
         newUser.setEmail(emailField.getText().trim());
         newUser.setName(nameField.getText().trim());
-        newUser.setPassword(passwordField.getText());
+        // Hash the password before saving
+        newUser.setPassword(PasswordUtils.hashPassword(passwordField.getText()));
         newUser.setVerified(false);
         newUser.setVerificationToken(VerificationService.generateVerificationToken());
         newUser.setVerificationTokenExpiry(VerificationService.calculateExpiryDate());

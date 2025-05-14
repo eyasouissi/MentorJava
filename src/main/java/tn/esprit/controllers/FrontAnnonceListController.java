@@ -5,9 +5,14 @@ import com.google.zxing.EncodeHintType;
 import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
+import javafx.animation.*;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
 import tn.esprit.entities.Annonce;
 import tn.esprit.entities.Evenement;
-import javafx.animation.FadeTransition;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
@@ -337,7 +342,7 @@ public class FrontAnnonceListController {
     }
 
     private void updateResultsCount() {
-        resultsCount.setText(filteredAnnonces.size() + " annonces trouvées");
+        resultsCount.setText(filteredAnnonces.size() + " annonces found");
     }
 
     private void updatePagination() {
@@ -368,4 +373,36 @@ public class FrontAnnonceListController {
         alert.setContentText(content);
         alert.showAndWait();
     }
+
+    @FXML
+    private void goToCalendar(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/Front/Calendar.fxml"));
+            Parent calendarRoot = loader.load();
+
+            // Obtenir le conteneur parent (root actuel)
+            Scene scene = ((Node) event.getSource()).getScene();
+            Parent currentRoot = scene.getRoot();
+
+            // Préparer la nouvelle scène pour glisser depuis la droite
+            calendarRoot.translateXProperty().set(scene.getWidth());
+
+            // Ajouter le calendrier à l’arbre de scène
+            StackPane stack = new StackPane(currentRoot, calendarRoot);
+            scene.setRoot(stack);
+
+            // Animation de slide
+            Timeline timeline = new Timeline();
+            KeyValue kv = new KeyValue(calendarRoot.translateXProperty(), 0, Interpolator.EASE_BOTH);
+            KeyFrame kf = new KeyFrame(Duration.seconds(0.5), kv);
+            timeline.getKeyFrames().add(kf);
+            timeline.setOnFinished(e -> scene.setRoot(calendarRoot)); // Nettoie la transition
+            timeline.play();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

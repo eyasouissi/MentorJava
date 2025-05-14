@@ -45,7 +45,6 @@ public class ForumFrontController implements Initializable {
     @FXML private FlowPane recommendationsFlowPane;
     private final ObservableList<Forum> recentForums = FXCollections.observableArrayList();
     private static final int MAX_RECENT = 5;
-    private static final int MAX_RECOMMENDATIONS = 8;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -54,7 +53,6 @@ public class ForumFrontController implements Initializable {
         loadPopularTopics();
         setupForumClick();
         calculateTotalStats();
-        setupRecommendationEngine();
 
     }
 
@@ -168,14 +166,17 @@ public class ForumFrontController implements Initializable {
                             descriptionWebView.setPrefWidth(forumListView.getWidth() - 30);
                             descriptionWebView.setContextMenuEnabled(false);
 
-                            // Create HTML content with styles that match your JavaFX CSS
+                            // Make the WebView's background transparent
+                            descriptionWebView.setStyle("-fx-background-color: transparent;");
+
+                            // Ensure the content loaded into WebEngine also has a transparent background
                             String wrappedContent = "<!DOCTYPE html><html><head>" +
                                     "<style>" +
                                     "body { " +
                                     "   margin: 0; padding: 0; " +
-                                    "   font-family: 'Segoe UI', Arial, sans-serif; " +
+                                    "   font-family: 'Segoe UI', Poppin, sans-serif; " +
                                     "   color: #333333; " +
-                                    "   background-color: transparent; " +
+                                    "   background-color: transparent; " +  // Transparent background for body
                                     "   line-height: 1.5; " +
                                     "}" +
                                     "h1 { font-size: 1.2em; color: #2c3e50; margin: 5px 0; }" +
@@ -319,57 +320,7 @@ public class ForumFrontController implements Initializable {
     }
 
 
-    private void setupRecommendationEngine() {
-        recentForums.addListener((ListChangeListener<Forum>) c -> updateRecommendations());
-    }
 
-    private void updateRecommendations() {
-        recommendationsFlowPane.getChildren().clear();
-        getRecommendedForums().forEach(forum -> {
-            Label bubble = createRecommendationBubble(forum);
-            recommendationsFlowPane.getChildren().add(bubble);
-        });
-    }
-
-    private List<Forum> getRecommendedForums() {
-        Map<Forum, Integer> forumScores = new HashMap<>();
-        Set<String> recentTopics = getRecentTopics();
-
-        forumList.forEach(forum -> {
-            if(!recentForums.contains(forum)) {
-                int score = calculateSimilarityScore(forum.getTopics(), recentTopics);
-                forumScores.put(forum, score);
-            }
-        });
-
-        return forumScores.entrySet().stream()
-                .sorted(Map.Entry.<Forum, Integer>comparingByValue().reversed())
-                .limit(MAX_RECOMMENDATIONS)
-                .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-    }
-
-    private int calculateSimilarityScore(String forumTopics, Set<String> recentTopics) {
-        Set<String> ft = new HashSet<>(Arrays.asList(forumTopics.split(",")));
-        ft.retainAll(recentTopics);
-        return ft.size();
-    }
-
-    private Set<String> getRecentTopics() {
-        return recentForums.stream()
-                .map(Forum::getTopics)
-                .flatMap(topics -> Arrays.stream(topics.split(",")))
-                .map(String::trim)
-                .filter(topic -> !topic.isEmpty())
-                .collect(Collectors.toSet());
-    }
-
-    private Label createRecommendationBubble(Forum forum) {
-        Label bubble = new Label(forum.getTitle());
-        bubble.getStyleClass().add("recommendation-bubble");
-        bubble.setOnMouseClicked(e -> showForumDetails(forum));
-        return bubble;
-    }
     private void updateRecentForums(Forum forum) {
         if (!recentForums.contains(forum)) {
             recentForums.add(0, forum);

@@ -22,6 +22,9 @@ public class GroupStudent {
     @Column(name = "nbr_members", nullable = true)
     private Integer memberCount = 0;
 
+    @Column(name = "max_members", nullable = true)
+    private Integer maxMembers = 10; // Default is 10 members
+
     @Column(name = "description", columnDefinition = "TEXT", nullable = false)
     @NotBlank(message = "Description cannot be empty!")
     @Size(min = 5, message = "Description must contain at least 5 characters!")
@@ -40,10 +43,21 @@ public class GroupStudent {
     @Column(name = "image", length = 255)
     private String image;
 
+    @Column(name = "background_image", length = 255)
+    private String backgroundImage;
+
     @Column(name = "date_meet")
     @FutureOrPresent(message = "Meeting date must be today or in the future!")
     private LocalDate meetingDate;
+    
+    @Column(name = "meeting_url", length = 512)
+    private String meetingUrl;
+    @Column(name = "created_by_id")
+    private Long createdById; // Changed from int to Long to match User.id
 
+    // Getter & Setter
+    public Long getCreatedById() { return createdById; }
+    public void setCreatedById(Long createdById) { this.createdById = createdById; }
     // ========================== Constructors ==========================
 
     public GroupStudent() {
@@ -72,6 +86,14 @@ public class GroupStudent {
 
     public void setMemberCount(Integer memberCount) {
         this.memberCount = memberCount;
+    }
+
+    public Integer getMaxMembers() {
+        return maxMembers;
+    }
+
+    public void setMaxMembers(Integer maxMembers) {
+        this.maxMembers = maxMembers;
     }
 
     public String getDescription() {
@@ -114,12 +136,28 @@ public class GroupStudent {
         this.image = image;
     }
 
+    public String getBackgroundImage() {
+        return backgroundImage;
+    }
+
+    public void setBackgroundImage(String backgroundImage) {
+        this.backgroundImage = backgroundImage;
+    }
+
     public LocalDate getMeetingDate() {
         return meetingDate;
     }
 
     public void setMeetingDate(LocalDate meetingDate) {
         this.meetingDate = meetingDate;
+    }
+    
+    public String getMeetingUrl() {
+        return meetingUrl;
+    }
+    
+    public void setMeetingUrl(String meetingUrl) {
+        this.meetingUrl = meetingUrl;
     }
 
 
@@ -147,7 +185,9 @@ public List<String> getProjectNames() {
                 ", pdfFile='" + pdfFile + '\'' +
                 ", creationDate=" + creationDate +
                 ", image='" + image + '\'' +
+                ", backgroundImage='" + backgroundImage + '\'' +
                 ", meetingDate=" + meetingDate +
+                ", meetingUrl='" + meetingUrl + '\'' +
                 '}';
     }
 
@@ -177,6 +217,8 @@ public List<String> getProjectNames() {
         private String description;
         private LocalDate meetingDate;
         private String image;
+        private String backgroundImage;
+        private String meetingUrl;
 
         public Builder name(String name) {
             this.name = name;
@@ -198,10 +240,22 @@ public List<String> getProjectNames() {
             return this;
         }
 
+        public Builder backgroundImage(String backgroundImage) {
+            this.backgroundImage = backgroundImage;
+            return this;
+        }
+        
+        public Builder meetingUrl(String meetingUrl) {
+            this.meetingUrl = meetingUrl;
+            return this;
+        }
+
         public GroupStudent build() {
             GroupStudent group = new GroupStudent(name, description);
             group.setMeetingDate(meetingDate);
             group.setImage(image);
+            group.setBackgroundImage(backgroundImage);
+            group.setMeetingUrl(meetingUrl);
             return group;
         }
     }

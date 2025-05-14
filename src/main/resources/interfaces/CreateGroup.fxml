@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.CreateGroupController"
+            styleClass="main-container"
+            stylesheets="@../css/styles.css">
+    
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" 
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <!-- Header with Back Button -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Button fx:id="backButton" 
+                    onAction="#onBackClick"
+                    styleClass="icon-button">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24">
+                        <Image url="@../icons/back.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+            <Text styleClass="page-title" text="Create New Study Group"/>
+        </HBox>
+        
+        <!-- Create Group Form -->
+        <VBox styleClass="form-container" spacing="15">
+            <!-- Group Image Upload -->
+            <VBox alignment="CENTER" spacing="10">
+                <ImageView fx:id="groupImageView" 
+                          fitHeight="150" 
+                          fitWidth="150" 
+                          styleClass="group-image"/>
+                <Button text="Upload Group Image" 
+                        onAction="#onUploadImageClick"
+                        styleClass="secondary-button"/>
+            </VBox>
+            
+            <!-- Group Details -->
+            <TextField fx:id="groupNameField" 
+                      promptText="Group Name"
+                      styleClass="text-field"/>
+                      
+            <TextArea fx:id="groupDescriptionField" 
+                      promptText="Group Description"
+                      styleClass="text-area"
+                      wrapText="true"
+                      prefRowCount="3"/>
+                      
+            <ComboBox fx:id="subjectComboBox" 
+                      promptText="Select Subject"
+                      styleClass="combo-box"
+                      maxWidth="Infinity"/>
+                      
+            <TextField fx:id="maxMembersField" 
+                      promptText="Maximum Members"
+                      styleClass="text-field"/>
+            
+            <!-- Create Button -->
+            <Button text="Create Group" 
+                    onAction="#onCreateClick"
+                    styleClass="primary-button"
+                    maxWidth="Infinity"/>
+        </VBox>
+    </VBox>
+    
+</AnchorPane> 

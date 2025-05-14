@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.chart.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.PaiementStatistiques"
+            prefHeight="700.0" prefWidth="1200.0"
+            style="-fx-background-color: #f0f2f7;">
+
+    <!-- Header Section (similar to other views) -->
+    <top>
+        <HBox style="-fx-background-color: #fff; -fx-padding: 10 20; -fx-border-color: #e9edf4; -fx-border-width: 0 0 1 0; -fx-spacing: 15;" alignment="CENTER_LEFT">
+            <!-- Logo -->
+                       <Region HBox.hgrow="ALWAYS" />
+
+            <!-- Header right section -->
+            <HBox spacing="15" alignment="CENTER">
+                <Button style="-fx-background-color: transparent;">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <!--  <Image url="/images/tel.png"/> -->
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button style="-fx-background-color: transparent;">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <!--  <Image url="/images/tel.png"/> -->
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <Button style="-fx-background-color: transparent;">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <!--  <Image url="/images/tel.png"/> -->
+                        </ImageView>
+                    </graphic>
+                </Button>
+
+                <ImageView fitHeight="32" fitWidth="32" style="-fx-cursor: hand;">
+                    <!-- <Image url="/images/tel.png"/> -->
+                </ImageView>
+            </HBox>
+        </HBox>
+    </top>
+
+    <!-- Main Content -->
+    <center>
+        <VBox style="-fx-padding: 20 30;">
+            <!-- Breadcrumb or Title -->
+            <Label text="Statistiques des Paiements" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1c273c; -fx-padding: 0 0 20 0;"/>
+
+            <!-- Navigation Tabs -->
+            <HBox style="-fx-background-color: #fff; -fx-padding: 0 20; -fx-border-color: #e9edf4; -fx-border-width: 1; -fx-border-radius: 5;">
+                <TabPane tabClosingPolicy="UNAVAILABLE" style="-fx-tab-min-width: 120px;">
+                    <tabs>
+                        <Tab text="Offres">
+                            <content>
+                                <!-- Empty content - just for placeholder -->
+                                <Region/>
+                            </content>
+                        </Tab>
+                        <Tab text="Paiements">
+                            <content>
+                                <!-- Empty content - just for placeholder -->
+                                <Region/>
+                            </content>
+                        </Tab>
+                        <Tab text="Statistiques" style="-fx-background-color: #007bff;">
+                            <content>
+                                <!-- Empty content - just for placeholder -->
+                                <Region/>
+                            </content>
+                        </Tab>
+                    </tabs>
+                </TabPane>
+            </HBox>
+
+            <!-- Main Content Cards -->
+            <HBox spacing="20" style="-fx-padding: 20 0;">
+                <!-- Left Chart -->
+                <VBox style="-fx-background-color: #fff; -fx-padding: 20; -fx-border-color: #e9edf4; -fx-border-width: 1; -fx-border-radius: 5;" HBox.hgrow="ALWAYS">
+                    <Label text="Paiements par Offre" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1c273c; -fx-padding: 0 0 15 0;"/>
+                    <PieChart fx:id="pieChartOffres" legendVisible="true" labelsVisible="true" prefHeight="350" VBox.vgrow="ALWAYS"/>
+                    <Label text="Distribution des paiements par type d'offre" style="-fx-font-size: 12px; -fx-text-fill: #7987a1; -fx-padding: 10 0 0 0;"/>
+                </VBox>
+
+                <!-- Right Chart -->
+                <VBox style="-fx-background-color: #fff; -fx-padding: 20; -fx-border-color: #e9edf4; -fx-border-width: 1; -fx-border-radius: 5;" HBox.hgrow="ALWAYS">
+                    <Label text="Paiements dans le Temps" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1c273c; -fx-padding: 0 0 15 0;"/>
+                    <LineChart fx:id="lineChartTemps" prefHeight="350" VBox.vgrow="ALWAYS">
+                        <xAxis>
+                            <CategoryAxis label="Période" fx:id="xAxis"/>
+                        </xAxis>
+                        <yAxis>
+                            <NumberAxis label="Nombre de Paiements" fx:id="yAxis"/>
+                        </yAxis>
+                    </LineChart>
+                    <Label text="Évolution du nombre de paiements au fil du temps" style="-fx-font-size: 12px; -fx-text-fill: #7987a1; -fx-padding: 10 0 0 0;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Bottom Chart -->
+            <VBox style="-fx-background-color: #fff; -fx-padding: 20; -fx-border-color: #e9edf4; -fx-border-width: 1; -fx-border-radius: 5; -fx-margin-top: 20;">
+                <Label text="Top Utilisateurs" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1c273c; -fx-padding: 0 0 15 0;"/>
+                <BarChart fx:id="barChartUsers" prefHeight="350" legendVisible="false">
+                    <xAxis>
+                        <CategoryAxis label="Utilisateurs" fx:id="xAxisUsers"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Nombre de Paiements" fx:id="yAxisUsers"/>
+                    </yAxis>
+                </BarChart>
+                <Label text="Utilisateurs avec le plus grand nombre de paiements effectués" style="-fx-font-size: 12px; -fx-text-fill: #7987a1; -fx-padding: 10 0 0 0;"/>
+            </VBox>
+
+            <!-- Action Buttons -->
+            <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 20 0 0 0;">
+                <Button fx:id="btnExporterStats" text="Exporter les Statistiques"
+                        style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 20; -fx-border-radius: 4px;"
+                        onAction="#exporterStatistiques">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <!--    <Image url="/images/tel.png"/> -->
+                        </ImageView>
+                    </graphic>
+                </Button>
+                <Button fx:id="btnRetourPaiements" text="Retour aux Paiements"
+                        style="-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 8 20; -fx-border-radius: 4px;"
+                        onAction="#allerVersPaiements">
+                    <graphic>
+                        <ImageView fitHeight="16" fitWidth="16">
+                            <!--  <Image url="/images/tel.png"/> -->
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </HBox>
+        </VBox>
+    </center>
+
+    <!-- Footer if needed -->
+    <bottom>
+        <HBox style="-fx-background-color: #fff; -fx-padding: 15; -fx-border-color: #e9edf4; -fx-border-width: 1 0 0 0;" alignment="CENTER">
+            <Label text="© 2025 Mentor. All Rights Reserved." style="-fx-text-fill: #7987a1; -fx-font-size: 12px;"/>
+        </HBox>
+    </bottom>
+</BorderPane>

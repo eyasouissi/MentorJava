@@ -45,7 +45,7 @@ public class CategoryController {
     }
 
     private void setupUI() {
-        addButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white;");
+        addButton.setStyle("-fx-background-color: #857e98; -fx-text-fill: white;");
         addButton.setGraphic(new FontIcon("fas-plus"));
     }
 

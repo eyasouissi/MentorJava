@@ -1,9 +1,9 @@
 .root {
-    -fx-font-family: 'Arial';
+    -fx-font-family: 'Poppins';
 }
 
 .welcome-message {
     -fx-font-size: 24px;
-    -fx-text-fill: #333;
+    -fx-text-fill: #ffff;
     -fx-padding: 20px;
 }

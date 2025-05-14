@@ -33,6 +33,9 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import tn.esprit.entities.User;
+import tn.esprit.controllers.auth.UserSession;
+import javafx.application.Platform;
 
 public class GroupsController implements Initializable {
 
@@ -48,8 +51,9 @@ public class GroupsController implements Initializable {
     @FXML private HBox navbar;
     @FXML private HBox toolbar;
     @FXML private DatePicker meetingDateFilter;
+    @FXML private Button addGroupButton;
 
-
+    private User currentUser;
     private static final int ROWS_PER_PAGE = 4;
     private ObservableList<GroupStudent> allGroups = FXCollections.observableArrayList();
     private final GroupService groupService = GroupService.getInstance();
@@ -91,6 +95,37 @@ private void loadGroupsData() {
         setupTableColumns();
         loadGroups();
         setupTableSelectionListener();
+        
+        // Get the current logged-in user
+        currentUser = UserSession.getInstance().getCurrentUser();
+        
+        // Print debug information
+        System.out.println("Initialize called, addGroupButton: " + (addGroupButton != null ? "found" : "null"));
+        
+        // Make sure the Add Group button is visible - use Platform.runLater to ensure UI is ready
+        javafx.application.Platform.runLater(() -> {
+            if (addGroupButton != null) {
+                // Force button to be visible no matter what
+                addGroupButton.setVisible(true);
+                addGroupButton.setManaged(true);
+                addGroupButton.setOpacity(1.0);
+                System.out.println("Add Group button properties set - visible: " + addGroupButton.isVisible());
+            } else {
+                // If button is null, try to find it in the toolbar
+                for (Node node : toolbar.getChildren()) {
+                    if (node instanceof Button) {
+                        Button btn = (Button) node;
+                        if (btn.getText() != null && btn.getText().contains("Add Group")) {
+                            btn.setVisible(true);
+                            btn.setManaged(true);
+                            btn.setOpacity(1.0);
+                            System.out.println("Found and fixed Add Group button");
+                            break;
+                        }
+                    }
+                }
+            }
+        });
     }
 
     private void setupTableColumns() {
@@ -120,6 +155,10 @@ private void loadGroupsData() {
 
     @FXML
     private void showAddGroupView() {
+        // Log method execution
+        System.out.println("showAddGroupView method called");
+        
+        // Show the add group dialog
         openModal("/group/AddGroupView.fxml", "Add New Group");
     }
 
@@ -128,19 +167,34 @@ private void loadGroupsData() {
         GroupStudent selected = groupsTable.getSelectionModel().getSelectedItem();
         if (selected != null) {
             try {
+                // Log the current state for debugging
+                System.out.println("Editing group: " + selected.getId() + " - " + selected.getName());
+                
+                // Load the FXML file
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/group/EditGroupView.fxml"));
                 Parent root = loader.load();
+                
+                // Get the controller and pass the group data
                 EditGroupController controller = loader.getController();
                 controller.setGroupData(selected);
-
+                
+                // Create and configure a new stage
                 Stage stage = new Stage();
                 stage.initModality(Modality.APPLICATION_MODAL);
-                stage.setTitle("Edit Group");
+                stage.setTitle("Edit Group - " + selected.getName());
                 stage.setScene(new Scene(root));
+                stage.setResizable(true);
+                stage.setMinWidth(600);
+                stage.setMinHeight(500);
+                
+                // When the dialog is closed, refresh the groups list
                 stage.setOnHidden(e -> refreshGroupsList());
+                
+                // Show the stage
                 stage.show();
-            } catch (IOException e) {
-                showAlert("Error", "Could not load the edit group form", Alert.AlertType.ERROR);
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert("Error", "Could not load the edit group form: " + e.getMessage(), Alert.AlertType.ERROR);
             }
         } else {
             showAlert("Warning", "Please select a group to edit", Alert.AlertType.WARNING);
@@ -364,6 +418,26 @@ private void showCalendar(ActionEvent event) {
         stage.show();
     } catch (IOException e) {
         showAlert("Erreur", "Impossible d'ouvrir le calendrier", Alert.AlertType.ERROR);
+    }
+}
+
+private void setupUserAccess() {
+    // Get the current logged-in user
+    currentUser = UserSession.getInstance().getCurrentUser();
+    
+    // The addGroupButton should be directly accessible through the fx:id
+    // No need to search for it in the toolbar children
+    
+    if (addGroupButton != null) {
+        // Show button for ROLE_TUTOR or ROLE_ADMIN users
+        boolean hasAccess = currentUser != null && 
+            (currentUser.getRoles().contains("ROLE_TUTOR") || 
+             currentUser.getRoles().contains("ROLE_ADMIN"));
+        
+        // Make sure the button is visible by default
+        addGroupButton.setVisible(true);
+    } else {
+        System.out.println("Warning: Add Group button could not be found");
     }
 }
 }

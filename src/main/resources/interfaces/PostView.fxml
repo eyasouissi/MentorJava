@@ -11,58 +11,91 @@
       stylesheets="@/css/sidebarFront.css, @/css/post-styles.css"
       spacing="24"
       prefHeight="600"
-      prefWidth="1000">
+      prefWidth="1000"
+      styleClass="root-pane">
 
     <!-- LEFT SIDEBAR -->
     <fx:include fx:id="sidebar" source="/interfaces/Front/Sidebar.fxml"/>
 
-
     <!-- MAIN CONTENT AREA -->
-    <VBox spacing="20" HBox.hgrow="ALWAYS" styleClass="post-container">
+    <VBox spacing="10"
+          HBox.hgrow="ALWAYS"
+          alignment="TOP_CENTER"
+          styleClass="post-container">
+
         <!-- Header Section -->
-        <HBox styleClass="header-container">
-            <ImageView fitWidth="200" fitHeight="150" preserveRatio="true">
-                <Image url="@/images/post.gif"/>
+        <HBox spacing="15" alignment="CENTER_LEFT">
+            <ImageView fitWidth="130" fitHeight="130" preserveRatio="true">
+                <Image url="@/assets/icons/8.png"/>
             </ImageView>
             <VBox>
-
                 <Text styleClass="header-title" text="What's on your mind? 💡"/>
                 <Text styleClass="header-subtitle"
                       text="Post about your latest study session, share an interesting fact, or ask a question."/>
             </VBox>
         </HBox>
-        <!-- Replace TextField with Label -->
-        <Label fx:id="forumTitle" styleClass="forum-title" text="Forum Title" />
+
+
 
         <!-- Create Post Section -->
-        <VBox fx:id="postInputContainer" spacing="10" alignment="TOP_CENTER" styleClass="create-post-container">
-            <TextArea fx:id="postContent" promptText="What's on your mind?"
+        <VBox fx:id="postInputContainer"
+              spacing="10"
+              alignment="TOP_CENTER"
+              styleClass="create-post-container"
+              maxHeight="200"
+              VBox.vgrow="NEVER">
+
+            <TextArea fx:id="postContent"
+                      promptText="What's on your mind?"
                       styleClass="post-input"/>
 
             <FlowPane fx:id="photosFlowPane" hgap="5" vgap="5"/>
 
             <HBox spacing="10" alignment="CENTER_RIGHT">
-                <Label fx:id="charCountLabel" />
+                <Label fx:id="charCountLabel"/>
             </HBox>
+
             <HBox spacing="10">
-                <Button text="Add Photos" styleClass="media-btn" onAction="#handleAddPhotos"/>
-                <Button fx:id="submitPostBtn" text="Post" styleClass="submit-post-btn" onAction="#handleCreatePost"/>
+                <Button text="Add Photos"
+                        styleClass="media-btn"
+                        onAction="#handleAddPhotos"/>
+                <Button fx:id="submitPostBtn"
+                        text="Post"
+                        styleClass="submit-post-btn"
+                        onAction="#handleCreatePost"/>
             </HBox>
+
             <!-- Error Labels -->
-            <Label fx:id="contentErrorLabel" styleClass="error-label" visible="false" />
-            <Label fx:id="moderationErrorLabel" styleClass="error-label" visible="false" />
-            <Label fx:id="sentimentErrorLabel" styleClass="error-label" visible="false" />
-
-
+            <Label fx:id="contentErrorLabel"
+                   styleClass="error-label"
+                   visible="false"/>
+            <Label fx:id="moderationErrorLabel"
+                   styleClass="error-label"
+                   visible="false"/>
+            <Label fx:id="sentimentErrorLabel"
+                   styleClass="error-label"
+                   visible="false"/>
         </VBox>
-        <!-- Add after sentimentErrorLabel -->
-        <VBox fx:id="writingFeedbackContainer" visible="false" spacing="5" styleClass="feedback-container">
+
+        <!-- Writing Suggestions -->
+        <VBox fx:id="writingFeedbackContainer"
+              visible="false"
+              spacing="5"
+              styleClass="feedback-container">
             <Label text="Writing Suggestions:" styleClass="feedback-title"/>
             <ListView fx:id="writingIssuesList" styleClass="feedback-list"/>
         </VBox>
-
+        <!-- Replace TextField with Label -->
+        <HBox alignment="CENTER_LEFT">
+            <Label fx:id="forumTitle" styleClass="forum-title" text="Forum Title"/>
+        </HBox>
 
         <!-- Posts List -->
-        <ListView fx:id="postsListView" styleClass="posts-list" VBox.vgrow="ALWAYS"/>
+        <ListView fx:id="postsListView"
+                  styleClass="posts-list"
+                  VBox.vgrow="ALWAYS"
+                  minHeight="300"
+                  prefHeight="500"/>
+
     </VBox>
 </HBox>

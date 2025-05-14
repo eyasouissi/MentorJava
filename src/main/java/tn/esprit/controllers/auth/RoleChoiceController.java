@@ -36,9 +36,9 @@ public class RoleChoiceController {
     @FXML
     public void hoverStudent() {
         studentButton.setStyle("-fx-pref-width: 180px; -fx-pref-height: 60px;" +
-                "-fx-background-color: #EEA0FF; -fx-text-fill: white;" +
+                "-fx-background-color: #ba9cf4; -fx-text-fill: white;" +
                 "-fx-font-weight: bold; -fx-font-size: 16px;" +
-                "-fx-background-radius: 30px; -fx-border-color: #EEA0FF;" +
+                "-fx-background-radius: 30px; -fx-border-color: #eae7ef;" +
                 "-fx-border-width: 2px; -fx-border-radius: 30px;" +
                 "-fx-cursor: hand;");
     }
@@ -48,7 +48,7 @@ public class RoleChoiceController {
         studentButton.setStyle("-fx-pref-width: 180px; -fx-pref-height: 60px;" +
                 "-fx-background-color: white; -fx-text-fill: #5d236a;" +
                 "-fx-font-weight: bold; -fx-font-size: 16px;" +
-                "-fx-background-radius: 30px; -fx-border-color: #EEA0FF;" +
+                "-fx-background-radius: 30px; -fx-border-color: #eae7ef;" +
                 "-fx-border-width: 2px; -fx-border-radius: 30px;" +
                 "-fx-cursor: hand;");
     }
@@ -56,9 +56,9 @@ public class RoleChoiceController {
     @FXML
     public void hoverTutor() {
         tutorButton.setStyle("-fx-pref-width: 180px; -fx-pref-height: 60px;" +
-                "-fx-background-color: #47AEFF; -fx-text-fill: white;" +
+                "-fx-background-color: #a287d6; -fx-text-fill: white;" +
                 "-fx-font-weight: bold; -fx-font-size: 16px;" +
-                "-fx-background-radius: 30px; -fx-border-color: #47AEFF;" +
+                "-fx-background-radius: 30px; -fx-border-color: #eae7ef;" +
                 "-fx-border-width: 2px; -fx-border-radius: 30px;" +
                 "-fx-cursor: hand;");
     }
@@ -68,7 +68,7 @@ public class RoleChoiceController {
         tutorButton.setStyle("-fx-pref-width: 180px; -fx-pref-height: 60px;" +
                 "-fx-background-color: white; -fx-text-fill: #5d236a;" +
                 "-fx-font-weight: bold; -fx-font-size: 16px;" +
-                "-fx-background-radius: 30px; -fx-border-color: #47AEFF;" +
+                "-fx-background-radius: 30px; -fx-border-color: #eae7ef;" +
                 "-fx-border-width: 2px; -fx-border-radius: 30px;" +
                 "-fx-cursor: hand;");
     }

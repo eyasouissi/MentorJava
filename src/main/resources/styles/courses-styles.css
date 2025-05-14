@@ -25,14 +25,14 @@
 }
 
 .add-button {
-    -fx-background-color: #4CAF50;
+    -fx-background-color: #857e98;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 8 15;
 }
 
 .refresh-button {
-    -fx-background-color: #2196F3;
+    -fx-background-color: #7d7598;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 8 15;
@@ -128,7 +128,7 @@
 }
 
 .delete-button {
-    -fx-background-color: #F44336;
+    -fx-background-color: #f49ca3;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 8 15;

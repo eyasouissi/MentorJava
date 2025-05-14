@@ -48,7 +48,7 @@ public class AddGroupController {
     private File selectedImageFile;
     private File selectedPdfFile;
     private final ProjectService projectService = ProjectService.getInstance();
-
+    private static final String UPLOAD_DIRECTORY = "C:/xampp/htdocs/uploads/";
 
     @FXML
     private void initialize() {
@@ -58,31 +58,52 @@ public class AddGroupController {
         projectListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     }
 
-    @FXML
-public void handleBrowseImage() {
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif"));
-    File selectedFile = fileChooser.showOpenDialog(new Stage());
-
-    if (selectedFile != null) {
-        selectedImageFile = selectedFile;
-        imagePath = selectedFile.getPath(); // MAJ de la variable globale
-        imagePathField.setText(imagePath);  // MAJ du champ texte
-
-        Image image = new Image(selectedFile.toURI().toString());
-        imageCircle.setFill(new javafx.scene.paint.ImagePattern(image)); // afficher dans le cercle
+    private String copyFileToUploadDirectory(File sourceFile) throws IOException {
+        File uploadDir = new File(UPLOAD_DIRECTORY);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+        String fileName = System.currentTimeMillis() + "_" + sourceFile.getName();
+        File destFile = new File(uploadDir, fileName);
+        java.nio.file.Files.copy(sourceFile.toPath(), destFile.toPath());
+        return destFile.getAbsolutePath();
     }
-}
 
+    @FXML
+    public void handleBrowseImage() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif"));
+        File selectedFile = fileChooser.showOpenDialog(new Stage());
+
+        if (selectedFile != null) {
+            try {
+                String newImagePath = copyFileToUploadDirectory(selectedFile);
+                imagePath = newImagePath; // Update the global imagePath
+                imagePathField.setText(newImagePath);
+
+                // Display the uploaded image
+                Image image = new Image(new File(newImagePath).toURI().toString());
+                imageCircle.setFill(new javafx.scene.paint.ImagePattern(image));
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to upload image: " + e.getMessage());
+            }
+        }
+    }
 
     @FXML
     public void handleBrowsePdf() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
-        selectedPdfFile = fileChooser.showOpenDialog(new Stage());
+        File selectedFile = fileChooser.showOpenDialog(new Stage());
 
-        if (selectedPdfFile != null) {
-            pdfPathField.setText(selectedPdfFile.getPath());  // Afficher le chemin dans le TextField
+        if (selectedFile != null) {
+            try {
+                String newPdfPath = copyFileToUploadDirectory(selectedFile);
+                pdfPath = newPdfPath; // Update the global pdfPath
+                pdfPathField.setText(newPdfPath);
+            } catch (IOException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to upload PDF: " + e.getMessage());
+            }
         }
     }
 

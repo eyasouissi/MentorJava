@@ -3,6 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.input.KeyCombination?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -11,31 +13,30 @@
       spacing="20"
       style="-fx-padding: 25; -fx-background-color: #f5f7fa;">
 
+    <!-- Menu Bar -->
+
+
     <!-- Header -->
     <HBox fx:id="header" spacing="20" alignment="CENTER_LEFT">
         <Label text="📚 Groups Management"
                style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #2c3e50;"/>
         <Pane HBox.hgrow="ALWAYS"/>
-        <Button fx:id="toggleThemeButton" text="🌙" onAction="#toggleTheme"
-                style="-fx-font-size: 22px; -fx-background-color: transparent;"/>
+
     </HBox>
 
     <!-- Navigation Bar -->
-    <HBox fx:id="navbar" spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #336699; -fx-padding: 10 20;">
-        <Button fx:id="homeButton" text=" 🏠 Home " onAction="#goToHomeFront" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;" />
-        <Button text=" 👥 Groups " onAction="#goToGroupsView" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;"/>
-        <Button text=" 📁 Projects " onAction="#goToProjectsView" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;" />
-        <Button text="📊 Statistiques" onAction="#showStatsView" styleClass="nav-button" style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;" /> 
+    <HBox fx:id="navbar" spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #7d7598; -fx-padding: 10 20;">
+        <Button text="📊 Statistiques" onAction="#showStatsView" styleClass="nav-button" style="-fx-background-color: white; -fx-text-fill: #7d7598; -fx-font-weight: bold; -fx-font-size: 14px;" />
         <Button text="📅 Calendrier" onAction="#showCalendar" styleClass="nav-button" 
-        style="-fx-background-color: white; -fx-text-fill: #336699; -fx-font-weight: bold; -fx-font-size: 14px;"/>
+        style="-fx-background-color: white; -fx-text-fill: #7d7598; -fx-font-weight: bold; -fx-font-size: 14px;"/>
     </HBox>
 
     <!-- Toolbar + Search -->
     <HBox fx:id="toolbar" spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 10 0;">
-        <Button text="➕ Add Group" onAction="#showAddGroupView"
-                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 130;"/>
+        <Button fx:id="addGroupButton" text="➕ Add Group" onAction="#showAddGroupView"
+                style="-fx-background-color: #ba9cf4; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 130; -fx-opacity: 1.0; -fx-visibility: visible;"/>
         <Button text="🔄 Refresh List" onAction="#refreshGroupsList"
-                style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 130;"/>
+                style="-fx-background-color: #a287d6; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 130;"/>
         <Button text="📂 View Projects" onAction="#navigateToProjectsView"
                 style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 130;"/>
 
@@ -44,7 +45,7 @@
         <TextField fx:id="searchField" promptText="Search by name..."
                    style="-fx-pref-width: 250; -fx-background-radius: 5; -fx-border-radius: 5;"/>
         <Button text="🔍 Search" onAction="#searchGroups"
-                style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"/>
+                style="-fx-background-color: #ba9cf4; -fx-text-fill: white; -fx-font-weight: bold;"/>
                 <Label text="Filter by Meeting Date:" />
                 <DatePicker fx:id="meetingDateFilter" onAction="#filterByMeetingDate"/>
                 <Button text="Clear" onAction="#clearDateFilter"/>
@@ -64,9 +65,9 @@
     <!-- Action Buttons (Edit / Delete / Details) -->
     <HBox fx:id="actionButtonsBox" spacing="15" style="-fx-padding: 15 0 0 0;" visible="false" alignment="CENTER_LEFT">
         <Button text="✏️ Edit" onAction="#showEditGroupView"
-                style="-fx-background-color: #FFC107; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
+                style="-fx-background-color: #a287d6; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
         <Button text="🗑️ Delete" onAction="#deleteGroup"
-                style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
+                style="-fx-background-color: #ba9cf4; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
         <Button text="ℹ️ Details" onAction="#showGroupDetails"
                 style="-fx-background-color: #607D8B; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 90;"/>
     </HBox>

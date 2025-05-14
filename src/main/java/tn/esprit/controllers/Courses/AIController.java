@@ -8,6 +8,7 @@ import org.apache.poi.xslf.usermodel.XMLSlideShow;
 import org.apache.poi.xslf.usermodel.XSLFSlide;
 import org.apache.poi.xslf.usermodel.XSLFTextBox;
 import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import tn.esprit.controllers.NotesAIController;
 import tn.esprit.models.AICourseSlide;
 import tn.esprit.services.DeepInfraService;
 
@@ -17,7 +18,7 @@ import java.util.Collections;
 import java.util.concurrent.CompletableFuture;
 import javafx.application.Platform;
 
-public class AIController {
+public class AIController extends NotesAIController {
 
     @FXML
     private TextArea promptField;

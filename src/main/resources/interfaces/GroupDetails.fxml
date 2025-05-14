@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.shape.Circle?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.GroupDetailsController"
+            styleClass="main-container"
+            stylesheets="@../css/styles.css, @../css/meeting-styles.css"
+            style="-fx-background-color: linear-gradient(                        to bottom right,                        #ffffff 0%,                        #8c84a1 30%,                        #6f6280 50%,                        #8c84a1 70%,                        #ffffff 100%                    );">
+    
+    <VBox spacing="20" AnchorPane.topAnchor="20" AnchorPane.leftAnchor="20" 
+          AnchorPane.rightAnchor="20" AnchorPane.bottomAnchor="20">
+        
+        <!-- Header with Back Button -->
+        <HBox alignment="CENTER_LEFT" spacing="15">
+            <Button fx:id="backButton" 
+                    onAction="#onBackClick"
+                    styleClass="icon-button">
+                <graphic>
+                    <ImageView fitHeight="24" fitWidth="24">
+                        <Image url="@../icons/back.png"/>
+                    </ImageView>
+                </graphic>
+            </Button>
+        </HBox>
+        
+        <!-- Group Header Section -->
+        <HBox spacing="20" alignment="CENTER_LEFT">
+            <!-- Group Image with Edit Button -->
+            <StackPane>
+                <Circle fx:id="groupImageCircle" radius="50" styleClass="group-image-circle"/>
+                <ImageView fx:id="groupImageView" fitHeight="100" fitWidth="100" styleClass="group-image"/>
+                <Button fx:id="editImageButton" 
+                        onAction="#onEditImageClick"
+                        styleClass="edit-image-button"
+                        visible="false">
+                    <graphic>
+                        <ImageView fitHeight="24" fitWidth="24">
+                            <Image url="@../icons/edit.png"/>
+                        </ImageView>
+                    </graphic>
+                </Button>
+            </StackPane>
+            
+            <!-- Group Info -->
+            <VBox spacing="5">
+                <Text fx:id="groupNameText" styleClass="group-title"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <ImageView fitHeight="16" fitWidth="16">
+                        <Image url="@../icons/members.png"/>
+                    </ImageView>
+                    <Text fx:id="memberCountText" styleClass="member-count"/>
+                </HBox>
+            </VBox>
+            
+            <!-- Toggle Calendar Button -->
+            <Region HBox.hgrow="ALWAYS" />
+            <Button fx:id="toggleCalendarButton" 
+                    text="Hide Calendar" 
+                    onAction="#onToggleCalendarClick"
+                    styleClass="secondary-button"/>
+        </HBox>
+        
+        <!-- Two-Column Layout for Meetings and Projects -->
+        <HBox spacing="20">
+            <!-- Left Column: Projects Section -->
+            <VBox spacing="15" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="450">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Text styleClass="section-title" text="Projects"/>
+                    <Button fx:id="addProjectButton" 
+                            text="Add Project" 
+                            onAction="#onAddProjectClick"
+                            styleClass="primary-button"
+                            visible="false"/>
+                </HBox>
+                
+                <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="projectsContainer" spacing="10"/>
+                </ScrollPane>
+            </VBox>
+            
+            <!-- Right Column: Integrated Calendar Section -->
+            <VBox spacing="15" styleClass="calendar-section" HBox.hgrow="ALWAYS" maxWidth="Infinity" prefWidth="350">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Text styleClass="section-title" text="Group Meetings"/>
+                </HBox>
+                
+                <!-- Calendar Component -->
+                <VBox fx:id="calendarContainer" visible="true" managed="true" styleClass="form-container" spacing="15">
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <DatePicker fx:id="meetingDatePicker" 
+                                   promptText="Select Meeting Date"
+                                   styleClass="date-picker" HBox.hgrow="ALWAYS"/>
+                               
+                        <Button fx:id="saveMeetingButton" 
+                                text="Schedule" 
+                                onAction="#onScheduleMeetingClick"
+                                styleClass="primary-button"/>
+                    </HBox>
+                    
+                    <!-- Meeting URL Field (Optional) -->
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Label text="Custom URL:" styleClass="form-label"/>
+                        <TextField fx:id="meetingUrlField" 
+                                  promptText="(Optional) Custom meeting URL"
+                                  styleClass="custom-field" HBox.hgrow="ALWAYS"/>
+                    </HBox>
+                    
+                    <!-- Meeting info text -->
+                    <Label text="Meetings will automatically open in your browser when clicked" 
+                           styleClass="info-text"
+                           wrapText="true"/>
+                    
+                    <!-- Upcoming Meetings -->
+                    <VBox spacing="10">
+                        <Label text="Upcoming Meetings" styleClass="section-subtitle"/>
+                        <ScrollPane fitToWidth="true" styleClass="transparent-scroll-pane" prefHeight="120">
+                            <VBox fx:id="upcomingMeetingsContainer" spacing="10"/>
+                        </ScrollPane>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </HBox>
+    </VBox>
+    
+</AnchorPane> 

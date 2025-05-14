@@ -59,4 +59,7 @@ public class NoteComponent extends VBox {
         this.setStyle("-fx-background-color: " + hex + "; -fx-border-color: derive(" + hex + ", -20%);" +
                 "-fx-border-radius: 5; -fx-background-radius: 5; -fx-padding: 10;");
     }
+
+    public void setContent(String content) {
+    }
 }

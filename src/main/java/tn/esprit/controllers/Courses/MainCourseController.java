@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -17,6 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import org.kordamp.ikonli.fontawesome5.FontAwesomeSolid;
 import org.kordamp.ikonli.javafx.FontIcon;
+import tn.esprit.controllers.AfficherOffre;
 import tn.esprit.controllers.auth.UserSession;
 import tn.esprit.entities.Category;
 import tn.esprit.entities.Courses;
@@ -282,7 +284,7 @@ public class MainCourseController implements Initializable {
     }
 
     @FXML
-    private void loadCoursesByCategory(Category category) {
+    public void loadCoursesByCategory(Category category) {
         currentCategory = category;
         currentFilter = "category";
         currentPage = 0;
@@ -592,7 +594,7 @@ public class MainCourseController implements Initializable {
 
 
     /////////////////////////////////////////////
-////////////////Patie emna//////////////////////////
+////////////////Partie emna//////////////////////////
 ///////////////////////////////////////////////////////////////
 
 
@@ -622,17 +624,20 @@ public class MainCourseController implements Initializable {
 
     private void redirectToSubscriptionPage(Courses course) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/Courses/SubscriptionRequired.fxml"));
-            Parent root = loader.load();
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/interfaces/frontOffre.fxml"));
+            Parent subscriptionContent = loader.load(); // Load the new content
 
-            // Passer les données du cours si nécessaire
-            SubscriptionRequiredController controller = loader.getController();
-            controller.setCourseTitle(course.getTitle());
+            // Access the main layout (e.g., BorderPane) from the current scene
+            Stage stage = (Stage) coursesContainer.getScene().getWindow();
+            BorderPane root = (BorderPane) stage.getScene().getRoot(); // Assuming root is BorderPane
 
-            Stage stage = new Stage();
+            // Replace the center of the BorderPane with the new content
+            root.setCenter(subscriptionContent);
+
+            // Pass data to the subscription page's controller if needed
+            AfficherOffre controller = loader.getController();
+
             stage.setTitle("Subscription Required");
-            stage.setScene(new Scene(root));
-            stage.show();
         } catch (IOException e) {
             e.printStackTrace();
             showAlert("Error", "Could not load subscription page");
@@ -669,6 +674,42 @@ public class MainCourseController implements Initializable {
         card.setOnMouseClicked(event -> openCourseDetails(course));
 
         return card;
+    }
+    public void refreshAndShowFreeCourses() {
+        // Make sure UI updates happen on JavaFX thread
+        Platform.runLater(() -> {
+            // Force reload courses from database
+            coursesService.refreshCache();
+
+            // Load all courses to show the updated state
+            currentCategory = null;
+            currentFilter = "all";
+            currentPage = 0;
+            totalCourses = coursesService.getCount();
+            loadCoursesForCurrentPage();
+            setButtonStyles("all");
+
+            // Show a confirmation banner that subscription was successful
+            showSweetAlert(Alert.AlertType.INFORMATION,
+                    "Subscription Successful",
+                    "Your payment was successful! You now have access to all premium courses!",
+                    FontAwesomeSolid.CHECK_CIRCLE);
+
+            // Highlight the premium courses that are now free for this user
+            highlightNewlyAccessibleCourses();
+        });
+    }
+
+    // Helper method to highlight newly accessible courses (if needed)
+    private void highlightNewlyAccessibleCourses() {
+        // This could be implemented to highlight courses that the user just paid for
+        // For simplicity, we'll just let the normal course display handle it
+        // But you could add custom styling or filtering here if desired
+
+        // Example: if you wanted to filter to only show previously premium courses
+        // currentFilter = "newlyAccessible";
+        // totalCourses = coursesService.getNewlyAccessibleCoursesCount(currentUser.getId());
+        // loadCoursesForCurrentPage();
     }
     /////////////////////////////////////////////
 //////////////////////////////////////////

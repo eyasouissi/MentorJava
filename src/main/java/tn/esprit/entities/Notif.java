@@ -1,36 +1,16 @@
 package tn.esprit.entities;
 
-import jakarta.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
-@Entity
-@Table(name = "notif")
 public class Notif {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
     private User user;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
     private User triggeredBy;
-
-    @Column(length = 20, nullable = false)
     private String type;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false)
     private Post post;
-
-    @Column(name = "is_read", nullable = false)
     private boolean isRead = false;
-
-    @Column(nullable = false, updatable = false)
     private Instant createdAt;
 
     // Constructors
@@ -166,7 +146,6 @@ public class Notif {
         }
 
         public Notif build() {
-
             return new Notif(user, triggeredBy, type, post);
         }
     }

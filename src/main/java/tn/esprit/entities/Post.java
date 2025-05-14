@@ -117,4 +117,19 @@ public class Post {
     public void addGifReaction(String gifUrl) {
         gifReactions.add(gifUrl);
     }
+
+    // In Post.java
+    public boolean hasLiked(User user) {
+        return likedByUsers.contains(user);
+    }
+
+    public void toggleLike(User user) {
+        if (hasLiked(user)) {
+            likedByUsers.remove(user);
+            likes = Math.max(0, likes - 1);
+        } else {
+            likedByUsers.add(user);
+            likes++;
+        }
+    }
 }

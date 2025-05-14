@@ -26,10 +26,10 @@
         <Label fx:id="descErrorLabel" style="-fx-text-fill: #e74c3c;" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
         <!-- Icône -->
-        <Label text="Icône:" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Label text="Icon:" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <HBox spacing="10" GridPane.rowIndex="4" GridPane.columnIndex="1">
-            <TextField fx:id="iconField" promptText="URL ou chemin de l'icône" HBox.hgrow="ALWAYS"/>
-            <Button text="Parcourir..." onAction="#handleBrowse"/>
+            <TextField fx:id="iconField" promptText="URL or path to icon" HBox.hgrow="ALWAYS"/>
+            <Button text="Browse..." onAction="#handleBrowse"/>
         </HBox>
         <Label fx:id="iconErrorLabel" style="-fx-text-fill: #e74c3c;" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
 
@@ -37,17 +37,17 @@
         <Label text="Aperçu:" style="-fx-font-weight: bold;" GridPane.rowIndex="6" GridPane.columnIndex="0"/>
         <StackPane GridPane.rowIndex="6" GridPane.columnIndex="1">
             <ImageView fx:id="iconPreview" fitWidth="50" fitHeight="50"/>
-            <Label text="Aucune icône" visible="false" fx:id="noIconLabel"/>
+            <Label text="No icon" visible="false" fx:id="noIconLabel"/>
         </StackPane>
 
         <!-- Statut -->
         <Label text="Statut:" style="-fx-font-weight: bold;" GridPane.rowIndex="7" GridPane.columnIndex="0"/>
-        <CheckBox fx:id="isActiveCheckBox" text="Catégorie active" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
+        <CheckBox fx:id="isActiveCheckBox" text="Category active" GridPane.rowIndex="7" GridPane.columnIndex="1"/>
     </GridPane>
 
     <HBox spacing="15" style="-fx-padding: 10 0 0 0;" alignment="CENTER_RIGHT">
-        <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-min-width: 100;"/>
-        <Button text="Enregistrer" onAction="#handleSave" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-min-width: 100;"/>
-        <Button text="Réinitialiser" onAction="#handleReset" style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-min-width: 100;"/>
+        <Button text="Cancel" onAction="#handleCancel" style="-fx-background-color: #f49ca3; -fx-text-fill: white; -fx-min-width: 100;"/>
+        <Button text="Save" onAction="#handleSave" style="-fx-background-color: #857e98; -fx-text-fill: white; -fx-min-width: 100;"/>
+        <Button text="Reset" onAction="#handleReset" style="-fx-background-color: #a287d6; -fx-text-fill: white; -fx-min-width: 100;"/>
     </HBox>
 </VBox>

@@ -2,13 +2,19 @@ package tn.esprit.controllers.user;
 
 import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.*;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.opencv.imgproc.Imgproc;
 import tn.esprit.entities.User;
 import tn.esprit.services.FaceRecognitionService;
@@ -296,24 +302,69 @@ public class EditProfileController {
         }
     }
 
-    private void showSuccessAlert(String title, String message) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(title);
-            alert.setHeaderText(null);
-            alert.setContentText(message);
-            alert.showAndWait();
-        });
+    private void showCustomAlert(String alertType, String title, String message) {
+        Stage alertStage = new Stage();
+        alertStage.initModality(Modality.APPLICATION_MODAL);
+        alertStage.initStyle(StageStyle.UTILITY);
+        alertStage.setTitle(title);
+
+        VBox container = new VBox(15);
+        container.getStyleClass().addAll("alert-dialog", alertType);
+        container.setPadding(new Insets(20));
+
+        // Header with icon
+        HBox header = new HBox(10);
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        Text icon = new Text();
+        icon.setStyle("-fx-font-size: 24;");
+        switch(alertType) {
+            case "success" -> icon.setText("✔️");
+            case "error" -> icon.setText("❌");
+            default -> icon.setText("ℹ️");
+        }
+
+        Label titleLabel = new Label(title);
+        titleLabel.getStyleClass().add("alert-title");
+        header.getChildren().addAll(icon, titleLabel);
+
+        // Content
+        Label content = new Label(message);
+        content.getStyleClass().add("alert-content");
+        content.setWrapText(true);
+
+        // OK Button
+        Button okButton = new Button("OK");
+        okButton.getStyleClass().add("alert-btn");
+        okButton.setOnAction(e -> alertStage.close());
+
+        container.getChildren().addAll(header, content, okButton);
+
+        Scene scene = new Scene(container, 350, 200);
+        try {
+            scene.getStylesheets().add(getClass().getResource("/css/edit-dialog.css").toExternalForm());
+        } catch (NullPointerException e) {
+            // Fallback inline styling
+            container.setStyle("-fx-background-color: #f8f5fa; "
+                    + "-fx-border-color: #8c84a1; "
+                    + "-fx-border-radius: 15px; "
+                    + "-fx-padding: 20;");
+            titleLabel.setStyle("-fx-text-fill: #4a4458; -fx-font-size: 16; -fx-font-weight: bold;");
+            content.setStyle("-fx-text-fill: #4a4458;");
+            okButton.setStyle("-fx-background-color: #8c84a1; -fx-text-fill: white; -fx-padding: 8 20;");
+        }
+
+        alertStage.setScene(scene);
+        alertStage.showAndWait();
     }
 
+    // Update your existing alert methods
     private void showAlert(String title, String message) {
-        Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(title);
-            alert.setHeaderText(null);
-            alert.setContentText(message);
-            alert.showAndWait();
-        });
+        showCustomAlert("error", title, message);
+    }
+
+    private void showSuccessAlert(String title, String message) {
+        showCustomAlert("success", title, message);
     }
     @FXML
     protected void handleCancel() {

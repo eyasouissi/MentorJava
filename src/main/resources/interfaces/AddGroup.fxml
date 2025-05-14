@@ -1,0 +1,33 @@
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.controllers.FrontGroupController"
+            styleClass="main-container"
+            stylesheets="@../css/styles.css"
+            style="-fx-background-color: linear-gradient(                        to bottom right,                        #ffffff 0%,                        #8c84a1 30%,                        #6f6280 50%,                        #8c84a1 70%,                        #ffffff 100%                    );">
+
+<VBox spacing="15" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+    <TextField fx:id="nameField" promptText="Group Name"/>
+    <TextArea fx:id="descriptionField" promptText="Group Description"/>
+
+    <HBox spacing="10">
+        <Button text="Upload Image" onAction="#handleImageUpload"/>
+        <Label fx:id="imagePathLabel"/>
+    </HBox>
+
+    <HBox spacing="10">
+        <Button text="Upload PDF" onAction="#handlePdfUpload"/>
+        <Label fx:id="pdfPathLabel"/>
+    </HBox>
+
+    <DatePicker fx:id="meetingDatePicker"/>
+
+    <Button text="Create Group" onAction="#handleSubmit" styleClass="primary-button"/>
+</VBox>
+</AnchorPane>

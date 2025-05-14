@@ -3,67 +3,85 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.shape.Circle?>
-<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Tooltip?>
 
 <VBox xmlns="http://javafx.com/javafx/11.0.1"
       xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="tn.esprit.controllers.project.EditProjectController"
+      fx:controller="tn.esprit.controllers.group.EditGroupController"
       spacing="20"
       style="-fx-padding: 20; -fx-background-color: #f5f7fa;"
       prefWidth="600">
 
     <!-- Header -->
     <HBox spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: #336699; -fx-padding: 10;">
-        <Button text="Projects" onAction="#goToProjectsView" style="-fx-background-color: white;"/>
+        <Label text="Edit Group" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
     </HBox>
 
     <!-- Image Preview -->
     <VBox alignment="CENTER" spacing="10">
-        <Circle fx:id="imageCircle" radius="60" fill="lightgray"
-                style="-fx-stroke: gray; -fx-stroke-width: 1;" />
+        <Label text="Group Image" style="-fx-font-weight: bold;"/>
+        <ImageView fx:id="imageCircle" fitHeight="150" fitWidth="150" preserveRatio="true" 
+                  style="-fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.3), 10, 0, 0, 0);" />
         <HBox spacing="10" alignment="CENTER">
-            <TextField fx:id="imagePathField" editable="false" HBox.hgrow="ALWAYS"/>
-            <Button fx:id="browseImageButton" text="Parcourir" onAction="#handleBrowseImage"/>
+            <TextField fx:id="imagePathField" editable="false" HBox.hgrow="ALWAYS"
+                      promptText="No image selected"/>
+            <Button fx:id="browseImageButton" text="Change Image" onAction="#handleBrowseImage"
+                   style="-fx-background-color: #2196F3; -fx-text-fill: white; -fx-font-weight: bold;">
+                <tooltip>
+                    <Tooltip text="Select a new image for the group"/>
+                </tooltip>
+            </Button>
         </HBox>
     </VBox>
 
-    <!-- Title -->
-    <Label text="Modifier le Projet"
-           style="-fx-font-size: 22px; -fx-font-weight: bold;"
-           alignment="CENTER"/>
-
-    <!-- Formulaire -->
+    <!-- Group Info -->
     <GridPane hgap="10" vgap="12">
-        <!-- Nom -->
-        <Label text="Nom du projet*:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="nameField" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <!-- ID (Hidden) -->
+        <Label text="ID:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label fx:id="idLabel" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        
+        <!-- Group Name -->
+        <Label text="Group Name*:" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <TextField fx:id="nameField" promptText="Enter group name" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
 
         <!-- Description -->
-        <Label text="Description*:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextArea fx:id="descriptionField" prefRowCount="3" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label text="Description*:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <TextArea fx:id="descriptionField" prefRowCount="3" promptText="Enter group description" 
+                 GridPane.rowIndex="2" GridPane.columnIndex="1"/>
 
-        <!-- Date Limite -->
-        <Label text="Date Limite:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <DatePicker fx:id="deadlineDatePicker" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <!-- Creation Date (Read-only) -->
+        <Label text="Creation Date:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label fx:id="creationDateLabel" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
 
-        <!-- Fichier PDF -->
-        <Label text="Fichier PDF:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <HBox spacing="5" GridPane.rowIndex="3" GridPane.columnIndex="1">
-            <TextField fx:id="pdfPathField" editable="false" HBox.hgrow="ALWAYS"/>
-            <Button fx:id="browsePdfButton" text="Parcourir" onAction="#handleBrowsePdf"/>
+        <!-- Meeting Date -->
+        <Label text="Next Meeting Date:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <DatePicker fx:id="meetingDatePicker" promptText="Select next meeting date" 
+                   GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+
+        <!-- PDF File -->
+        <Label text="PDF File:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
+        <HBox spacing="5" GridPane.rowIndex="5" GridPane.columnIndex="1">
+            <TextField fx:id="pdfPathField" editable="false" HBox.hgrow="ALWAYS"
+                      promptText="No file selected"/>
+            <Button fx:id="browsePdfButton" text="Select File" onAction="#handleBrowsePdf"
+                   style="-fx-background-color: #FF9800; -fx-text-fill: white; -fx-font-weight: bold;"/>
         </HBox>
-
-        <!-- Projets -->
-        <Label text="Sélectionner les groupes:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <ListView fx:id="groupListView" prefHeight="120" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
     </GridPane>
 
-    <!-- Boutons -->
-    <HBox spacing="10" alignment="CENTER_RIGHT" style="-fx-padding: 10 0 0 0;">
-        <Button fx:id="updateButton" text="Mettre à jour" onAction="#handleUpdate"
-                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-min-width: 100;"/>
-        <Button text="Annuler" onAction="#cancel"
-                style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-min-width: 100;"/>
+    <!-- Buttons -->
+    <HBox spacing="15" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+        <Button fx:id="updateButton" text="✓ Save Changes" onAction="#handleUpdate"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 150; -fx-font-size: 14px;">
+            <tooltip>
+                <Tooltip text="Save all changes to the group"/>
+            </tooltip>
+        </Button>
+        <Button text="✕ Cancel" onAction="#cancel"
+                style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold; -fx-min-width: 150; -fx-font-size: 14px;">
+            <tooltip>
+                <Tooltip text="Cancel editing and close"/>
+            </tooltip>
+        </Button>
     </HBox>
 </VBox>

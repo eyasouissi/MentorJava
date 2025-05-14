@@ -1,0 +1,16 @@
+.button {
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+}
+
+.button:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+#closeButton:hover {
+    -fx-background-color: #e81123;
+}
+
+#maximizeButton:hover, #minimizeButton:hover {
+    -fx-background-color: rgba(255,255,255,0.2);
+}

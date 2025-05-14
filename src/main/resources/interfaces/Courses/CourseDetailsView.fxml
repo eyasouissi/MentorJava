@@ -51,7 +51,7 @@
         <!-- Section Niveaux -->
         <VBox spacing="15" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 20; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 0);">
             <HBox alignment="CENTER_LEFT" spacing="15">
-                <Label text="Niveaux du cours" style="-fx-font-weight: bold; -fx-text-fill: #5d3a5d; -fx-font-size: 18px;"/>
+                <Label text="Course levels" style="-fx-font-weight: bold; -fx-text-fill: #5d3a5d; -fx-font-size: 18px;"/>
                 <Button text="+ Ajouter Niveau"
                         style="-fx-background-color: #D8BFD8; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 5 15; -fx-background-radius: 20;"
                         onAction="#handleAddLevel">

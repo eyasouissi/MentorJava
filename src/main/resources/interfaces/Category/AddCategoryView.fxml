@@ -11,11 +11,11 @@
       fx:controller="tn.esprit.controllers.Category.AddCategoryController"
       spacing="15" style="-fx-padding: 20;">
 
-    <Label text="Nouvelle Catégorie" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+    <Label text="New Category" style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
 
     <GridPane hgap="15" vgap="10" style="-fx-padding: 10;">
         <!-- Nom -->
-        <Label text="Nom*:" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <Label text="Name*:" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
         <VBox spacing="5" GridPane.rowIndex="0" GridPane.columnIndex="1">
             <TextField fx:id="nameField" promptText="Nom de la catégorie"/>
             <Label fx:id="nameErrorLabel" textFill="red" style="-fx-font-size: 11px;"/>
@@ -29,7 +29,7 @@
         </VBox>
 
         <!-- Icône -->
-        <Label text="Icône:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <Label text="Icon:" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
         <VBox spacing="5" GridPane.rowIndex="2" GridPane.columnIndex="1">
             <HBox spacing="10">
                 <TextField fx:id="iconField" promptText="URL ou chemin de l'icône" HBox.hgrow="ALWAYS"/>
@@ -39,20 +39,20 @@
         </VBox>
 
         <!-- Aperçu de l'icône -->
-        <Label text="Aperçu:" style="-fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label text="Preview:" style="-fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
         <StackPane GridPane.rowIndex="3" GridPane.columnIndex="1">
             <ImageView fx:id="iconPreview" fitWidth="50" fitHeight="50"/>
             <Label text="Aucune icône" visible="false" fx:id="noIconLabel"/>
         </StackPane>
 
         <!-- Statut -->
-        <Label text="Statut:" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
+        <Label text="Status:" style="-fx-font-weight: bold;" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <CheckBox fx:id="isActiveCheckBox" text="Catégorie active" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
     </GridPane>
 
     <!-- Boutons -->
     <HBox spacing="15" style="-fx-padding: 10 0 0 0;" alignment="CENTER_RIGHT">
-        <Button text="Annuler" onAction="#handleCancel" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-min-width: 100;"/>
-        <Button text="Ajouter" onAction="#handleAdd" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-min-width: 100;"/>
+        <Button text="Cancel" onAction="#handleCancel" style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-min-width: 100;"/>
+        <Button text="Add" onAction="#handleAdd" style="-fx-background-color: #857e98; -fx-text-fill: white; -fx-min-width: 100;"/>
     </HBox>
 </VBox>

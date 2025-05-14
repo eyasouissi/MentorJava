@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="tn.esprit.controllers.GroupCardController"
+      styleClass="group-card"
+      onMouseClicked="#onCardClick"
+      spacing="10">
+    
+    <!-- Group Image -->
+    <ImageView fx:id="groupImageView" 
+               fitHeight="150" 
+               fitWidth="250"
+               styleClass="group-image"/>
+    
+    <!-- Group Info -->
+    <VBox spacing="5">
+        <Text fx:id="groupNameText" 
+              styleClass="group-title"/>
+              
+        <Text fx:id="groupDescriptionText" 
+              styleClass="group-description"
+              wrappingWidth="230"/>
+              
+        <HBox spacing="10" alignment="CENTER_LEFT">
+            <ImageView fitHeight="16" fitWidth="16">
+                <Image url="@../icons/members.png"/>
+            </ImageView>
+            <Text fx:id="memberCountText" styleClass="member-count"/>
+        </HBox>
+    </VBox>
+    
+    <!-- Join Button (Only visible for students) -->
+    <Button fx:id="joinButton" 
+            text="Join Group" 
+            onAction="#onJoinClick"
+            styleClass="primary-button"
+            maxWidth="Infinity"
+            visible="false"/>
+            
+</VBox> 

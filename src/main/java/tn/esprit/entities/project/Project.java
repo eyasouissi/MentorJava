@@ -30,17 +30,17 @@ public class Project {
     @Column(name = "difficulte", nullable = false)
     private Integer difficulte;
 
-    @Column(name = "creation_date", nullable = false)
+    @Transient
     private LocalDate creationDate;
 
-    @Column(name = "deadline")
+    @Transient
     private LocalDate deadline;
 
     @ManyToOne
     @JoinColumn(name = "group_id", nullable = false)
     private GroupStudent group;
 
-    @Column(name = "pdf_file", length = 255)
+    @Transient
     private String pdfFile;
 
     // Ajout d'un champ pour l'image
@@ -143,7 +143,6 @@ public class Project {
                 ", titre='" + titre + '\'' +
                 ", descriptionProject='" + (descriptionProject != null ? descriptionProject.substring(0, Math.min(descriptionProject.length(), 30)) + "..." : "null") + '\'' +
                 ", difficulte=" + difficulte +
-                ", creationDate=" + creationDate +
                 ", deadline=" + deadline +
                 ", pdfFile='" + pdfFile + '\'' +
                 ", image='" + image + '\'' +

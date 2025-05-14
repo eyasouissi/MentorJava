@@ -413,4 +413,65 @@ public class UserService implements IServices<User> {
             }
         }
     }
+
+    public int getTotalUserCount() {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM user";
+        
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting users: " + e.getMessage());
+        }
+        
+        return count;
+    }
+
+    public int getNewUsersThisWeek() {
+        int count = 0;
+        String query = "SELECT COUNT(*) FROM user WHERE created_at >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)";
+        
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting new users: " + e.getMessage());
+        }
+        
+        return count;
+    }
+
+    public Map<String, Integer> getUsersByRole() {
+        Map<String, Integer> result = new HashMap<>();
+        String query = "SELECT roles, COUNT(*) as count FROM user GROUP BY roles";
+        
+        try (Connection conn = MyDataBase.getInstance().getCnx();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            
+            while (rs.next()) {
+                String role = rs.getString("roles");
+                int count = rs.getInt("count");
+                
+                if (role == null || role.isEmpty()) {
+                    role = "No Role";
+                }
+                
+                result.put(role, count);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting users by role: " + e.getMessage());
+        }
+        
+        return result;
+    }
 }

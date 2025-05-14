@@ -6,7 +6,7 @@
 
 /* Action button style */
 .action-button {
-    -fx-background-color: #6a5acd;
+    -fx-background-color: #7d7598;
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 10px 20px;
@@ -14,7 +14,7 @@
 }
 
 .action-button:hover {
-    -fx-background-color: #5849b6;
+    -fx-background-color: #857e98;
 }
 
 /* Navigation buttons */
@@ -88,6 +88,47 @@
 }
 
 .event-pagination .pagination-control .toggle-button:selected {
-    -fx-background-color: #6a5acd;
+    -fx-background-color: #857e98;
     -fx-text-fill: white;
+}
+
+.notification-container {
+    -fx-padding: 10;
+    -fx-spacing: 10;
+    -fx-alignment: center;
+}
+
+.notification-bell {
+    -fx-cursor: hand;
+}
+
+.notification-bell:hover {
+    -fx-opacity: 0.8;
+}
+
+.notification-count {
+    -fx-background-color: red;
+    -fx-text-fill: white;
+    -fx-background-radius: 50%;
+    -fx-min-width: 20;
+    -fx-min-height: 20;
+    -fx-alignment: center;
+}
+
+.notification-box {
+    -fx-background-color: white;
+    -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 0);
+    -fx-padding: 10;
+}
+
+.notification-item {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 5;
+    -fx-padding: 5;
+    -fx-spacing: 10;
+}
+
+.notification-profile-pic {
+    -fx-background-radius: 20;
 }
