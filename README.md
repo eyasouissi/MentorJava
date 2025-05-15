@@ -1,8 +1,7 @@
 <p align="center">
-  <img alt="symfony logo" src="https://symfony.com/images/logos/header-logo.svg" width="300">
+  <img src="https://img.shields.io/badge/Platform-Mentor-blueviolet?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Team-Brainiacs-2ecc71?style=for-the-badge" />
 </p>
-
-<h1 align="center">Mentor - Symfony Application</h1>
 
 # 🎓 Mentor - Educational Platform
 
@@ -36,17 +35,10 @@ Welcome to the GitHub repository of **Mentor**, an interactive educational platf
 
 ## Technologies
 
-![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
-![Symfony](https://img.shields.io/badge/Symfony-000000?style=for-the-badge&logo=symfony&logoColor=white)
-![Composer](https://img.shields.io/badge/Composer-885630?style=for-the-badge&logo=composer&logoColor=white)
-![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
-![Doctrine](https://img.shields.io/badge/Doctrine-FF6C37?style=for-the-badge)
-![Twig](https://img.shields.io/badge/Twig-009E5B?style=for-the-badge&logo=twig&logoColor=white)
-![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white)
-![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
-![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=java&logoColor=white)
+![JavaFX](https://img.shields.io/badge/JavaFX-0064A5?style=for-the-badge)
+![SceneBuilder](https://img.shields.io/badge/SceneBuilder-34495E?style=for-the-badge)
 ![GitHub](https://img.shields.io/badge/Hosted_on-GitHub-181717?style=for-the-badge&logo=github)
-
 
 ---
 
@@ -90,118 +82,21 @@ MentorJava/
 ---
 
 ## Installation
-Read the steps to install and run this Symfony project in your region:
 
-### 1. Clone the repository
-git clone https://github.com/eyasouissi/MentorSymf.git
-cd my_project
+1. Clone the repository: :
 
-### 2. Install PHP dependencies
-composer install
+```bash
+git clone https://github.com/eyasouissi/MentorJava.git
+cd MentorJava
+```
 
-### 3. Create and configure `.env.local`
-cp .env .env.local
-# Edit the .env.local file:
-# DATABASE_URL="mysql://username:password@127.0.0.1:3306/mentordb"
-# Replace `username`, `password`, and `mentordb` with your actual DB credentials
+2. Open the project using **IntelliJ** or  **VSCode**.
 
-### 4. Create the database
-php bin/console doctrine:database:create
+3. Set up Java 17 or later.
 
-### 5. Generate the database schema
-php bin/console doctrine:schema:update --force
+4. Run LoginTest.java.
 
-### 6. Load test data (fixtures)
-php bin/console doctrine:fixtures:load
-
-### 7. Start the server
-# Option 1 (Symfony CLI):
-symfony serve
-# Then visit: https://localhost:8000
-
-# Option 2 (PHP built-in server):
-php -S localhost:8000 -t public/
-
-## Prerequisites & Tools
-
-# Recommended Editor: VS Code
-# Download: https://code.visualstudio.com/
-
-# PHP (v8.0+ required)
-# Windows: Install from https://www.php.net/downloads.php or via XAMPP
-# macOS:
-brew install php
-# Linux (Ubuntu/Debian):
-sudo apt update
-sudo apt install php php-cli php-mbstring php-xml php-curl php-zip php-mysql
-
-# Local Server: XAMPP
-# Windows/macOS/Linux: https://www.apachefriends.org/
-
-# Composer (Dependency manager)
-# Windows: https://getcomposer.org/
-# macOS/Linux:
-curl -sS https://getcomposer.org/installer | php
-sudo mv composer.phar /usr/local/bin/composer
-
-# MySQL Database
-# Included with XAMPP
-# macOS:
-brew install mysql
-# Linux (Ubuntu/Debian):
-sudo apt update
-sudo apt install mysql-server
-
-## Required APIs & Bundles
-
-# 1. Google API Client
-composer require google/apiclient
-composer require google-gemini-php/symfony
-
-# 2. Google Cloud Vision
-composer require google/cloud-vision
-
-# 3. Google Gemini (again)
-composer require google-gemini-php/symfony
-
-# 4. Stripe (payments)
-composer require stripe/stripe-php
-
-# 5. Twilio (messaging & communication)
-composer require twilio/sdk
-
-# 6. Doctrine ORM
-composer require doctrine/orm
-
-# 7. Doctrine Bundle
-composer require doctrine/doctrine-bundle
-
-# 8. Doctrine Migrations Bundle
-composer require doctrine/doctrine-migrations-bundle
-
-# 9. Symfony Security Bundle
-composer require symfony/security-bundle
-
-# 10. Lexik JWT Authentication
-composer require lexik/jwt-authentication-bundle
-
-# 11. Symfony Form
-composer require symfony/form
-
-# 12. Symfony Validator
-composer require symfony/validator
-
-# 13. ReCaptcha Bundle
-composer require victor-prdh/recaptcha-bundle
-
-# 14. VichUploaderBundle (file uploads)
-composer require vich/uploader-bundle
-
-# 15. Omnipay Stripe (advanced Stripe integration)
-composer require omnipay/stripe
-
-# 16. KnpSnappyBundle (PDF/HTML to image generator)
-composer require knplabs/knp-snappy-bundle
+✅ Enjoy the platform!
 
 ---
 
@@ -286,3 +181,4 @@ in the Software without restriction...
 ---
 
 > 🏁 This project was developed as part of our training at **ESPRIT**.
+![image](https://github.com/user-attachments/assets/5e73b4e9-d585-43db-bdf8-167e184fbaa4)
