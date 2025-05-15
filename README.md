@@ -181,4 +181,3 @@ in the Software without restriction...
 ---
 
 > 🏁 This project was developed as part of our training at **ESPRIT**.
-![image](https://github.com/user-attachments/assets/5e73b4e9-d585-43db-bdf8-167e184fbaa4)
